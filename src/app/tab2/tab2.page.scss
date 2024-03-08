@@ -1,0 +1,106 @@
+ion-col {
+  background-color: #eef8ff;
+  border: solid 1px #fff;
+  color: #fff;
+  text-align: center;
+  margin: 3px;
+  border-radius: 8px;
+}
+
+ion-row.tagline {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding-top: 15px;
+}
+
+ion-row.tagline ion-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.9rem;
+  color: var(--ion-color-medium);
+}
+/* The swiper slides */
+swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3px 7px; // Margin between cards
+
+  ion-card {
+    margin: 0; // Removes any default margin from the card
+    padding: 6px; //
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+}
+
+/* The first card */
+.custom-card {
+  height: 280px;
+  background-color: #ffffff; /* Or any other fixed height */
+  border-radius: 8px;
+  overflow: hidden; /* Ensure content inside the card doesn't overflow */
+  box-shadow: 0 4px 8px #eae8e860;
+}
+
+.custom-card img {
+  max-height: 160px; /* Control image height */
+  width: auto;
+}
+
+.styling {
+  height: 220px;
+}
+.styling img {
+  width: auto;
+}
+.custom-card-content,
+.custom-card-header {
+  padding: 10px; /* Adjust padding */
+  text-align: center;
+
+  line-height: 1.5rem;
+  color: var(--ion-color-dark);
+}
+.custom-icon {
+  font-size: 2rem; /* Afont size */
+  color: #0558e7;
+}
+
+.custom-music {
+  font-size: 2rem; /* Adjust the font size as needed */
+  color: #0558e7;
+}
+.custom-grid {
+  width: 100% !important; /* Set width to 50% to have two columns per row */
+}
+.section,
+.optional {
+  padding-right: 1.5vh;
+  padding-bottom: 1.5vh;
+}
+
+.section ion-label,
+.optional ion-label {
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  ion-row.tagline ion-text {
+    font-size: 1.4rem; /* Adjust  for smaller screens */
+    line-height: 1.7rem; /* Adjust line height for smaller screens */
+  }
+}
+
+@media screen and (max-width: 576px) {
+  ion-row.tagline {
+    padding-left: 1vh; /* Adjust padding for smaller screens */
+    margin-top: 10px; /* Adjust margin top for smaller screens */
+    margin-bottom: 10px; /* Adjust margin bottom for smaller screens */
+  }
+
+  ion-col {
+    margin: 2px; /* Adjust margin for smaller screens */
+  }
+}

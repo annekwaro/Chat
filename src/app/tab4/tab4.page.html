@@ -1,0 +1,393 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedSegment">
+      <ion-segment-button value="segment1"> Mood Diary </ion-segment-button>
+      <ion-segment-button value="segment2"> Methods </ion-segment-button>
+      <ion-segment-button value="segment3"> Meditation </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<div>
+  <ion-list-header class="optional">
+    <ion-label> Keep your mind clear </ion-label>
+  </ion-list-header>
+</div>
+
+<ion-content padding>
+  <div *ngIf="selectedSegment === 'segment1'">
+    <!-- Content for Segment 1 -->
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card class="custom-card">
+            <img alt="" src="assets/imgs/image20.png" />
+            <ion-card-header>
+              <ion-button
+                size="small"
+                shape="round"
+                color="warning"
+                expand="block"
+                (click)="setOpen(true)"
+              >
+                Discover
+
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Anxiety</ion-card-subtitle>
+
+              <ion-modal [isOpen]="isModalOpen">
+                <!-- This is content for the modal -->
+
+                <ng-template>
+                  <!-- This is the header for the modal -->
+
+                  <ion-header>
+                    <ion-toolbar>
+                      <ion-title>Modal</ion-title>
+                      <ion-buttons slot="end">
+                        <ion-button (click)="setOpen(false)">Close</ion-button>
+                      </ion-buttons>
+                    </ion-toolbar>
+                  </ion-header>
+
+                  <!-- This is the content for the modal -->
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col
+                        ><ion-card color>
+                          <ion-item>
+                            <ion-avatar slot="start">
+                              <img src="https://i.pravatar.cc/300" />
+                            </ion-avatar>
+                            <ion-label>
+                              <h3>Anne Marine</h3>
+                              <p>Jan 10, 2024</p>
+                            </ion-label>
+                          </ion-item>
+
+                          <img src="assets/imgs/image30.png" alt="" />
+                          <ion-card-header>
+                            <ion-card-title>Managing Depression</ion-card-title>
+                          </ion-card-header>
+                          <ion-card-content>
+                            People with bipolar disorder (formerly called manic
+                            depression or manic-depressive illness) also
+                            experience depressive episodes, during which they
+                            feel sad, indifferent, or hopeless, combined with a
+                            very low activity level. But a person with bipolar
+                            disorder also experiences manic (or less severe
+                            hypomanic) episodes, or unusually elevated moods, in
+                            which they might feel very happy, irritable, or
+                            “up,” with a marked increase in activity level.
+                          </ion-card-content>
+
+                          <ion-footer>
+                            <ion-row>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="thumbs-up"></ion-icon>
+                                  <div>1.5k Likes</div>
+                                </button>
+                              </ion-col>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="text"></ion-icon>
+                                  <div>4 Comments</div>
+                                </button>
+                              </ion-col>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="time"></ion-icon>
+                                  <div>11h ago</div>
+                                </button>
+                              </ion-col>
+                            </ion-row>
+                          </ion-footer>
+                        </ion-card>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ng-template>
+              </ion-modal>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size-md="6">
+          <ion-card class="custom-card" color="primary">
+            <img src="assets/imgs/image21.png" />
+            <ion-card-header>
+              <ion-button
+                size="small"
+                shape="round"
+                color="warning"
+                expand="block"
+                (click)="setOpenb(true)"
+              >
+                Discover
+
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle </ion-card-subtitle>
+
+              <ion-modal [isOpen]="isModalOpenb">
+                <!-- This is content for the modal -->
+
+                <ng-template>
+                  <!-- This is the header for the modal -->
+
+                  <ion-header>
+                    <ion-toolbar>
+                      <ion-title>Modal</ion-title>
+                      <ion-buttons slot="end">
+                        <ion-button (click)="setOpenb(false)">Close</ion-button>
+                      </ion-buttons>
+                    </ion-toolbar>
+                  </ion-header>
+
+                  <!-- This is the content for the modal -->
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col
+                        ><ion-card color="success">
+                          <ion-item>
+                            <ion-avatar slot="start">
+                              <img src="https://i.pravatar.cc/300" />
+                            </ion-avatar>
+                            <ion-label>
+                              <h3>Anne Lauret</h3>
+                              <p>Dec 10, 2023</p>
+                            </ion-label>
+                          </ion-item>
+
+                          <img src="assets/imgs/image27.png" alt="ion" />
+                          <ion-card-header>
+                            <ion-card-title>Managing Anxiety</ion-card-title>
+                          </ion-card-header>
+                          <ion-card-content>
+                            Having occasional feelings of anxiety is a normal
+                            part of life, but people with anxiety disorders
+                            experience frequent and excessive anxiety, fear,
+                            terror and panic in everyday situations. These
+                            feelings are unhealthy if they affect your quality
+                            of life and prevent you from functioning normally.
+                            You should see your health care provider if your
+                            anxiety is affecting your life and relationships.
+                            Your provider can help rule out any underlying
+                            physical health issue before seeing a mental health
+                            professional.
+                          </ion-card-content>
+
+                          <ion-footer>
+                            <ion-row>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="thumbs-up"></ion-icon>
+                                  <div>1.5k Likes</div>
+                                </button>
+                              </ion-col>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="text"></ion-icon>
+                                  <div>4 Comments</div>
+                                </button>
+                              </ion-col>
+                              <ion-col center text-center>
+                                <button>
+                                  <ion-icon name="time"></ion-icon>
+                                  <div>11h ago</div>
+                                </button>
+                              </ion-col>
+                            </ion-row>
+                          </ion-footer>
+                        </ion-card>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ng-template>
+              </ion-modal>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card class="custom-card">
+            <img alt="Silhouette of mountains" src="assets/imgs/image22.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+        <ion-col size-md="6">
+          <ion-card class="custom-card" color="success">
+            <img alt="Silhouette of mountains" src="assets/imgs/image23.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card class="custom-card" color="secondary">
+            <img alt="Silhouette of mountains" src="assets/imgs/image24.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+        <ion-col size-md="6">
+          <ion-card class="custom-card">
+            <img alt="Silhouette of mountains" src="assets/imgs/image25.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card class="custom-card">
+            <img alt="Silhouette of mountains" src="assets/imgs/image26.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+        <ion-col size-md="6">
+          <ion-card class="custom-card" color="secondary">
+            <img alt="Silhouette of mountains" src="assets/imgs/image27.png" />
+            <ion-card-header>
+              <ion-button size="small" color="warning" shape="round">
+                Discover
+                <ion-icon slot="end" name="arrow-forward"></ion-icon>
+              </ion-button>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Content for Segment 2 -->
+  <div *ngIf="selectedSegment === 'segment2'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card class="custom-card" color="primary">
+            <ion-card-header>
+              <ion-card-subtitle>Segment 2 Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content>
+              Here's a small text description for the card content in Segment 2.
+              Nothing more, nothing less.
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-fab>
+      <ion-fab-button size="small">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-list side="end">
+        <ion-fab-button>
+          <ion-icon name="document"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button>
+          <ion-icon name="color-palette"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button>
+          <ion-icon name="globe"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+    </ion-fab>
+  </div>
+
+  <!-- Content for Segment 3 -->
+  <div *ngIf="selectedSegment === 'segment3'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Card Title</ion-card-title>
+              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content>
+              Here's a small text description for the card content. Nothing
+              more, nothing less.
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-list>
+            <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
+            <!-- Casting $event to $any is a temporary fix for this bug https://github.com/ionic-team/ionic-framework/issues/24245 -->
+            <ion-reorder-group
+              [disabled]="false"
+              (ionItemReorder)="handleReorder($any($event))"
+            >
+              <ion-item>
+                <ion-label> Item 1 </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+
+              <ion-item>
+                <ion-label> Item 2 </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+
+              <ion-item>
+                <ion-label> Item 3 </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+
+              <ion-item>
+                <ion-label> Item 4 </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+
+              <ion-item>
+                <ion-label> Item 5 </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+            </ion-reorder-group>
+          </ion-list>
+        </ion-col>
+        <!-- Add more cards for Segment 3 if needed -->
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

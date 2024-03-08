@@ -1,0 +1,138 @@
+<div>
+  <ion-row class="tagline">
+    <ion-text> Make Yourself better</ion-text>
+    <p></p>
+  </ion-row>
+</div>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <swiper-container
+          grab-cursor="true"
+          [modules]="swiperModules"
+          [slidesPerView]="1.6"
+          [keyboard]="true"
+          [centerSlides]="true"
+          [loop]="true"
+          [scrollbar]="true"
+          [effect]="'coverflow'"
+          [coverflowEffect]="{ rotate: 40, stretch: 0, depth: 100, modifier: 1, slideShadows: true }"
+        >
+          <!-- Slide 1 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
+              <ion-icon name="play-circle" class="custom-icon"></ion-icon>
+
+              <img
+                src="assets/imgs/image4.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content">
+                This is some description text that goes inside the card. It can
+                be as long.
+              </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+          <!-- Slide 2 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
+              <ion-icon name="musical-notes" class="custom-music"></ion-icon>
+              <img
+                src="assets/imgs/image5.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content">
+                This is some description text that goes inside the card. It can
+                be as long.
+              </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+          <!-- Slide 3 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
+              <ion-icon name="play-circle" class="custom-icon"></ion-icon>
+
+              <img
+                src="assets/imgs/image6.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content">
+                This is some description text that goes inside the card. It can
+                be as long.
+              </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+        </swiper-container>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div>
+    <ion-list-header class="section">
+      <ion-label> Suggestions </ion-label>
+
+      <ion-button fill="clear" size="small" color="medium">
+        <ion-text> Show all </ion-text>
+      </ion-button>
+    </ion-list-header>
+  </div>
+
+  <!-- Gallery of Images -->
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        class="styling"
+        size-lg="4"
+        *ngFor="let image of images"
+        [style.background]="image.backgroundColor"
+      >
+        <img [src]="image.src" [alt]="image.alt" />
+        <h4>{{ image.title }}</h4>
+        <p>{{ image.description }}</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll (ionInfinite)="loadMoreImages($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="crescent"
+      loadingText="Loading more images..."
+    ></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

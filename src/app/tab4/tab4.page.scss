@@ -1,0 +1,38 @@
+ion-col {
+  background-color: #fbfbfb;
+  border: solid 1px #fff;
+  color: #fff;
+  text-align: center;
+}
+.custom-card {
+  height: 220px;
+  margin: 3px; /* Adjust the height as needed */
+}
+.section,
+.optional {
+  padding-right: 1.5vh;
+  padding-bottom: 1.2vh;
+}
+
+.section ion-label,
+.optional ion-label {
+  font-size: 1.1rem;
+}
+ion-card {
+  margin: 0; // Removes any default margin from the card
+  padding: 2; //
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+ion-card-subtitle {
+  padding-bottom: 2px;
+
+  margin: 2px; //
+}
+ion-card-content {
+  padding-top: 2px;
+}
+ion-chip {
+  --background: #006dda;
+}
