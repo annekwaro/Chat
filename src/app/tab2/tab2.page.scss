@@ -1,10 +1,13 @@
+body {
+  font-family: "Nunito", sans-serif;
+}
 ion-col {
   background-color: #eef8ff;
   border: solid 1px #fff;
   color: #fff;
   text-align: center;
   margin: 3px;
-  border-radius: 8px;
+  border-radius: 3px;
 }
 
 ion-row.tagline {
@@ -37,8 +40,8 @@ swiper-slide {
 /* The first card */
 .custom-card {
   height: 280px;
-  background-color: #ffffff; /* Or any other fixed height */
   border-radius: 8px;
+  color: #1b1b1c;
   overflow: hidden; /* Ensure content inside the card doesn't overflow */
   box-shadow: 0 4px 8px #eae8e860;
 }
@@ -48,20 +51,27 @@ swiper-slide {
   width: auto;
 }
 
-.styling {
-  height: 220px;
-}
-.styling img {
+/*.styling {
+  height: 160px;
+
+
+  border-radius: 8px;
+
+  overflow: hidden; /* Ensure content inside the card doesn't overflow */
+/*box-shadow: 0 4px 8px #eae8e860;
+}*/
+/*.styling img {
   width: auto;
+  height: 140px;
 }
 .custom-card-content,
 .custom-card-header {
   padding: 10px; /* Adjust padding */
-  text-align: center;
+//text-align: center;
 
-  line-height: 1.5rem;
-  color: var(--ion-color-dark);
-}
+//line-height: 1.5rem;
+//color: var(--ion-color-dark);
+//}
 .custom-icon {
   font-size: 2rem; /* Afont size */
   color: #0558e7;
@@ -72,7 +82,7 @@ swiper-slide {
   color: #0558e7;
 }
 .custom-grid {
-  width: 100% !important; /* Set width to 50% to have two columns per row */
+  width: 90% !important; /* Set width to 50% to have two columns per row */
 }
 .section,
 .optional {
@@ -83,6 +93,55 @@ swiper-slide {
 .section ion-label,
 .optional ion-label {
   font-size: 1.1rem;
+}
+
+.card {
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.05);
+  transition: 0.3s transform cubic-bezier(0.155, 1.105, 0.295, 1.12),
+    0.3s box-shadow,
+    0.3s -webkit-transform cubic-bezier(0.155, 1.105, 0.295, 1.12);
+  padding: 14px 80px 18px 36px;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.card h3 {
+  font-weight: 600;
+}
+
+.card img {
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  max-height: 120px;
+}
+
+.card-1 {
+  background-image: url(https://ionicframework.com/img/getting-started/ionic-native-card.png);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 80px;
+  //'../assets/imgs/image5.png'
+}
+
+.card-2 {
+  background-image: url(https://ionicframework.com/img/getting-started/components-card.png);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 80px;
+}
+
+.card-3 {
+  background-image: url(https://ionicframework.com/img/getting-started/theming-card.png);
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: 80px;
 }
 
 /* Responsive adjustments */

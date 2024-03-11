@@ -4,7 +4,7 @@ import { TabsPage } from './tabs/tabs.page';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'tabs/tab1',
     pathMatch: 'full',
   },
   {
@@ -26,11 +26,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('./tab2/tab2.module').then((m) => m.Tab2PageModule),
       },
-      {
-        path: 'tab3',
-        loadChildren: () =>
-          import('./tab3/tab3.module').then((m) => m.Tab3PageModule),
-      },
+
       {
         path: 'tab4',
         loadChildren: () =>
@@ -41,7 +37,39 @@ const routes: Routes = [
         loadChildren: () =>
           import('./tabs/tabs.module').then((m) => m.TabsPageModule),
       },
+      {
+        path: 'home',
+        loadChildren: () =>
+          import('./pages/home/home.module').then((m) => m.HomePageModule),
+      },
     ],
+  },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./pages/login/login.module').then((m) => m.LoginPageModule),
+  },
+  {
+    path: 'landing',
+    loadChildren: () =>
+      import('./pages/landing/landing.module').then((m) => m.LandingPageModule),
+  },
+  {
+    path: 'reset-password',
+    loadChildren: () =>
+      import('./pages/reset-password/reset-password.module').then(
+        (m) => m.ResetPasswordPageModule
+      ),
+  },
+  {
+    path: 'sign-up',
+    loadChildren: () =>
+      import('./pages/sign-up/sign-up.module').then((m) => m.SignUpPageModule),
+  },
+  {
+    path: 'home',
+    loadChildren: () =>
+      import('./pages/home/home.module').then((m) => m.HomePageModule),
   },
 ];
 

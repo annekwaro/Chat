@@ -1,0 +1,68 @@
+.input {
+  font-size: 300;
+}
+
+ion-item {
+  --background: "#f1f1f1",
+  border-radius:10px;
+  margin-bottom: 16px;
+}
+
+.header{
+  margin-top:100px;
+  margin-bottom: 80px;
+  text-align: center;
+  .subTitle{
+    color: grey !important;
+    font-size: 0.9rem;
+  }
+  title{
+    font-size:2rem;
+  }
+}
+.signupLink{
+  display:flex;
+  margin:auto;
+  flex-direction: row;
+  align-content:centre;
+  justify-content: center;
+  //position: absolute;
+  left: 0;
+  bottom: 0;
+  width:80%;
+  right:0;
+
+p{
+  font-size: 0.9rem;
+}
+a{
+  text-decoration: none;
+}
+}
+.forgotpassword {
+  text-align: right; /* Align the "Forgot password?" link to the right */
+  margin-bottom: 16px; /* Add margin-bottom to match the spacing */
+}
+
+.forgotpassword a {
+ 
+    font-weight: 400;
+    font-size: 0.8rem;
+    text-decoration: none;
+  
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 4px; /* Adjust the margin-top to provide appropriate spacing */
+  text-align: left;
+}
+
+.title {
+  font-size: 1rem;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+
+}

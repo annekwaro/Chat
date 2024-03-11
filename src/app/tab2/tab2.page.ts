@@ -52,14 +52,14 @@ export class Tab2Page implements OnInit {
         alt: 'Image 1',
         title: 'Title 1',
         description: 'Description 1',
-        backgroundColor: '#0558e7',
+        backgroundColor: '#55d6c2',
       },
       {
         src: 'assets/imgs/image11.png',
         alt: 'Image 2',
         title: 'Title 2',
         description: 'Description 2',
-        backgroundColor: '#55d6c2',
+        backgroundColor: '#0558e7',
       },
       {
         src: 'assets/imgs/image10.png',

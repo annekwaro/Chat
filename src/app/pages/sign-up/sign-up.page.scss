@@ -1,0 +1,48 @@
+.input {
+  font-size: 16px;
+  border: none;
+}
+
+ion-item {
+  --background: #f1f1f1;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.header {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.subTitle {
+  color: rgba(97, 95, 95, 0.676);
+  font-size: 0.9rem;
+}
+
+.title {
+  font-size: 1rem;
+  margin-top: 40px;
+}
+
+.signinLink {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.signinLink p {
+  font-size: 0.9rem;
+}
+
+.signinLink a {
+  font-weight: 400;
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: blue;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: -8px;
+}

@@ -1,0 +1,43 @@
+ion-grid {
+  height: 100vh; /* Makes the grid fill the full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers content vertically */
+}
+
+ion-row {
+  justify-content: center; /* Center the columns horizontally */
+}
+
+ion-col {
+  padding: 20px; /* Adds space around the ion-card */
+}
+
+ion-card {
+  box-shadow: none;
+  margin: auto; /* Adds automatic margin for auto-adjustment and center alignment */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Ensures content inside the card is centered */
+}
+
+.center-content {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  // margin: 20px 0; /* Adds vertical spacing */
+}
+
+/*.centered-button {
+ // width: fit-content; /* Adjusts the width to fit the content */
+//}
+
+ion-card img {
+  width: 100%;
+  height: auto; /* Maintains the aspect ratio of the image */
+}

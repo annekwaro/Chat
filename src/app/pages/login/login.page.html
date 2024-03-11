@@ -1,0 +1,73 @@
+<ion-content [fullscreen]="true">
+  <div class="header">
+    <ion-title class="title"> Welcome Back</ion-title>
+    <p class="subTitle">Sign in to access your account</p>
+  </div>
+
+  <form [formGroup]="loginForm" novalidate>
+    <div class="ion-padding">
+      <ion-item>
+        <ion-input
+          formControlName="email"
+          placeholder="username"
+          class="input"
+        ></ion-input>
+        <ion-icon name="person-outline"></ion-icon>
+      </ion-item>
+      <div
+        class="error-message"
+        *ngIf="loginForm.controls['email'].touched && loginForm.controls['email'].invalid"
+      >
+        <ion-text
+          *ngIf="loginForm.controls['email'].errors && loginForm.controls['email'].errors['required']"
+        >
+          Email is required
+        </ion-text>
+      </div>
+
+      <ion-item>
+        <ion-input
+          formControlName="password"
+          placeholder="Password"
+          class="input"
+        ></ion-input>
+        <ion-icon name="lock-closed-outline"></ion-icon>
+      </ion-item>
+
+      <div
+        class="error-message"
+        *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].invalid"
+      >
+        <ion-text
+          *ngIf="loginForm.controls['password'].errors && loginForm.controls['password'].errors['required']"
+        >
+          Password is required
+        </ion-text>
+      </div>
+
+      <div class="forgotpassword">
+        <a [routerLink]="['/', 'reset-password']" style="color: #0000ff">
+          Forgot password?</a
+        >
+      </div>
+      <div class="signupLink">
+        <p>
+          New member?
+          <a style="color: #0000ff" [routerLink]="['/', 'sign-up']"> SignUp</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="ion-padding">
+      <ion-button
+        type="submit"
+        expand="block"
+        shape="round"
+        color="primary"
+        [routerLink]="['/tabs/tab1']"
+      >
+        Sign In
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

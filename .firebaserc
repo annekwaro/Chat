@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "auth-app-f22e9": {
+      "hosting": {
+        "app": [
+          "auth-app-f22e9"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "auth-app-f22e9"
+  }
+}
