@@ -1,5 +1,5 @@
 ion-col {
-  background-color: #fbfbfb;
+  background-color: #ffffff;
   border: solid 1px #fff;
   color: #fff;
   text-align: center;
@@ -16,6 +16,17 @@ ion-col {
 
 .section ion-label,
 .optional ion-label {
+  font-size: 1.1rem;
+}
+
+.section,
+.updated {
+  padding-right: 1.5vh;
+  padding-bottom: 1.2vh;
+}
+
+.section ion-label,
+.updated ion-label {
   font-size: 1.1rem;
 }
 ion-card {
@@ -35,4 +46,51 @@ ion-card-content {
 }
 ion-chip {
   --background: #006dda;
+}
+
+//For segment three option
+.customer-card {
+  height: 300px;
+  overflow: hidden;
+}
+
+.customer-card .custom-image {
+  max-width: 100%;
+  //max-height: 100px;
+  display: block;
+  margin: 0 auto;
+}
+//for the list
+ion-list {
+  background: transparent;
+
+  ion-label {
+    font-size: 1.1rem;
+
+    .item-type {
+      display: block; /*  new line */
+      font-size: 0.9rem; /* Adjust font size */
+      color: #737373; /* Optionally for color */
+    }
+  }
+
+  ion-text {
+    font-size: 0.7rem;
+  }
+}
+ion-list > ion-item:hover {
+  background-color: rgb(15, 43, 226);
+  color: #385df5 !important;
+  border-radius: 10px;
+  cursor: pointer !important;
+}
+
+.titledpart {
+  padding-right: 1.5vh;
+  padding-bottom: 1.5vh;
+}
+
+.titledpart {
+  font-size: 1.1rem;
+  font-weight: 800;
 }

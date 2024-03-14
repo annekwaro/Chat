@@ -8,6 +8,8 @@ import { ItemReorderEventDetail } from '@ionic/angular';
 })
 export class Tab4Page implements OnInit {
   selectedSegment: string = 'segment1';
+  selectedDateTime: string;
+
   handleReorder(ev: CustomEvent<ItemReorderEventDetail>) {
     // The `from` and `to` properties contain the index of the item
     // when the drag started and ended, respectively

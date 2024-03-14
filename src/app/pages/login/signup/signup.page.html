@@ -1,4 +1,9 @@
 <ion-content [fullscreen]="true">
+  <ion-spinner
+    class="ion-text-centre"
+    name="crescent"
+    *ngIf="isLoading"
+  ></ion-spinner>
   <div class="circleBase type2 circle1"></div>
   <div class="circleBase type1"></div>
   <div class="circleBase type2 circle2"></div>

@@ -8,15 +8,15 @@
   </ion-toolbar>
 </ion-header>
 
-<div>
-  <ion-list-header class="optional">
-    <ion-label> Keep your mind clear </ion-label>
-  </ion-list-header>
-</div>
-
 <ion-content padding>
   <div *ngIf="selectedSegment === 'segment1'">
     <!-- Content for Segment 1 -->
+    <div>
+      <ion-list-header class="optional">
+        <ion-label> Keep your mind clear </ion-label>
+      </ion-list-header>
+    </div>
+
     <ion-grid>
       <ion-row>
         <ion-col size-md="6">
@@ -213,7 +213,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size-md="6">
+        <ion-col>
           <ion-card class="custom-card">
             <img alt="Silhouette of mountains" src="assets/imgs/image22.png" />
             <ion-card-header>
@@ -225,7 +225,7 @@
             </ion-card-header>
           </ion-card>
         </ion-col>
-        <ion-col size-md="6">
+        <ion-col>
           <ion-card class="custom-card" color="success">
             <img alt="Silhouette of mountains" src="assets/imgs/image23.png" />
             <ion-card-header>
@@ -240,7 +240,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size-md="6">
+        <ion-col>
           <ion-card class="custom-card" color="secondary">
             <img alt="Silhouette of mountains" src="assets/imgs/image24.png" />
             <ion-card-header>
@@ -252,36 +252,10 @@
             </ion-card-header>
           </ion-card>
         </ion-col>
-        <ion-col size-md="6">
+
+        <ion-col>
           <ion-card class="custom-card">
             <img alt="Silhouette of mountains" src="assets/imgs/image25.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-card class="custom-card">
-            <img alt="Silhouette of mountains" src="assets/imgs/image26.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-        <ion-col size-md="6">
-          <ion-card class="custom-card" color="secondary">
-            <img alt="Silhouette of mountains" src="assets/imgs/image27.png" />
             <ion-card-header>
               <ion-button size="small" color="warning" shape="round">
                 Discover
@@ -297,17 +271,41 @@
 
   <!-- Content for Segment 2 -->
   <div *ngIf="selectedSegment === 'segment2'">
+    <div>
+      <ion-list-header class="optional">
+        <ion-label> Keep your mind clear </ion-label>
+      </ion-list-header>
+    </div>
     <ion-grid>
       <ion-row>
         <ion-col size-md="6">
-          <ion-card class="custom-card" color="primary">
-            <ion-card-header>
-              <ion-card-subtitle>Segment 2 Card Subtitle</ion-card-subtitle>
-            </ion-card-header>
+          <ion-card color="primary" class="customer-card">
+            <ion-card-header> </ion-card-header>
 
             <ion-card-content>
-              Here's a small text description for the card content in Segment 2.
-              Nothing more, nothing less.
+              Here's a small text description for the card content. Nothing
+              more, nothing less.
+              <img
+                alt="Silhouette of mountains"
+                src="assets/imgs/image28.png"
+              />
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-md="6">
+          <ion-card color="primary" class="customer-card">
+            <ion-card-header> </ion-card-header>
+
+            <ion-card-content>
+              Here's a small text description for the card content. Nothing
+              more, nothing less.
+              <img
+                alt="Silhouette of mountains"
+                src="assets/imgs/image29.png"
+              />
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -335,24 +333,23 @@
   <!-- Content for Segment 3 -->
   <div *ngIf="selectedSegment === 'segment3'">
     <ion-grid>
+      <!-- For the datetime -->
       <ion-row>
         <ion-col size-md="6">
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>Card Title</ion-card-title>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-            </ion-card-header>
-
-            <ion-card-content>
-              Here's a small text description for the card content. Nothing
-              more, nothing less.
-            </ion-card-content>
-          </ion-card>
+          <ion-item>
+            <ion-datetime
+              displayFormat="MM/DD/YYYY HH:mm"
+              [(ngModel)]="selectedDateTime"
+            >
+              <span slot="title" class="titledpart">Organise your day</span>
+            </ion-datetime>
+          </ion-item>
         </ion-col>
       </ion-row>
+
       <ion-row>
         <ion-col size-md="6">
-          <ion-list>
+          <ion-list class="ion-margin-bottom">
             <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
             <!-- Casting $event to $any is a temporary fix for this bug https://github.com/ionic-team/ionic-framework/issues/24245 -->
             <ion-reorder-group
@@ -360,27 +357,42 @@
               (ionItemReorder)="handleReorder($any($event))"
             >
               <ion-item>
-                <ion-label> Item 1 </ion-label>
+                <ion-avatar slot="start">
+                  <img src="assets/imgs/image7.png" />
+                </ion-avatar>
+                <ion-label> Meditation </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
               <ion-item>
-                <ion-label> Item 2 </ion-label>
+                <ion-avatar slot="start">
+                  <img src="assets/imgs/image8.png" />
+                </ion-avatar>
+                <ion-label> Breathing </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
               <ion-item>
-                <ion-label> Item 3 </ion-label>
+                <ion-avatar slot="start">
+                  <img src="assets/imgs/image9.png" />
+                </ion-avatar>
+                <ion-label> Cycling </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
               <ion-item>
-                <ion-label> Item 4 </ion-label>
+                <ion-avatar slot="start">
+                  <img src="assets/imgs/image4.png" />
+                </ion-avatar>
+                <ion-label> Reading </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
               <ion-item>
-                <ion-label> Item 5 </ion-label>
+                <ion-avatar slot="start">
+                  <img src="assets/imgs/image5.png" />
+                </ion-avatar>
+                <ion-label> Listening to music </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
             </ion-reorder-group>

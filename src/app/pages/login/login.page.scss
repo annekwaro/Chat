@@ -1,68 +1,128 @@
-.input {
-  font-size: 300;
-}
+ion-content {
+  --background: #f4f5f8;
 
-ion-item {
-  --background: "#f1f1f1",
-  border-radius:10px;
-  margin-bottom: 16px;
-}
+  .circleBase {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
 
-.header{
-  margin-top:100px;
-  margin-bottom: 80px;
-  text-align: center;
-  .subTitle{
-    color: grey !important;
-    font-size: 0.9rem;
+    &.type1 {
+      width: 100px;
+      height: 100px;
+      top: 20px;
+      left: 20px;
+    }
+
+    &.type2 {
+      width: 150px;
+      height: 150px;
+      background: rgba(0, 0, 0, 0.05);
+
+      &.circle1 {
+        top: 50px;
+        right: 20px;
+      }
+
+      &.circle2 {
+        bottom: 30px;
+        left: 30%;
+      }
+    }
   }
-  title{
-    font-size:2rem;
+
+  .welcomeMessage {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    text-align: center;
+    ion-text {
+      display: block;
+      color: #ffffff;
+
+      p {
+        margin-top: 8px;
+      }
+    }
+  }
+
+  form {
+    margin-top: 40%;
+
+    .ion-margin-vertical {
+      margin-bottom: 20px;
+    }
+
+    ion-icon {
+      font-size: 24px;
+    }
+
+    .error {
+      margin: 0;
+      padding: 5px 0;
+    }
+
+    .signup {
+      text-align: center;
+      margin-top: 20px;
+
+      ion-note {
+        a {
+          color: #387ef5;
+          text-decoration: none;
+        }
+      }
+    }
+
+    ion-button {
+      display: block;
+      width: 90%;
+      margin: 20px auto;
+    }
+
+    // Adjusting input styles to make it more line-like
+    ion-input {
+      --padding-start: 0;
+      --padding-end: 0;
+      --placeholder-opacity: 0.8;
+      --placeholder-color: #999;
+
+      &[type="text"],
+      &[type="password"] {
+        border-bottom: 1px solid #ddd; // Line-like appearance
+        border-radius: 0; // Remove border radius to match the line style
+        height: auto; // Adjust height as needed
+      }
+    }
   }
 }
-.signupLink{
-  display:flex;
-  margin:auto;
-  flex-direction: row;
-  align-content:centre;
-  justify-content: center;
-  //position: absolute;
-  left: 0;
-  bottom: 0;
-  width:80%;
-  right:0;
 
-p{
-  font-size: 0.9rem;
-}
-a{
-  text-decoration: none;
-}
-}
-.forgotpassword {
-  text-align: right; /* Align the "Forgot password?" link to the right */
-  margin-bottom: 16px; /* Add margin-bottom to match the spacing */
+// Aligning checkboxes and notes
+.alignItems {
+  display: flex;
+  align-items: center; // Ensure vertical alignment is centered
+  justify-content: space-between; // Spread the checkbox and note to each end
+
+  ion-note {
+    margin-left: 8px; // Adjust if necessary for alignment
+  }
+
+  // Ensure alignment for both left and right items
+  > div {
+    display: flex;
+    align-items: center;
+
+    ion-checkbox {
+      margin-right: 8px; // Space between checkbox and note
+    }
+  }
 }
 
-.forgotpassword a {
- 
-    font-weight: 400;
-    font-size: 0.8rem;
-    text-decoration: none;
-  
+// Enhancing checkbox appearance
+ion-checkbox {
+  --background: #387ef5;
+  --background-checked: #32db64;
 }
 
-.error-message {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 4px; /* Adjust the margin-top to provide appropriate spacing */
-  text-align: left;
-}
-
-.title {
-  font-size: 1rem;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-
+ion-note {
+  color: #606060;
 }

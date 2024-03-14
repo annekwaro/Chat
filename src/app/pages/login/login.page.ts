@@ -1,12 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { LoadingController } from '@ionic/angular';
-import { AutheticationService } from 'src/app/authetication.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,28 +7,33 @@ import { AutheticationService } from 'src/app/authetication.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  loginForm: FormGroup;
+  form: FormGroup;
+  isTypePassword: boolean = true;
+  isLogin = false;
 
-  constructor(
-    public formBuilder: FormBuilder,
-    public loadingCtrl: LoadingController,
-    public authService: AutheticationService
-  ) {}
-  ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required],
+  constructor() {
+    this.initForm();
+  }
+
+  ngOnInit() {}
+  initForm() {
+    this.form = new FormGroup({
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required],
+      }),
     });
   }
-  get errorControl() {
-    return this.loginForm.controls;
-  }
-  async signUp() {
-    const loading = await this.loadingCtrl.create();
-    await loading.present();
 
-    if (this.loginForm?.valid) {
-      console.log(this.loginForm.value);
-    }
+  onChange() {
+    this.isTypePassword = !this.isTypePassword;
+  }
+
+  onSubmit() {
+    if (!this.form.valid) return;
+    console.log(this.form.value);
+    //this.isLogin(this.form);
   }
 }

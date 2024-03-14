@@ -1,73 +1,96 @@
 <ion-content [fullscreen]="true">
-  <div class="header">
-    <ion-title class="title"> Welcome Back</ion-title>
-    <p class="subTitle">Sign in to access your account</p>
-  </div>
+  <div class="circleBase type2 circle1"></div>
+  <div class="circleBase type1"></div>
+  <div class="circleBase type2 circle2"></div>
 
-  <form [formGroup]="loginForm" novalidate>
-    <div class="ion-padding">
-      <ion-item>
+  <ion-label class="welcomeMessage">
+    <ion-text color="light">Welcome Back</ion-text>
+    <ion-text color="light">
+      <p>Log In</p>
+    </ion-text>
+  </ion-label>
+
+  <form [formGroup]="form">
+    <ion-list lines="none" class="ion-margin ion-padding ion-text-centre">
+      <ion-item class="ion-margin-vertical">
+        <ion-icon name="mail outline" slot="end" color="medium"> </ion-icon>
         <ion-input
           formControlName="email"
-          placeholder="username"
-          class="input"
-        ></ion-input>
-        <ion-icon name="person-outline"></ion-icon>
-      </ion-item>
-      <div
-        class="error-message"
-        *ngIf="loginForm.controls['email'].touched && loginForm.controls['email'].invalid"
-      >
-        <ion-text
-          *ngIf="loginForm.controls['email'].errors && loginForm.controls['email'].errors['required']"
+          placeholder="Enter address"
+          class="input-field"
         >
-          Email is required
-        </ion-text>
-      </div>
-
-      <ion-item>
+        </ion-input>
+      </ion-item>
+      <ion-text
+        class="ion-text-left"
+        color="danger"
+        *ngIf="!form.get('email').valid && form.get('email').touched"
+      >
+        <p class="error">Enter proper email address</p>
+      </ion-text>
+      <ion-item class="ion-margin-vertical">
+        <ion-icon
+          (click)="onChange()"
+          [name]="isTypePassword?'lock-closed-outline':'lock-open-outline'"
+          slot="end"
+          [color]="isTypePassword?'medium':'primary'"
+        >
+        </ion-icon>
         <ion-input
           formControlName="password"
-          placeholder="Password"
-          class="input"
-        ></ion-input>
-        <ion-icon name="lock-closed-outline"></ion-icon>
+          [type]="isTypePassword?'password':'text'"
+          placeholder="Enter password"
+          class="input-field"
+        >
+        </ion-input>
       </ion-item>
-
-      <div
-        class="error-message"
-        *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].invalid"
-      >
-        <ion-text
-          *ngIf="loginForm.controls['password'].errors && loginForm.controls['password'].errors['required']"
+      <ion-text
+        class="ion-text-left"
+        color="danger"
+        *ngIf="!form.get('password').valid && form.get('password').touched"
+        ><p
+          class="error"
+          *ngIf="form.get('password').invalid && form.get('password').errors['required']"
         >
-          Password is required
-        </ion-text>
-      </div>
-
-      <div class="forgotpassword">
-        <a [routerLink]="['/', 'reset-password']" style="color: #0000ff">
-          Forgot password?</a
-        >
-      </div>
-      <div class="signupLink">
-        <p>
-          New member?
-          <a style="color: #0000ff" [routerLink]="['/', 'sign-up']"> SignUp</a>
+          *please enter your password
         </p>
-      </div>
-    </div>
+        <p class="error" *ngIf="form.get('password').dirty">
+          *please enter at least 6 characters
+        </p>
+      </ion-text>
 
-    <div class="ion-padding">
+      <ion-row class="ion-margin-vertical">
+        <ion-col size="6" class="alignItems">
+          <div align="left">
+            <ion-checkbox> </ion-checkbox>
+            <ion-note>Remember me</ion-note>
+          </div>
+        </ion-col>
+        <ion-col size="6" class="alignItems">
+          <div align="right">
+            <ion-checkbox> </ion-checkbox>
+            <ion-note>Forgot password</ion-note>
+          </div>
+        </ion-col>
+      </ion-row>
+
       <ion-button
-        type="submit"
-        expand="block"
-        shape="round"
         color="primary"
+        shape="round"
+        (click)="onSubmit()"
         [routerLink]="['/tabs/tab1']"
-      >
-        Sign In
+        >Log In
       </ion-button>
-    </div>
+
+      <p class="signup">
+        <ion-note>
+          Not a member yet?
+          <ion-text routerLink="/login/signup" color="primary">
+            Signup
+          </ion-text>
+          signup
+        </ion-note>
+      </p>
+    </ion-list>
   </form>
 </ion-content>
