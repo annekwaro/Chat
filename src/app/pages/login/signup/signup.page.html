@@ -1,33 +1,50 @@
 <ion-content [fullscreen]="true">
-  <ion-spinner
-    class="ion-text-centre"
-    name="crescent"
-    *ngIf="isLoading"
-  ></ion-spinner>
+  <!-- <ion-spinner color="danger" class="ion-text-center" name="crescent" *ngIf="isLoading"></ion-spinner> -->
   <div class="circleBase type2 circle1"></div>
   <div class="circleBase type1"></div>
   <div class="circleBase type2 circle2"></div>
 
   <ion-label class="welcomeMessage">
-    <ion-text color="light">SignUp</ion-text>
+    <ion-text color="light">Hello,</ion-text>
     <ion-text color="light">
-      <p>Log In</p>
+      <p>Sign Up!</p>
     </ion-text>
   </ion-label>
 
-  <form [formGroup]="form" class="form-container">
-    <ion-list lines="none" class="ion-margin ion-padding">
+  <ion-icon
+    name="arrow-back-outline"
+    color="light"
+    class="backButton"
+    routerLink="/login"
+  >
+  </ion-icon>
+
+  <form [formGroup]="signupForm">
+    <ion-list lines="none" class="ion-margin ion-padding ion-text-center">
       <ion-item class="ion-margin-vertical">
-        <ion-icon name="mail outline" slot="end" color="medium"> </ion-icon>
-        <ion-input formControlName="email" placeholder="Enter email address">
+        <ion-icon name="person-outline" slot="end" color="medium"> </ion-icon>
+        <ion-input formControlName="username" placeholder="Enter Username">
         </ion-input>
       </ion-item>
       <ion-text
-        class="ion-text-left error-message"
+        class="ion-text-left"
         color="danger"
-        *ngIf="!form.get('email').valid && form.get('email').touched"
+        *ngIf="!signupForm.get('username').valid && signupForm.get('username').touched"
       >
-        <p class="error">Please enter a valid email address</p>
+        <p class="error">*Please enter Username</p>
+      </ion-text>
+
+      <ion-item class="ion-margin-vertical">
+        <ion-icon name="mail-outline" slot="end" color="medium"> </ion-icon>
+        <ion-input formControlName="email" placeholder="Enter Email Address">
+        </ion-input>
+      </ion-item>
+      <ion-text
+        class="ion-text-left"
+        color="danger"
+        *ngIf="!signupForm.get('email').valid && signupForm.get('email').touched"
+      >
+        <p class="error">*Please enter proper Email Address</p>
       </ion-text>
 
       <ion-item class="ion-margin-vertical">
@@ -36,52 +53,46 @@
           [name]="isTypePassword ? 'lock-closed-outline' : 'lock-open-outline'"
           slot="end"
           [color]="isTypePassword ? 'medium' : 'primary'"
-        ></ion-icon>
+        >
+        </ion-icon>
         <ion-input
           formControlName="password"
           [type]="isTypePassword ? 'password' : 'text'"
-          placeholder="Enter password"
-        ></ion-input>
+          placeholder="Enter Password"
+        >
+        </ion-input>
       </ion-item>
       <ion-text
-        class="ion-text-left error-message"
+        class="ion-text-left"
         color="danger"
-        *ngIf="!form.get('password').valid && form.get('password').touched"
+        *ngIf="!signupForm.get('password').valid && signupForm.get('password').touched"
       >
         <p
           class="error"
-          *ngIf="form.get('password').invalid && form.get('password').errors['required']"
+          *ngIf="signupForm.get('password').invalid && signupForm.get('password').errors['required']"
         >
-          *Please enter your password
+          *Please enter your Password
         </p>
-        <p class="error" *ngIf="form.get('password').dirty">
-          *Password must be at least 6 characters
+        <p class="error" *ngIf="signupForm.get('password').dirty">
+          *Password must be of atleast 8 characters
         </p>
       </ion-text>
 
       <ion-row class="ion-margin-vertical">
-        <ion-col size="6" class="alignItems">
+        <ion-col size="12" class="alignItems">
           <div align="left">
-            <ion-checkbox> </ion-checkbox>
-            <ion-note>Remember me</ion-note>
-          </div>
-        </ion-col>
-        <ion-col size="6">
-          <div align="right">
-            <ion-checkbox> </ion-checkbox>
-            <ion-note>Forgot password</ion-note>
+            <ion-checkbox></ion-checkbox>
+            <ion-note>I accept the policy and terms</ion-note>
           </div>
         </ion-col>
       </ion-row>
-      <ion-button color="primary" shape="round" (click)="onSubmit()"
-        >Log In</ion-button
-      >
-      <p class="signup">
-        <ion-note>
-          Not a member yet?
-          <ion-text routerLink="/login/signup" color="primary">Signup</ion-text>
-        </ion-note>
-      </p>
+      <ion-button
+        color="primary"
+        shape="round"
+        (click)="onSubmit()"
+        [routerLink]="['/login', ]"
+        >Sign Up
+      </ion-button>
     </ion-list>
   </form>
 </ion-content>

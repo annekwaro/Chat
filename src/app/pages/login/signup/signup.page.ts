@@ -1,8 +1,8 @@
+import { AuthService } from './../../../services/auth/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./signup.page.scss'],
 })
 export class SignupPage implements OnInit {
-  form: FormGroup;
+  signupForm: FormGroup;
   isTypePassword: boolean = true;
   isLoading: boolean = false;
 
@@ -23,13 +23,15 @@ export class SignupPage implements OnInit {
   }
 
   ngOnInit() {}
+
   initForm() {
-    this.form = new FormGroup({
+    this.signupForm = new FormGroup({
+      username: new FormControl('', { validators: [Validators.required] }),
       email: new FormControl('', {
         validators: [Validators.required, Validators.email],
       }),
       password: new FormControl('', {
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.minLength(8)],
       }),
     });
   }
@@ -39,38 +41,40 @@ export class SignupPage implements OnInit {
   }
 
   onSubmit() {
-    if (!this.form.valid) return;
-    console.log(this.form.value);
-    this.register(this.signUpForm);
-    //this.isLogin(this.form);
+    if (!this.signupForm.valid) return;
+    console.log(this.signupForm.value);
+    this.register(this.signupForm);
   }
-  signUpForm(signUpForm: any) {
-    throw new Error('Method not implemented.');
-  }
+
   register(form) {
+    // this.global.showLoader();
     this.isLoading = true;
+    console.log(form.value);
     this.authService
       .register(form.value)
       .then((data: any) => {
         console.log(data);
-        this.router.navigate(['/tab1']);
+        this.router.navigateByUrl('/home');
+        // this.global.hideLoader();
         this.isLoading = false;
         form.reset();
       })
       .catch((e) => {
+        console.log(e);
+        // this.global.hideLoader();
         this.isLoading = false;
-        console.log(e); //this is global hideLoader();
-        let msg: string = 'Please try again';
-        if (e.code == 'email already in use') {
-          msg = e.message;
+        let msg: string = 'Could not sign you up, please try again.';
+        if (e.code == 'auth/email-already-in-use') {
+          msg = 'Email already in use';
         }
         this.showAlert(msg);
       });
   }
+
   async showAlert(msg) {
     const alert = await this.alertController.create({
-      header: 'A Short Title Is Best',
-      subHeader: 'A Sub Header Is Optional',
+      header: 'Alert',
+      // subHeader: 'Important message',
       message: msg,
       buttons: ['OK'],
     });

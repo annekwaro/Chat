@@ -1,48 +1,54 @@
-.input {
-  font-size: 16px;
-  border: none;
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+  overflow: hidden;
 }
 
-ion-item {
-  --background: #f1f1f1;
-  border-radius: 10px;
-  margin-bottom: 16px;
+ion-content {
+  overflow: hidden;
+  --overflow: hidden;
 }
 
-.header {
-  margin-top: 50px;
-  margin-bottom: 20px;
-  text-align: center;
+.scroll-content {
+  overflow: hidden;
 }
 
-.subTitle {
-  color: rgba(97, 95, 95, 0.676);
-  font-size: 0.9rem;
+ion-list {
+  background: transparent;
+  transform: translateY(15vh);
+  ion-item {
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 10px;
+  }
+  ion-row {
+    margin-bottom: 5vh;
+  }
+  ion-button {
+    width: 30vh;
+    margin: auto;
+  }
+  .alignItems {
+    ion-checkbox,
+    ion-note {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ion-checkbox {
+      margin-right: 3vw;
+      --size: 1.1rem;
+    }
+  }
+
+  ion-col {
+    ion-note {
+      font-size: 0.85rem;
+    }
+  }
 }
 
-.title {
-  font-size: 1rem;
-  margin-top: 40px;
-}
-
-.signinLink {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.signinLink p {
-  font-size: 0.9rem;
-}
-
-.signinLink a {
-  font-weight: 400;
-  font-size: 0.8rem;
-  text-decoration: none;
-  color: blue;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.8rem;
-  margin-top: -8px;
+.backButton {
+  position: absolute;
+  top: 190px;
+  left: 15px;
+  font-size: 2rem;
 }

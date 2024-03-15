@@ -9,10 +9,12 @@ export class ApiService {
   docRef(path) {
     return doc(this.firestore, path);
   }
+
   setDocument(path, data) {
     const dataRef = this.docRef(path);
-    return setDoc<any, any>(dataRef, data);
+    return setDoc<any, any>(dataRef, data); //set()
   }
+
   getDocById(path) {
     const dataRef = this.docRef(path);
     return getDoc(dataRef);

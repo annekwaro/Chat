@@ -1,0 +1,52 @@
+/* Overall page styling for padding */
+ion-content {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+  ion-content {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 20px; /* Adjusted for top padding */
+    --padding-bottom: 20px; /* Adds a margin from the top */
+  }
+
+  ion-item {
+    margin-bottom: 20px; /* Space between form fields */
+    --padding-start: 8px; /* Slightly more padding inside the item */
+    --border-radius: 8px; /* Rounded corners for the input fields */
+    --background: #f0f0f0; /* Light background color for the input fields */
+    --min-height: 50px; /* Minimum height for better touch area */
+  }
+
+  ion-label {
+    color: #3880ff; /* Primary color for consistency */
+  }
+
+  ion-button {
+    margin-top: 30px; /* Space between the last input and the button */
+    --padding-vertical: 8px; /* Vertical padding for a taller button */
+    font-weight: bold; /* Make the text bold */
+  }
+}
+
+/* Styling for ion-item to add more space and visual appeal */
+ion-item {
+  margin-bottom: 20px; /* Space between form fields */
+  --padding-start: 8px; /* Slightly more padding inside the item */
+  --border-radius: 8px; /* Rounded corners for the input fields */
+  --background: #f0f0f0; /* Light background color for the input fields */
+  --min-height: 50px; /* Minimum height for better touch area */
+}
+
+/* Label styling for floating labels */
+ion-label {
+  color: #3880ff; /* Primary color for consistency */
+}
+
+/* Button styling for a better visual appeal */
+ion-button {
+  margin-top: 30px; /* Space between the last input and the button */
+  --padding-vertical: 8px; /* Vertical padding for a taller button */
+  font-weight: bold; /* Make the text bold */
+}

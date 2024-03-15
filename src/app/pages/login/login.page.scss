@@ -1,128 +1,53 @@
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+  overflow: hidden;
+}
+
 ion-content {
-  --background: #f4f5f8;
-
-  .circleBase {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.1);
-
-    &.type1 {
-      width: 100px;
-      height: 100px;
-      top: 20px;
-      left: 20px;
-    }
-
-    &.type2 {
-      width: 150px;
-      height: 150px;
-      background: rgba(0, 0, 0, 0.05);
-
-      &.circle1 {
-        top: 50px;
-        right: 20px;
-      }
-
-      &.circle2 {
-        bottom: 30px;
-        left: 30%;
-      }
-    }
-  }
-
-  .welcomeMessage {
-    position: absolute;
-    top: 30%;
-    width: 100%;
-    text-align: center;
-    ion-text {
-      display: block;
-      color: #ffffff;
-
-      p {
-        margin-top: 8px;
-      }
-    }
-  }
-
-  form {
-    margin-top: 40%;
-
-    .ion-margin-vertical {
-      margin-bottom: 20px;
-    }
-
-    ion-icon {
-      font-size: 24px;
-    }
-
-    .error {
-      margin: 0;
-      padding: 5px 0;
-    }
-
-    .signup {
-      text-align: center;
-      margin-top: 20px;
-
-      ion-note {
-        a {
-          color: #387ef5;
-          text-decoration: none;
-        }
-      }
-    }
-
-    ion-button {
-      display: block;
-      width: 90%;
-      margin: 20px auto;
-    }
-
-    // Adjusting input styles to make it more line-like
-    ion-input {
-      --padding-start: 0;
-      --padding-end: 0;
-      --placeholder-opacity: 0.8;
-      --placeholder-color: #999;
-
-      &[type="text"],
-      &[type="password"] {
-        border-bottom: 1px solid #ddd; // Line-like appearance
-        border-radius: 0; // Remove border radius to match the line style
-        height: auto; // Adjust height as needed
-      }
-    }
-  }
+  overflow: hidden;
+  --overflow: hidden;
 }
 
-// Aligning checkboxes and notes
-.alignItems {
-  display: flex;
-  align-items: center; // Ensure vertical alignment is centered
-  justify-content: space-between; // Spread the checkbox and note to each end
+.scroll-content {
+  overflow: hidden;
+}
 
-  ion-note {
-    margin-left: 8px; // Adjust if necessary for alignment
+ion-list {
+  background: transparent;
+  transform: translateY(20vh);
+  ion-item {
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 10px;
   }
-
-  // Ensure alignment for both left and right items
-  > div {
-    display: flex;
-    align-items: center;
-
+  ion-row {
+    margin-bottom: 5vh;
+  }
+  ion-button {
+    width: 30vh;
+    margin: auto;
+  }
+  .alignItems {
+    ion-checkbox,
+    ion-note {
+      display: inline-block;
+      vertical-align: middle;
+    }
     ion-checkbox {
-      margin-right: 8px; // Space between checkbox and note
+      margin-right: 1vw;
+      --size: 1.1rem;
     }
   }
 }
 
-// Enhancing checkbox appearance
-ion-checkbox {
-  --background: #387ef5;
-  --background-checked: #32db64;
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
-ion-note {
-  color: #606060;
+ion-button {
+  width: 70%;
+  margin: 20px auto; /* Adjust margin as needed */
 }
