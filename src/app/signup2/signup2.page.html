@@ -14,7 +14,11 @@
       <ion-label position="floating">Password</ion-label>
       <ion-input formControlName="password" type="password"></ion-input>
     </ion-item>
-    <ion-button type="submit" expand="block" [disabled]="!signupForm.valid"
+    <ion-button
+      shape="round"
+      type="submit"
+      expand="block"
+      [disabled]="!signupForm.valid"
       >Sign Up</ion-button
     >
   </form>

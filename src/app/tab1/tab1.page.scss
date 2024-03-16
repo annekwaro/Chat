@@ -17,24 +17,45 @@ ion-row.tagline {
     font-size: 1.6rem;
     font-weight: 800;
     line-height: 1.9rem;
-    color: var(--ion-color-medium);
+    color: var(--ion-color-dark);
   }
 }
+.centralized {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--ion-color-dark);
+  line-height: 1.5rem;
+}
+.stylesup {
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+  font-weight: 500;
 
+  color: var(--ion-color-dark);
+  font-family: poppins;
+}
+//for search
 ion-row.srch {
   padding-right: 1.5vh;
   align-items: center;
   ion-searchBar {
     --background: #ccdefe;
-    --border-radius: 10px;
+    --border-radius: 25px;
   }
 }
-
+//avatar
 .avtr {
   padding: 8px;
   margin: 20px;
   position: relative;
   right: 22px;
+}
+//for notification
+.notification {
+  padding-left: 1.5vh;
+
+  position: relative;
+  color: var(--ion-color-primary);
 }
 ion-list {
   background: transparent;
@@ -59,6 +80,7 @@ ion-list > ion-item:hover {
   border-radius: 10px;
   cursor: pointer !important;
 }
+//for the list
 .section,
 .optional {
   padding-right: 1.5vh;

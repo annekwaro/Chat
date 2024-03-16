@@ -10,6 +10,7 @@ import { AuthenticationService } from '../services/authentication.service';
 })
 export class Login2Page implements OnInit {
   loginForm: FormGroup;
+  forgotPassword: string;
 
   constructor(
     private authService: AuthenticationService,

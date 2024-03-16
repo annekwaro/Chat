@@ -18,7 +18,13 @@ ion-card {
   margin: auto; /* Adds automatic margin for auto-adjustment and center alignment */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Ensures content inside the card is centered */
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.9rem;
+  color: var(
+    --ion-color-dark
+  ); /* Ensures content inside the card is centered */
 }
 
 .center-content {
@@ -40,4 +46,11 @@ ion-card {
 ion-card img {
   width: 100%;
   height: auto; /* Maintains the aspect ratio of the image */
+}
+.tagline {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.4rem;
+  color: var(--ion-color-medium);
+  text-align: center;
 }

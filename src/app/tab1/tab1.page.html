@@ -1,3 +1,31 @@
+<!-- Menu Component -->
+<ion-menu contentId="mains-content" side="start">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu Content</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <!-- Menu items here -->
+      <ion-item>Item 1</ion-item>
+      <ion-item>Item 2</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<!-- Main content with id="main-content" -->
+<div class="ion-page" id="mains-content">
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="light" class="ion-padding-vertical">
+      <ion-buttons slot="end">
+        <!-- Your existing content -->
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <!-- Your existing content continues -->
+</div>
+
 <ion-content [fullscreen]="true" color="light">
   <ion-header class="ion-no-border">
     <ion-toolbar color="light" class="ion-padding-vertical">
@@ -14,6 +42,11 @@
           </ion-avatar>
         </ion-thumbnail>
       </ion-buttons>
+      <ion-icon
+        name="notifications-circle-sharp"
+        class="notification"
+        style="width: 30px; height: 30px"
+      ></ion-icon>
     </ion-toolbar>
   </ion-header>
 
@@ -66,7 +99,9 @@
           <!-- Resize the image using a class or inline styles -->
           <img src="assets/imgs/image4.png" style="width: 90%; height: auto" />
           <ion-card-content>
-            <ion-card-title>Consult a therapist</ion-card-title>
+            <ion-card-title class="centralized"
+              >Consult a therapist</ion-card-title
+            >
             <!-- Button  -->
             <ion-button
               size="small"
@@ -87,7 +122,9 @@
           <!-- Resize the image using a class or inline styles -->
           <img src="assets/imgs/image5.png" style="width: 90%; height: auto" />
           <ion-card-content>
-            <ion-card-title>Declutter the mind</ion-card-title>
+            <ion-card-title class="centralized"
+              >Declutter the mind</ion-card-title
+            >
             <!-- Button with text and an arrow icon -->
             <ion-button
               size="small"
@@ -106,7 +143,9 @@
           <!-- Resize the image using a class or inline styles -->
           <img src="assets/imgs/image6.png" style="width: 90%; height: auto" />
           <ion-card-content>
-            <ion-card-title>Manage emotions?</ion-card-title>
+            <ion-card-title class="centralized"
+              >Self-love for you</ion-card-title
+            >
             <!-- Button with text and an arrow icon -->
             <ion-button
               size="small"
@@ -126,7 +165,9 @@
           <!-- Resize the image using a class or inline styles -->
           <img src="assets/imgs/image7.png" style="width: 90%; height: auto" />
           <ion-card-content>
-            <ion-card-title>Manage emotions?</ion-card-title>
+            <ion-card-title class="centralized"
+              >Meditation tips?</ion-card-title
+            >
             <!-- Button with text and an arrow icon -->
             <ion-button
               size="small"
@@ -145,7 +186,9 @@
           <!-- Resize the image using a class or inline styles -->
           <img src="assets/imgs/image8.png" style="width: 90%; height: auto" />
           <ion-card-content>
-            <ion-card-title>Manage emotions?</ion-card-title>
+            <ion-card-title class="centralized"
+              >Manage emotions?</ion-card-title
+            >
             <!-- Button with text and an arrow icon -->
             <ion-button
               size="small"
@@ -214,7 +257,7 @@
         <img [src]="item.src" [alt]="item.alt" />
       </ion-avatar>
 
-      <ion-label>
+      <ion-label class="stylesup">
         {{item.description}}
         <br />
         <!-- Add a line break -->

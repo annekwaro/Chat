@@ -4,7 +4,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { IonicSlides } from '@ionic/angular';
+import { IonicSlides, PopoverController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { appsOutline, options } from 'ionicons/icons';
 import { register } from 'swiper/element/bundle';
@@ -23,6 +23,7 @@ import {
 import { InfiniteScrollCustomEvent } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MenuController } from '@ionic/angular';
 
 register();
 
@@ -52,7 +53,7 @@ export class Tab1Page implements OnInit {
   popular: any[] = [];
   recent: any[] = [];
 
-  constructor() {
+  constructor(private menu: MenuController) {
     addIcons({ appsOutline, options });
   }
 
@@ -112,7 +113,7 @@ export class Tab1Page implements OnInit {
         location: 'New Delhi',
         expires_on: '30/11/23',
         description: 'Emotional wheel',
-        type: 'podcasts',
+        type: 'How can I get better at life',
         salary: '$40-90k/year',
         logo_dark: 'tiktok_dark.png',
         logo_light: 'tiktok_light.png',
@@ -125,7 +126,7 @@ export class Tab1Page implements OnInit {
         location: 'Bangalore',
         expires_on: '07/12/23',
         description: 'Talk to someone',
-        type: 'video',
+        type: 'Does it get better?',
         salary: '$30-80k/year',
         logo_dark: 'uber_dark.png',
         logo_light: 'uber_light.png',
@@ -150,8 +151,8 @@ export class Tab1Page implements OnInit {
         src: 'assets/imgs/image6.png',
         alt: 'Image 1',
         expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'podcasts',
+        description: 'Meditation tips',
+        type: 'Self-love, self-awareness',
         salary: '$30-70k/year',
         logo_dark: 'linkedin_dark.png',
         logo_light: 'linkedin_light.png',
@@ -160,11 +161,11 @@ export class Tab1Page implements OnInit {
         id: 9,
         duration: 'audio',
         location: 'Mumbai',
-        src: 'assets/imgs/image7.png',
+        src: 'assets/imgs/image25.png',
         alt: 'Image 1',
         expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'podcasts',
+        description: 'A rainy day',
+        type: 'Dealing with emotions',
         salary: '$30-70k/year',
         logo_dark: 'linkedin_dark.png',
         logo_light: 'linkedin_light.png',
@@ -213,5 +214,8 @@ export class Tab1Page implements OnInit {
     for (let i = 1; i < 1; i++) {
       this.recent.push(`Item ${i}`);
     }
+  }
+  toggleMenu() {
+    this.menu.toggle();
   }
 }

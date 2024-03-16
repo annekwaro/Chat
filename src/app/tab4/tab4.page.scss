@@ -70,7 +70,7 @@ ion-list {
     .item-type {
       display: block; /*  new line */
       font-size: 0.9rem; /* Adjust font size */
-      color: #737373; /* Optionally for color */
+      color: #403f3f; /* Optionally for color */
     }
   }
 
@@ -88,9 +88,30 @@ ion-list > ion-item:hover {
 .titledpart {
   padding-right: 1.5vh;
   padding-bottom: 1.5vh;
+  color: var(--ion-color-dark);
+
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
 .titledpart {
   font-size: 1.1rem;
   font-weight: 800;
+  color: var(--ion-color-dark);
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  line-height: 1.4rem;
+  font-family: poppins;
+}
+.poppins-datetime {
+  font-family: "Poppins", sans-serif;
+}
+.updated {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 0.7rem;
+  font-family: poppins;
+  font-weight: 500;
+  color: var(--ion-color-dark);
 }

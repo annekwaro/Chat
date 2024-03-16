@@ -129,7 +129,7 @@
 
                 <ion-icon slot="end" name="arrow-forward"></ion-icon>
               </ion-button>
-              <ion-card-subtitle>Card Subtitle </ion-card-subtitle>
+              <ion-card-subtitle>Depression </ion-card-subtitle>
 
               <ion-modal [isOpen]="isModalOpenb">
                 <!-- This is content for the modal -->
@@ -221,7 +221,7 @@
                 Discover
                 <ion-icon slot="end" name="arrow-forward"></ion-icon>
               </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+              <ion-card-subtitle>OCD</ion-card-subtitle>
             </ion-card-header>
           </ion-card>
         </ion-col>
@@ -233,7 +233,7 @@
                 Discover
                 <ion-icon slot="end" name="arrow-forward"></ion-icon>
               </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+              <ion-card-subtitle>Schizophrenia</ion-card-subtitle>
             </ion-card-header>
           </ion-card>
         </ion-col>
@@ -248,7 +248,7 @@
                 Discover
                 <ion-icon slot="end" name="arrow-forward"></ion-icon>
               </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+              <ion-card-subtitle>Low mood</ion-card-subtitle>
             </ion-card-header>
           </ion-card>
         </ion-col>
@@ -261,7 +261,7 @@
                 Discover
                 <ion-icon slot="end" name="arrow-forward"></ion-icon>
               </ion-button>
-              <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+              <ion-card-subtitle>Esteem</ion-card-subtitle>
             </ion-card-header>
           </ion-card>
         </ion-col>
@@ -273,7 +273,7 @@
   <div *ngIf="selectedSegment === 'segment2'">
     <div>
       <ion-list-header class="optional">
-        <ion-label> Keep your mind clear </ion-label>
+        <ion-label> Self-love and awareness </ion-label>
       </ion-list-header>
     </div>
     <ion-grid>
@@ -340,6 +340,7 @@
             <ion-datetime
               displayFormat="MM/DD/YYYY HH:mm"
               [(ngModel)]="selectedDateTime"
+              class="poppins-datetime"
             >
               <span slot="title" class="titledpart">Organise your day</span>
             </ion-datetime>
@@ -349,51 +350,51 @@
 
       <ion-row>
         <ion-col size-md="6">
-          <ion-list class="ion-margin-bottom">
+          <ion-list class="updated">
             <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
             <!-- Casting $event to $any is a temporary fix for this bug https://github.com/ionic-team/ionic-framework/issues/24245 -->
             <ion-reorder-group
               [disabled]="false"
               (ionItemReorder)="handleReorder($any($event))"
             >
-              <ion-item>
+              <ion-item class="ion-margin-bottom">
                 <ion-avatar slot="start">
                   <img src="assets/imgs/image7.png" />
                 </ion-avatar>
-                <ion-label> Meditation </ion-label>
+                <ion-label class="updated"> Meditation </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
-              <ion-item>
+              <ion-item class="ion-margin-bottom">
                 <ion-avatar slot="start">
                   <img src="assets/imgs/image8.png" />
                 </ion-avatar>
-                <ion-label> Breathing </ion-label>
+                <ion-label class="updated"> Breathing </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
-              <ion-item>
+              <ion-item class="ion-margin-bottom">
                 <ion-avatar slot="start">
                   <img src="assets/imgs/image9.png" />
                 </ion-avatar>
-                <ion-label> Cycling </ion-label>
+                <ion-label class="updated"> Cycling </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
-              <ion-item>
+              <ion-item class="ion-margin-bottom">
                 <ion-avatar slot="start">
                   <img src="assets/imgs/image4.png" />
                 </ion-avatar>
-                <ion-label> Reading </ion-label>
+                <ion-label class="updated"> Reading </ion-label>
                 <ion-reorder slot="end"></ion-reorder>
               </ion-item>
 
-              <ion-item>
+              <ion-item class="ion-margin-bottom">
                 <ion-avatar slot="start">
                   <img src="assets/imgs/image5.png" />
                 </ion-avatar>
-                <ion-label> Listening to music </ion-label>
-                <ion-reorder slot="end"></ion-reorder>
+                <ion-label class="updated"> Listening to music </ion-label>
+                <ion-reorder  slot="end"></ion-reorder>
               </ion-item>
             </ion-reorder-group>
           </ion-list>

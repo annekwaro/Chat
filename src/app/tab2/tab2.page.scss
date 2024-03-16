@@ -1,8 +1,5 @@
-body {
-  font-family: "Nunito", sans-serif;
-}
 ion-col {
-  background-color: #eef8ff;
+  background-color: #dbf0fa;
   border: solid 1px #fff;
   color: #fff;
   text-align: center;
@@ -13,14 +10,16 @@ ion-col {
 ion-row.tagline {
   margin-top: 30px;
   margin-bottom: 10px;
-  padding-top: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 1.5vh;
 }
 
 ion-row.tagline ion-text {
   font-size: 1.6rem;
   font-weight: 800;
   line-height: 1.9rem;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-dark);
 }
 /* The swiper slides */
 swiper-slide {
@@ -111,7 +110,7 @@ swiper-slide {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
-.card h3 {
+.card h4 {
   font-weight: 600;
 }
 
