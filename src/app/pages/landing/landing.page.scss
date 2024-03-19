@@ -47,10 +47,8 @@ ion-card img {
   width: 100%;
   height: auto; /* Maintains the aspect ratio of the image */
 }
-.tagline {
+p {
   font-size: 1.1rem;
-  font-weight: 800;
   line-height: 1.4rem;
   color: var(--ion-color-medium);
-  text-align: center;
 }

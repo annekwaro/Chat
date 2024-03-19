@@ -216,6 +216,6 @@ export class Tab1Page implements OnInit {
     }
   }
   toggleMenu() {
-    this.menu.toggle();
+    this.menu.toggle('myMenu');
   }
 }

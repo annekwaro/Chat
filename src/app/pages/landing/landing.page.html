@@ -1,25 +1,104 @@
-<ion-grid>
-  <ion-row>
-    <ion-col>
-      <ion-card>
-        <img src="assets/imgs/image32.png" />
-        <ion-card-header class="center-content">
-          <ion-card-title
-            >Soul App
-            <p class="tagline">Make yourself better</p>
-          </ion-card-title>
-        </ion-card-header>
-      </ion-card>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <swiper-container
+          grab-cursor="true"
+          [modules]="swiperModules"
+          [slidesPerView]="1"
+          [keyboard]="true"
+          [centerSlides]="true"
+          [loop]="true"
+          [autoplay]="{delay: 2000}"
+          [scrollbar]="true"
+          [pagination]="true"
+        >
+          <!-- Slide 1 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
 
-      <ion-button
-        class="button-container"
-        expand="block"
-        shape="round"
-        color="primary"
-        [routerLink]="['/', 'login2']"
-      >
-        Next
-      </ion-button>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+              <img
+                src="assets/imgs/image36.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content"> </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+          <!-- Slide 2 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
+              <img
+                src="assets/imgs/image37.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content"> </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+          <!-- Slide 3 -->
+          <swiper-slide>
+            <ion-card class="custom-card">
+              <!-- Card Image -->
+
+              <img
+                src="assets/imgs/image38.png"
+                alt="Descriptive Alt Text"
+                class="custom-card-img"
+              />
+              <!-- Card Header (Optional) 
+          <ion-card-header class="custom-card-header">
+            <ion-card-title>Card Title</ion-card-title>
+            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+          </ion-card-header>-->
+
+              <!-- Card Content -->
+              <ion-card-content class="custom-card-content"> </ion-card-content>
+
+              <!-- Card Button -->
+            </ion-card>
+          </swiper-slide>
+        </swiper-container>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <h2 class="custom-title" class="ion-text-center">Soul App</h2>
+
+        <p class="ion-text-center">
+          Start your journey with Soul App. We will tailor your experience to
+          your needs.
+        </p>
+
+        <ion-button
+          shape="round"
+          type="submit"
+          expand="block"
+          [routerLink]="['/login2']"
+          >Get Started</ion-button
+        >
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

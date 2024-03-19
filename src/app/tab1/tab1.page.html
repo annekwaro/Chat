@@ -1,5 +1,5 @@
 <!-- Menu Component -->
-<ion-menu contentId="mains-content" side="start">
+<ion-menu contentId="modified-content" side="start">
   <ion-header>
     <ion-toolbar>
       <ion-title>Menu Content</ion-title>
@@ -15,15 +15,15 @@
 </ion-menu>
 
 <!-- Main content with id="main-content" -->
-<div class="ion-page" id="mains-content">
+<div class="ion-page" id="modified-content">
   <ion-header class="ion-no-border">
     <ion-toolbar color="light" class="ion-padding-vertical">
       <ion-buttons slot="end">
-        <!-- Your existing content -->
+        <!-- existing content -->
       </ion-buttons>
     </ion-toolbar>
   </ion-header>
-  <!-- Your existing content continues -->
+  <!-- existing content continues -->
 </div>
 
 <ion-content [fullscreen]="true" color="light">
@@ -42,18 +42,29 @@
           </ion-avatar>
         </ion-thumbnail>
       </ion-buttons>
+
       <ion-icon
         name="notifications-circle-sharp"
         class="notification"
         style="width: 30px; height: 30px"
+        id="open-toast"
       ></ion-icon>
+      <!-- This is my toast -->
+
+      <ion-toast
+        trigger="open-toast"
+        message="You have received a new message!"
+        [duration]="3000"
+        icon="globe"
+        color="warning"
+      ></ion-toast>
     </ion-toolbar>
   </ion-header>
 
   <ion-row class="tagline">
     <ion-col>
       <ion-label>
-        <ion-text> Make Yourself </ion-text>
+        <ion-text> Make yourself </ion-text>
         <p>
           <ion-text color="dark"> better </ion-text>
         </p>
