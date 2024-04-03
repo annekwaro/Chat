@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
             resolve(false);
           } else if (!user && !isLoginPage) {
             // If user is not logged in and trying to access a protected route, redirect them to the login page
-            this.router.navigate(['/login']);
+            this.router.navigate(['/signup2']);
             resolve(false);
           } else {
             // Allow access to the route if none of the above conditions apply
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
         })
         .catch(() => {
           // In case of an error, redirect to the login page
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login2']);
           resolve(false);
         });
     });
