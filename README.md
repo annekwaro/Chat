@@ -15,3 +15,8 @@ This project is a mobile-friendly chat application built with Angular and Ionic.
 
 ## Project Presentation
 https://docs.google.com/presentation/d/1eqkLxWmaBLTHLHckOPQ-4BlqrnywFh1fvsMaZ-XiPZU
+## Screenshots
+
+![Chat Interface](chat-interface.png)
+
+![Mobile View](chat-mobile.png)
