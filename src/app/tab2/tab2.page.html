@@ -1,172 +1,189 @@
-<div>
-  <ion-row class="tagline">
-    <ion-text> Make Yourself better</ion-text>
-    <p></p>
-  </ion-row>
-</div>
-
-<ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <swiper-container
-          grab-cursor="true"
-          [modules]="swiperModules"
-          [slidesPerView]="1.4"
-          [keyboard]="true"
-          [centerSlides]="true"
-          [loop]="true"
-          [scrollbar]="true"
-          [effect]="'coverflow'"
-          [coverflowEffect]="{ rotate: 40, stretch: 0, depth: 100, modifier: 1, slideShadows: true }"
-        >
-          <!-- Slide 1 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
-              <ion-icon name="play-circle" class="custom-icon"></ion-icon>
-
-              <img
-                src="assets/imgs/image7.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
-
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content">
-                A meaningful life involves aligning your actions with your
-                values and passions.
-              </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-          <!-- Slide 2 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
-              <ion-icon name="musical-notes" class="custom-music"></ion-icon>
-              <img
-                src="assets/imgs/image9.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content">
-                It's a simple yet powerful tool that can be practiced anywhere
-                and anytime.
-              </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-          <!-- Slide 3 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
-              <ion-icon name="play-circle" class="custom-icon"></ion-icon>
-
-              <img
-                src="assets/imgs/image8.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content">
-                Through regular meditation, individuals can develop
-                self-awareness.
-              </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-        </swiper-container>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-
-  <div>
-    <ion-list-header class="section">
-      <ion-label> Suggestions </ion-label>
-
-      <ion-button fill="clear" size="small" color="medium">
-        <ion-text> Show all </ion-text>
-      </ion-button>
-    </ion-list-header>
-  </div>
-
-  <!-- Gallery of Images -->
-  <!--<ion-grid>
-    <ion-row>
-      <ion-col
-        class="styling"
-        size-lg="4"
-        size-md="6"
-        size-xs="12"
-        size-xxs="12"
-        *ngFor="let image of images"
-        [style.background]="image.backgroundColor"
-      >
-        <img [src]="image.src" [alt]="image.alt" />
-      </ion-col>
-    </ion-row>
-  </ion-grid>-->
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card card-1">
-          <h4>Self Love</h4>
-          <p>
-            Accepting oneself with all strengths and flaws, and nurturing a
-            positive relationship with oneself.
-          </p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-2">
-          <h4>Meaningful Life</h4>
-          <p>
-            A meaningful life involves aligning your actions with your values
-            and passions, experiencing joy and fulfillment .
-          </p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card card-3">
-          <h4>Meditation</h4>
-          <p>
-            It involves focusing your attention on the present moment, often
-            through techniques such as focusing on the breath, repeating a
-            mantra, or observing sensations in the body.
-          </p>
-        </div>
-      </div>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light" class="top-bar">
+    <div class="heading">
+      <h1>Explore</h1>
+      <p>Find something that helps today</p>
     </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <!-- Search -->
+  <ion-searchbar
+    class="search"
+    placeholder="Search topics, videos, podcasts..."
+    [debounce]="250"
+    (ionInput)="onSearch($event)"
+  ></ion-searchbar>
+
+  <!-- Featured -->
+  <ion-list-header class="section-header">
+    <ion-label>Featured</ion-label>
+  </ion-list-header>
+
+  <swiper-container
+    *ngIf="featured.length"
+    class="featured"
+    [modules]="swiperModules"
+    effect="coverflow"
+    coverflow-effect-rotate="20"
+    coverflow-effect-depth="120"
+    coverflow-effect-slide-shadows="false"
+    slides-per-view="1.15"
+    centered-slides="true"
+    rewind="true"
+    grab-cursor="true"
+    pagination="true"
+    pagination-clickable="true"
+    observer="true"
+  >
+    <swiper-slide *ngFor="let item of featured; trackBy: trackById">
+      <div class="featured-card" (click)="open(item)">
+        <img [src]="item.image" [alt]="item.title" />
+        <div class="featured-info">
+          <span class="topic-tag">{{ topicName(item.topic) }}</span>
+          <h2>{{ item.title }}</h2>
+          <div class="featured-footer">
+            <span class="meta">
+              <span class="format">{{ item.format }}</span>
+              <span class="dot"></span>
+              {{ item.duration }}
+            </span>
+            <span class="play">
+              <ion-icon [name]="iconFor(item.format)"></ion-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+
+  <!-- Topics -->
+  <ion-list-header class="section-header">
+    <ion-label>Topics</ion-label>
+  </ion-list-header>
+
+  <div class="topics">
+    <button
+      *ngFor="let topic of topics"
+      type="button"
+      class="topic"
+      [class.active]="selectedTopic === topic.id"
+      [style.background]="topic.color"
+      (click)="selectTopic(topic)"
+    >
+      <img [src]="topic.image" [alt]="topic.name" />
+      <span class="topic-name">{{ topic.name }}</span>
+      <span class="topic-count">{{ topicCount(topic.id) }} {{ topicCount(topic.id) === 1 ? 'session' : 'sessions' }}</span>
+    </button>
   </div>
 
-  <ion-infinite-scroll (ionInfinite)="loadMoreImages($event)">
-    <ion-infinite-scroll-content
-      loadingSpinner="crescent"
-      loadingText="Loading more images..."
-    ></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <!-- Library -->
+  <ion-list-header id="library" class="section-header">
+    <ion-label>{{ selectedTopic ? topicName(selectedTopic) : 'All sessions' }}</ion-label>
+    <ion-button
+      *ngIf="selectedTopic"
+      class="show-all clear-topic"
+      fill="clear"
+      color="medium"
+      (click)="clearTopic()"
+    >
+      Clear
+      <ion-icon name="close" slot="end"></ion-icon>
+    </ion-button>
+  </ion-list-header>
+
+  <div class="chips">
+    <ion-chip
+      *ngFor="let f of formats"
+      [outline]="selectedFormat !== f.value"
+      [color]="selectedFormat === f.value ? 'primary' : 'medium'"
+      (click)="selectFormat(f.value)"
+    >
+      {{ f.label }}
+    </ion-chip>
+  </div>
+
+  <ion-list lines="none" class="card-list library">
+    <ion-item
+      *ngFor="let item of filtered; trackBy: trackById"
+      class="list-card session"
+      button
+      detail="false"
+      (click)="open(item)"
+    >
+      <ion-thumbnail slot="start">
+        <img [src]="item.image" [alt]="item.title" />
+      </ion-thumbnail>
+      <ion-label>
+        <h3>{{ item.title }}</h3>
+        <p class="topic-line">{{ topicName(item.topic) }}</p>
+        <p class="meta">
+          <ion-icon [name]="iconFor(item.format)"></ion-icon>
+          <span class="format">{{ item.format }}</span>
+          <span class="dot"></span>
+          {{ item.duration }}
+        </p>
+      </ion-label>
+      <ion-icon slot="end" name="chevron-forward" color="primary"></ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="filtered.length === 0" class="empty">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>Nothing matches yet. Try another topic or search.</p>
+  </div>
+
+  <!-- Detail sheet -->
+  <ion-modal
+    class="detail-sheet"
+    [isOpen]="!!selected"
+    [initialBreakpoint]="0.85"
+    [breakpoints]="[0, 0.85, 1]"
+    (didDismiss)="close()"
+  >
+    <ng-template>
+      <ion-content class="detail" *ngIf="selected as item">
+        <div class="detail-hero">
+          <video
+            *ngIf="item.mediaUrl && item.format === 'video'; else heroImage"
+            class="player"
+            [src]="item.mediaUrl"
+            [poster]="item.image"
+            controls
+            playsinline
+          ></video>
+          <ng-template #heroImage>
+            <img [src]="item.image" [alt]="item.title" />
+          </ng-template>
+        </div>
+        <div class="detail-body">
+          <span class="topic-tag">{{ topicName(item.topic) }}</span>
+          <h2>{{ item.title }}</h2>
+          <p class="meta">
+            <ion-icon [name]="iconFor(item.format)"></ion-icon>
+            <span class="format">{{ item.format }}</span>
+            <span class="dot"></span>
+            {{ item.duration }}
+          </p>
+          <p class="description">{{ item.description }}</p>
+
+          <audio
+            *ngIf="item.mediaUrl && item.format !== 'video'"
+            class="player"
+            [src]="item.mediaUrl"
+            controls
+          ></audio>
+
+          <ion-button expand="block" shape="round" class="detail-cta" (click)="talkToTherapist()">
+            Talk to a therapist about this
+            <ion-icon name="chatbubbles" slot="end"></ion-icon>
+          </ion-button>
+          <ion-button expand="block" fill="clear" color="medium" class="detail-close" (click)="close()">
+            Close
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

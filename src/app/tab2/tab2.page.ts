@@ -1,20 +1,23 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
-import { addIcons } from 'ionicons';
-import { appsOutline, options } from 'ionicons/icons';
-import { register } from 'swiper/element/bundle';
-import { IonicSlides } from '@ionic/angular';
 import {
-  IonCard,
-  IonItem,
-  IonLabel,
-  IonChip,
-  IonButton,
-  IonIcon,
-  IonThumbnail,
-  IonText,
-  IonList,
-} from '@ionic/angular/standalone';
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
+import { IonContent, IonicModule, IonicSlides } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { register } from 'swiper/element/bundle';
+import {
+  Content,
+  ContentService,
+  FORMATS,
+  FORMAT_ICONS,
+  Format,
+  Topic,
+} from '../services/content/content.service';
 
 register();
 
@@ -24,140 +27,142 @@ register();
   styleUrls: ['./tab2.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    IonCard,
-    IonItem,
-    IonLabel,
-    IonChip,
-    IonButton,
-    IonIcon,
-    IonThumbnail,
-    IonText,
-    IonList,
-    CommonModule,
-  ],
+  imports: [IonicModule, CommonModule, RouterModule],
 })
-export class Tab2Page implements OnInit {
-  swiperModules = [IonicSlides];
-  images: any[] = [];
+export class Tab2Page implements OnInit, OnDestroy {
+  @ViewChild(IonContent) content!: IonContent;
 
-  constructor() {
-    addIcons({ appsOutline, options });
+  swiperModules = [IonicSlides];
+
+  topics: Topic[];
+  formats = FORMATS;
+
+  library: Content[] = [];
+  featured: Content[] = [];
+  filtered: Content[] = [];
+
+  selectedTopic: string | null = null;
+  selectedFormat: Format | 'all' = 'all';
+  searchTerm = '';
+
+  selected: Content | null = null;
+
+  private ready!: Promise<void>;
+  private paramsSub?: Subscription;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private contentService: ContentService
+  ) {
+    this.topics = contentService.topics;
   }
 
   ngOnInit() {
-    this.images = [
-      {
-        src: 'assets/imgs/image9.png',
-        alt: 'Image 1',
-        title: 'Title 1',
-        description: 'Description 1',
-        backgroundColor: '#55d6c2',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#0558e7',
-      },
-      {
-        src: 'assets/imgs/image10.png',
-        alt: 'Image 10',
-        title: 'Title 10',
-        description: 'Description 10',
-        backgroundColor: '#e27396',
-      },
-      {
-        src: 'assets/imgs/image4.png',
-        alt: 'Image 4',
-        title: 'Title 4',
-        description: 'Description 4',
-        backgroundColor: '#6e78ff',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#f68c70',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#ffc409',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: ' #c1d3fe',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#adf7b6',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#ffb3c6',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#ff686b',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#ffcccc',
-      },
-      {
-        src: 'assets/imgs/image11.png',
-        alt: 'Image 2',
-        title: 'Title 2',
-        description: 'Description 2',
-        backgroundColor: '#ffcccc',
-      },
-
-      // Add more images here
-    ];
+    this.ready = this.contentService.getLibrary().then((library) => {
+      this.library = library;
+      this.featured = library.filter((c) => c.featured);
+      this.applyFilters();
+    });
+    // Home links here with ?item=<id> or ?format=<format>
+    this.paramsSub = this.route.queryParamMap.subscribe((params) =>
+      this.handleLink(params)
+    );
   }
 
-  onSwiper(swiper) {
-    console.log(swiper);
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
   }
 
-  onSlideChange() {
-    console.log('slide change');
-    console.log(this.images);
+  private async handleLink(params: ParamMap) {
+    const itemId = params.get('item');
+    const format = params.get('format') as Format | null;
+    if (!itemId && !format) return;
+
+    await this.ready;
+    if (format && FORMAT_ICONS[format]) {
+      this.selectedTopic = null;
+      this.selectedFormat = format;
+      this.applyFilters();
+      setTimeout(() => this.scrollToLibrary(), 300);
+    }
+    const item = this.library.find((c) => c.id === itemId);
+    if (item) this.open(item);
+
+    // Clear the params so the same link works again next time
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true,
+    });
   }
 
-  loadMoreImages(event) {
-    // Simulate loading more images after a short delay
-    setTimeout(() => {
-      // Load more images or append additional images to the existing array
-      this.images = this.images.concat(this.images.slice(0, 3));
+  onSearch(event: any) {
+    this.searchTerm = (event.detail.value || '').toLowerCase().trim();
+    this.applyFilters();
+  }
 
-      // Complete the infinite scroll event
-      event.target.complete();
+  selectTopic(topic: Topic) {
+    this.selectedTopic = this.selectedTopic === topic.id ? null : topic.id;
+    this.applyFilters();
+    if (this.selectedTopic) this.scrollToLibrary();
+  }
 
-      // Optionally, disable the infinite scroll if reaching a certain condition, e.g., no more images to load
-      if (this.images.length >= 30) {
-        event.target.disabled = true;
-      }
-    }, 1000); // Simulated delay
+  clearTopic() {
+    this.selectedTopic = null;
+    this.applyFilters();
+  }
+
+  selectFormat(value: Format | 'all') {
+    this.selectedFormat = value;
+    this.applyFilters();
+  }
+
+  private applyFilters() {
+    this.filtered = this.library.filter((c) => {
+      const matchesTopic = !this.selectedTopic || c.topic === this.selectedTopic;
+      const matchesFormat =
+        this.selectedFormat === 'all' || c.format === this.selectedFormat;
+      const matchesSearch =
+        !this.searchTerm ||
+        c.title.toLowerCase().includes(this.searchTerm) ||
+        c.description.toLowerCase().includes(this.searchTerm) ||
+        this.topicName(c.topic).toLowerCase().includes(this.searchTerm);
+      return matchesTopic && matchesFormat && matchesSearch;
+    });
+  }
+
+  private scrollToLibrary() {
+    const el = document.getElementById('library');
+    if (el) this.content.scrollToPoint(0, el.offsetTop - 8, 400);
+  }
+
+  topicName(id: string | null): string {
+    return this.contentService.topicName(id);
+  }
+
+  topicCount(id: string): number {
+    return this.library.filter((c) => c.topic === id).length;
+  }
+
+  iconFor(format: Format): string {
+    return FORMAT_ICONS[format];
+  }
+
+  open(item: Content) {
+    this.selected = item;
+  }
+
+  close() {
+    this.selected = null;
+  }
+
+  talkToTherapist() {
+    this.close();
+    this.router.navigate(['/', 'tabs', 'home']);
+  }
+
+  trackById(_: number, item: Content) {
+    return item.id;
   }
 }

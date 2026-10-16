@@ -1,289 +1,180 @@
-<!-- Menu Component -->
-<ion-menu contentId="modified-content" side="start">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Menu Content</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <ion-list>
-      <!-- Menu items here -->
-      <ion-item>Item 1</ion-item>
-      <ion-item>Item 2</ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
-<!-- Main content with id="main-content" -->
-<div class="ion-page" id="modified-content">
-  <ion-header class="ion-no-border">
-    <ion-toolbar color="light" class="ion-padding-vertical">
-      <ion-buttons slot="end">
-        <!-- existing content -->
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  <!-- existing content continues -->
-</div>
-
-<ion-content [fullscreen]="true" color="light">
-  <ion-header class="ion-no-border">
-    <ion-toolbar color="light" class="ion-padding-vertical">
-      <ion-buttons slot="end">
-        <ion-thumbnail>
-          <ion-avatar>
-            <img
-              src="https://i.pravatar.cc/150?img=3"
-              class="avtr"
-              style="width: 50px; height: 50px"
-              alt="
-              "
-            />
-          </ion-avatar>
-        </ion-thumbnail>
-      </ion-buttons>
-
-      <ion-icon
-        name="notifications-circle-sharp"
-        class="notification"
-        style="width: 30px; height: 30px"
-        id="open-toast"
-      ></ion-icon>
-      <!-- This is my toast -->
-
-      <ion-toast
-        trigger="open-toast"
-        message="You have received a new message!"
-        [duration]="3000"
-        icon="globe"
-        color="warning"
-      ></ion-toast>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-row class="tagline">
-    <ion-col>
-      <ion-label>
-        <ion-text> Make yourself </ion-text>
-        <p>
-          <ion-text color="dark"> better </ion-text>
-        </p>
-      </ion-label>
-    </ion-col>
-  </ion-row>
-
-  <ion-row class="srch">
-    <ion-col size="10">
-      <ion-searchbar class="srchBar" placeholder="Search..."></ion-searchbar>
-    </ion-col>
-    <ion-col size="2">
-      <ion-button mode="ios">
-        <ion-icon name="options"></ion-icon>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light" class="top-bar">
+    <div class="greeting" slot="start">
+      <ion-avatar class="avatar">
+        <img *ngIf="userPhoto; else initialsAvatar" [src]="userPhoto" alt="Profile picture" />
+        <ng-template #initialsAvatar>
+          <span class="initials" aria-hidden="true">{{ initials || '🙂' }}</span>
+        </ng-template>
+      </ion-avatar>
+      <div>
+        <p class="greeting-sub">{{ greeting }},</p>
+        <h2 class="greeting-name">{{ userName || 'there' }} 👋</h2>
+      </div>
+    </div>
+    <ion-buttons slot="end">
+      <ion-button
+        class="bell"
+        shape="round"
+        [attr.aria-label]="needsCheckIn ? 'Notifications: mood check-in due' : 'Notifications'"
+        (click)="showNotifications()"
+      >
+        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
+        <span *ngIf="needsCheckIn" class="bell-dot"></span>
       </ion-button>
-    </ion-col>
-  </ion-row>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-  <div>
-    <ion-list-header class="optional">
-      <ion-label> Explore </ion-label>
+<ion-content color="light">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
-      <ion-button fill="clear" size="small" color="medium" shape="round">
-        <ion-text> Show all </ion-text>
-      </ion-button>
-    </ion-list-header>
-  </div>
+  <!-- Tagline -->
+  <section class="tagline ion-padding-horizontal">
+    <h1>Make yourself <span>better</span></h1>
+  </section>
 
-  <div>
-    <swiper-container
-      grab-cursor="true"
-      [modules]="swiperModules"
-      [slidesPerView]="1.4"
-      [keyboard]="true"
-      [centerSlides]="true"
-      [loop]="true"
-      [autoplay]="{delay: 2000}"
-      [scrollbar]="true"
-    >
-      <!-- Slide 1 -->
-      <swiper-slide>
-        <ion-card color="primary">
-          <!-- Resize the image using a class or inline styles -->
-          <img src="assets/imgs/image4.png" style="width: 90%; height: auto" />
-          <ion-card-content>
-            <ion-card-title class="centralized"
-              >Consult a therapist</ion-card-title
-            >
-            <!-- Button  -->
-            <ion-button
-              size="small"
-              color="warning"
-              shape="round"
-              [routerLink]="['/', 'tabs', 'tab3']"
-            >
-              Conversation
-              <ion-icon name="arrow-forward" slot="end"></ion-icon>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
+  <!-- Mood check-in -->
+  <section class="mood-card" id="mood-check-in">
+    <p class="mood-title">How are you feeling today?</p>
+    <div class="moods">
+      <button
+        *ngFor="let mood of moods"
+        type="button"
+        class="mood"
+        [class.active]="selectedMood === mood"
+        (click)="selectMood(mood)"
+      >
+        <span class="emoji">{{ mood.emoji }}</span>
+        <span class="mood-label">{{ mood.label }}</span>
+      </button>
+    </div>
+    <p *ngIf="selectedMood" class="mood-message">{{ selectedMood.message }}</p>
+  </section>
 
-      <!-- Slide 2 -->
-      <swiper-slide>
-        <ion-card color="warning">
-          <!-- Resize the image using a class or inline styles -->
-          <img src="assets/imgs/image5.png" style="width: 90%; height: auto" />
-          <ion-card-content>
-            <ion-card-title class="centralized"
-              >Declutter the mind</ion-card-title
-            >
-            <!-- Button with text and an arrow icon -->
-            <ion-button
-              size="small"
-              shape="round"
-              [routerLink]="['/', 'tabs', 'tab4']"
-            >
-              Consult <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
+  <!-- Search -->
+  <ion-searchbar
+    class="search"
+    placeholder="Search insights..."
+    [debounce]="250"
+    (ionInput)="onSearch($event)"
+  ></ion-searchbar>
 
-      <!-- Slide 3 -->
-      <swiper-slide>
-        <ion-card color="success">
-          <!-- Resize the image using a class or inline styles -->
-          <img src="assets/imgs/image6.png" style="width: 90%; height: auto" />
-          <ion-card-content>
-            <ion-card-title class="centralized"
-              >Self-love for you</ion-card-title
-            >
-            <!-- Button with text and an arrow icon -->
-            <ion-button
-              size="small"
-              color="warning"
-              shape="round"
-              [routerLink]="['/', 'tabs', 'tab2']"
-            >
-              Click Me <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
-
-      <!-- Slide 4 -->
-      <swiper-slide>
-        <ion-card color="tertiary">
-          <!-- Resize the image using a class or inline styles -->
-          <img src="assets/imgs/image7.png" style="width: 90%; height: auto" />
-          <ion-card-content>
-            <ion-card-title class="centralized"
-              >Meditation tips?</ion-card-title
-            >
-            <!-- Button with text and an arrow icon -->
-            <ion-button
-              size="small"
-              color="warning"
-              shape="round"
-              [routerLink]="['/', 'tabs', 'tab2']"
-            >
-              Click Me <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
-      <!-- Slide 5 -->
-      <swiper-slide>
-        <ion-card color="warning">
-          <!-- Resize the image using a class or inline styles -->
-          <img src="assets/imgs/image8.png" style="width: 90%; height: auto" />
-          <ion-card-content>
-            <ion-card-title class="centralized"
-              >Manage emotions?</ion-card-title
-            >
-            <!-- Button with text and an arrow icon -->
-            <ion-button
-              size="small"
-              color="primary"
-              shape="round"
-              [routerLink]="['/', 'tabs', 'tab2']"
-            >
-              Click Me <ion-icon slot="end" name="arrow-forward"></ion-icon>
-            </ion-button>
-          </ion-card-content>
-        </ion-card>
-      </swiper-slide>
-    </swiper-container>
-  </div>
-
-  <!-- @if (recent.length > 0) {
-  <ion-list lines="none" class="ion-margin-bottom recentJobs">
-    <ion-list-header class="ion-margin-bottom">
-      <ion-label> Recent Suggestions </ion-label>
-      <ion-button fill="clear" size="small" color="medium">
-        <ion-text> Show all </ion-text>
-      </ion-button>
-    </ion-list-header> 
-
-    @for (job of recent; track job.id) {
-    <ion-item
-      class="ion-margin-bottom"
-      [routerLink]="['/', 'tabs', 'job', job.id]"
-    >
-      <ion-thumbnail slot="start">
-        <img [src]="'assets/imgs/' + job?.logo_light" />
-      </ion-thumbnail>
-      <ion-label class="recent">
-        {{job?.description}}
-        <p>
-          {{job?.duration}}
-          <span class="dot"></span>
-          {{job?.type}}
-        </p>
-      </ion-label>
-      <ion-icon slot="end" name="arrow-forward-circle" color="primary">
-      </ion-icon>
-    </ion-item>
-    }
-  </ion-list>
-  <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  }
-</ion-content>-->
-  <div>
-    <ion-list-header class="section">
-      <ion-label> Insights for you </ion-label>
-
-      <ion-button fill="clear" size="small" color="medium">
-        <ion-text> Show all </ion-text>
-      </ion-button>
-    </ion-list-header>
-  </div>
-
-  <ion-list class="ion-margin-bottom">
-    <ion-item
-      *ngFor="let item of recent; let index"
-      class="ion-margin-bottom"
+  <!-- Featured -->
+  <ion-list-header class="section-header">
+    <ion-label>Explore</ion-label>
+    <ion-button
+      class="show-all"
+      fill="clear"
+      color="medium"
       [routerLink]="['/', 'tabs', 'tab2']"
     >
-      <ion-avatar slot="start">
-        <img [src]="item.src" [alt]="item.alt" />
-      </ion-avatar>
+      Show all
+    </ion-button>
+  </ion-list-header>
 
-      <ion-label class="stylesup">
-        {{item.description}}
-        <br />
-        <!-- Add a line break -->
-        <span class="item-type">{{item.type}}</span>
-        <!-- Wrap item.type in a span with a class -->
+  <swiper-container
+    class="featured"
+    [modules]="swiperModules"
+    slides-per-view="1.12"
+    space-between="14"
+    centered-slides="true"
+    rewind="true"
+    grab-cursor="true"
+    autoplay-delay="3500"
+    autoplay-disable-on-interaction="true"
+    pagination="true"
+    pagination-clickable="true"
+    observer="true"
+  >
+    <swiper-slide *ngFor="let card of featured">
+      <ion-card [color]="card.color" class="featured-card">
+        <img [src]="card.image" [alt]="card.title" />
+        <ion-card-content>
+          <ion-card-title>{{ card.title }}</ion-card-title>
+          <ion-button
+            class="cta"
+            shape="round"
+            [color]="card.buttonColor"
+            [routerLink]="card.route"
+          >
+            {{ card.cta }}
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </swiper-slide>
+  </swiper-container>
+
+  <!-- Insights -->
+  <ion-list-header class="section-header">
+    <ion-label>Insights for you</ion-label>
+    <ion-button
+      class="show-all"
+      fill="clear"
+      color="medium"
+      [routerLink]="['/', 'tabs', 'tab2']"
+      [queryParams]="selectedCategory === 'all' ? null : { format: selectedCategory }"
+    >
+      Show all
+    </ion-button>
+  </ion-list-header>
+
+  <div class="chips">
+    <ion-chip
+      *ngFor="let cat of categories"
+      [outline]="selectedCategory !== cat.value"
+      [color]="selectedCategory === cat.value ? 'primary' : 'medium'"
+      (click)="selectCategory(cat.value)"
+    >
+      {{ cat.label }}
+    </ion-chip>
+  </div>
+
+  <ion-list lines="none" class="card-list insights">
+    <ion-item
+      *ngFor="let item of filteredInsights; trackBy: trackById"
+      class="list-card insight"
+      button
+      detail="false"
+      [routerLink]="['/', 'tabs', 'tab2']"
+      [queryParams]="{ item: item.id }"
+    >
+      <ion-thumbnail slot="start">
+        <img [src]="item.image" [alt]="item.title" />
+      </ion-thumbnail>
+      <ion-label>
+        <h3>{{ item.title }}</h3>
+        <p>{{ topicName(item.topic) }}</p>
+        <p class="meta">
+          <ion-icon [name]="iconFor(item.format)"></ion-icon>
+          <span class="format">{{ item.format }}</span>
+          <span class="dot"></span>
+          {{ item.duration }}
+        </p>
       </ion-label>
-
-      <ion-text color="medium"> {{item.duration}} </ion-text>
-      <ion-button fill="clear" size="small" color="medium">
-        <ion-icon
-          slot="icon-only"
-          name="arrow-forward-circle"
-          style="color: #0558e7"
-        ></ion-icon>
-      </ion-button>
+      <ion-icon slot="end" name="chevron-forward" color="primary"></ion-icon>
     </ion-item>
   </ion-list>
+
+  <div *ngIf="filteredInsights.length === 0" class="empty">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No insights match your search.</p>
+  </div>
+
+  <!-- Guests: optional nudge to create an account -->
+  <section *ngIf="showGuestNote" class="guest-note">
+    <div class="guest-text">
+      <p class="guest-title">You're using Soul as a guest</p>
+      <p>Create a free account to chat with a therapist and keep your diary on any device.</p>
+      <ion-button class="guest-cta" size="small" shape="round" [routerLink]="['/signup2']">
+        Create free account
+      </ion-button>
+    </div>
+    <ion-button class="guest-close" fill="clear" color="medium" aria-label="Dismiss" (click)="dismissGuestNote()">
+      <ion-icon slot="icon-only" name="close"></ion-icon>
+    </ion-button>
+  </section>
 </ion-content>

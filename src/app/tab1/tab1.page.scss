@@ -1,131 +1,180 @@
-ion-tab-bar {
-  --background: var(--ion-color-primary);
-  border-bottom-left-radius: 10px;
-  border-top-right-radius: 10px;
-  padding-top: 1vh;
-  ion-tab-button {
-    --color: var(--ion-color-medium);
-    --color-selected: var(--ion-color-light);
-    ion-icon {
-      font-size: 1.3 rem;
-    }
+// Header
+.top-bar {
+  padding: 8px 12px 0;
+}
+
+.greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--ion-color-primary);
+}
+
+.greeting-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+}
+
+.greeting-name {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #ccdefe;
+  color: var(--ion-color-primary);
+  font-weight: 700;
+}
+
+.bell {
+  position: relative;
+  --background: #ccdefe;
+  --color: var(--ion-color-primary);
+  --border-radius: 50%;
+  width: 44px;
+  height: 44px;
+}
+
+.bell-dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ccdefe;
+  border-radius: 50%;
+  background: var(--ion-color-danger);
+}
+
+// Tagline
+.tagline h1 {
+  margin: 12px 0 4px;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 2.2rem;
+  color: var(--ion-color-dark);
+
+  span {
+    color: var(--ion-color-primary);
   }
 }
-ion-row.tagline {
-  padding-left: 1.5vh;
-  ion-text {
-    font-size: 1.6rem;
+
+// Mood check-in
+.mood-card {
+  margin: 12px 16px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(5, 88, 231, 0.08);
+}
+
+.mood-title {
+  margin: 0 0 10px;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+}
+
+.mood-message {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  color: var(--ion-color-primary);
+}
+
+// Featured carousel
+.featured {
+  margin-bottom: 4px;
+  --swiper-pagination-color: var(--ion-color-primary);
+  --swiper-pagination-bullet-inactive-color: var(--ion-color-medium);
+  --swiper-pagination-bottom: 0px;
+}
+
+// Leave room under each card for the pagination dots
+swiper-slide {
+  height: auto;
+  padding-bottom: 24px;
+}
+
+.featured-card {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  box-shadow: none;
+  text-align: center;
+
+  img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin: 8px auto 0;
+  }
+
+  ion-card-title {
+    font-size: 1.35rem;
     font-weight: 800;
+    line-height: 1.5rem;
+    margin-bottom: 8px;
+  }
+}
 
-    line-height: 2.2rem;
+// Touch targets: at least 44px tall so they're easy to tap on a phone
+.cta {
+  height: 48px;
+  min-width: 160px;
+  --padding-start: 24px;
+  --padding-end: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
 
+// Guest note
+.guest-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0 16px 24px;
+  padding: 14px 4px 14px 16px;
+  border-radius: 18px;
+  background: #ccdefe;
+
+  p {
+    margin: 0 0 4px;
+    font-size: 0.85rem;
+    color: #2d3a55;
+  }
+
+  .guest-title {
+    font-weight: 700;
     color: var(--ion-color-dark);
   }
 }
-.centralized {
-  font-weight: 800;
-  font-size: 1.2rem;
-  color: var(--ion-color-dark);
-  line-height: 1.5rem;
-}
-.stylesup {
-  font-size: 1.1rem;
-  line-height: 1.6rem;
-  font-weight: 500;
 
-  color: var(--ion-color-dark);
-  font-family: poppins;
-}
-//for search
-ion-row.srch {
-  padding-right: 1.5vh;
-  align-items: center;
-  ion-searchBar {
-    --background: #ccdefe;
-    --border-radius: 25px;
-  }
-}
-//avatar
-.avtr {
-  padding: 8px;
-  margin: 20px;
-  position: relative;
-  right: 22px;
-}
-//for notification
-.notification {
-  padding-left: 1.5vh;
-
-  position: relative;
-  color: var(--ion-color-primary);
-}
-ion-list {
-  background: transparent;
-
-  ion-label {
-    font-size: 1.1rem;
-
-    .item-type {
-      display: block; /*  new line */
-      font-size: 0.9rem; /* Adjust font size */
-      color: #737373; /* Optionally for color */
-    }
-  }
-
-  ion-text {
-    font-size: 0.7rem;
-  }
-}
-ion-list > ion-item:hover {
-  background-color: rgb(15, 43, 226);
-  color: #385df5 !important;
-  border-radius: 10px;
-  cursor: pointer !important;
-}
-//for the list
-.section,
-.optional {
-  padding-right: 1.5vh;
-  padding-bottom: 1.5vh;
+.guest-text {
+  flex: 1;
 }
 
-.section ion-label,
-.optional ion-label {
-  font-size: 1.1rem;
+.guest-cta {
+  height: 40px;
+  margin: 8px 0 0;
+  font-weight: 600;
 }
 
-ion-item.selected {
-  background-color: #ec8f8f; /* Change the background color on hover */
-}
-
-ion-card {
-  box-shadow: none; /* Remove the drop shadow */
-}
-
-swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 3px 6px; // Margin between cards
-
-  ion-card {
-    margin: 0; // Removes any default margin from the card
-    padding: 2; //
-    margin-top: 3px;
-    margin-bottom: 3px;
-  }
-}
-ion-card-content {
-  padding-bottom: 8px; // Adjust the bottom padding as needed
-
-  // Adjust margins for the image and button
-  ion-icon {
-    margin-top: 4px; // Adjust as needed
-    margin-bottom: 4px; // Adjust as needed
-  }
-
-  ion-button {
-    margin-top: 8px; // Adjust as needed
-    margin-bottom: 4px; // Adjust as needed
-  }
+.guest-close {
+  width: 44px;
+  height: 44px;
+  margin: -6px 0 0;
 }

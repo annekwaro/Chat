@@ -1,406 +1,292 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-segment [(ngModel)]="selectedSegment">
-      <ion-segment-button value="segment1"> Mood Diary </ion-segment-button>
-      <ion-segment-button value="segment2"> Methods </ion-segment-button>
-      <ion-segment-button value="segment3"> Meditation </ion-segment-button>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light" class="top-bar">
+    <div class="heading">
+      <h1>Discover</h1>
+      <p>Tools to understand and care for your mind</p>
+    </div>
+  </ion-toolbar>
+  <ion-toolbar color="light" class="segment-bar">
+    <ion-segment [(ngModel)]="segment" mode="ios">
+      <ion-segment-button value="learn">
+        <ion-label>Learn</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="diary">
+        <ion-label>Mood diary</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="calm">
+        <ion-label>Calm</ion-label>
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <div *ngIf="selectedSegment === 'segment1'">
-    <!-- Content for Segment 1 -->
-    <div>
-      <ion-list-header class="optional">
-        <ion-label> Keep your mind clear </ion-label>
-      </ion-list-header>
+<ion-content color="light">
+  <!-- ================= Mood diary ================= -->
+  <div *ngIf="segment === 'diary'" class="section">
+    <div *ngIf="!loggedIn" class="card notice">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <p>
+        <a [routerLink]="['/signup2']">Create a free account</a> to keep a private mood diary.
+        Your check-ins are saved to your account.
+      </p>
     </div>
 
-    <ion-grid>
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-card class="custom-card">
-            <img alt="" src="assets/imgs/image20.png" />
-            <ion-card-header>
-              <ion-button
-                size="small"
-                shape="round"
-                color="warning"
-                expand="block"
-                (click)="setOpen(true)"
-              >
-                Discover
+    <!-- Today -->
+    <div class="card today" *ngIf="loggedIn && !loadingDiary">
+      <ng-container *ngIf="today && !changingToday; else pickMood">
+        <div class="today-row">
+          <span class="today-emoji">{{ today.emoji }}</span>
+          <div class="today-text">
+            <p class="eyebrow">Today</p>
+            <h2>You're feeling {{ today.mood | lowercase }}</h2>
+            <p class="today-message">{{ moodFor(today)?.message }}</p>
+          </div>
+        </div>
+        <p *ngIf="today.note" class="note">“{{ today.note }}”</p>
+        <div class="today-actions">
+          <ion-button class="action" shape="round" (click)="editNote(today)">
+            <ion-icon name="create-outline" slot="start"></ion-icon>
+            {{ today.note ? 'Edit note' : 'Add a note' }}
+          </ion-button>
+          <ion-button class="action" shape="round" fill="outline" (click)="changingToday = true">
+            Change mood
+          </ion-button>
+        </div>
+      </ng-container>
 
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Anxiety</ion-card-subtitle>
-
-              <ion-modal [isOpen]="isModalOpen">
-                <!-- This is content for the modal -->
-
-                <ng-template>
-                  <!-- This is the header for the modal -->
-
-                  <ion-header>
-                    <ion-toolbar>
-                      <ion-title>Modal</ion-title>
-                      <ion-buttons slot="end">
-                        <ion-button (click)="setOpen(false)">Close</ion-button>
-                      </ion-buttons>
-                    </ion-toolbar>
-                  </ion-header>
-
-                  <!-- This is the content for the modal -->
-                  <ion-grid>
-                    <ion-row>
-                      <ion-col
-                        ><ion-card color>
-                          <ion-item>
-                            <ion-avatar slot="start">
-                              <img src="https://i.pravatar.cc/300" />
-                            </ion-avatar>
-                            <ion-label>
-                              <h3>Anne Marine</h3>
-                              <p>Jan 10, 2024</p>
-                            </ion-label>
-                          </ion-item>
-
-                          <img src="assets/imgs/image30.png" alt="" />
-                          <ion-card-header>
-                            <ion-card-title>Managing Depression</ion-card-title>
-                          </ion-card-header>
-                          <ion-card-content>
-                            People with bipolar disorder (formerly called manic
-                            depression or manic-depressive illness) also
-                            experience depressive episodes, during which they
-                            feel sad, indifferent, or hopeless, combined with a
-                            very low activity level. But a person with bipolar
-                            disorder also experiences manic (or less severe
-                            hypomanic) episodes, or unusually elevated moods, in
-                            which they might feel very happy, irritable, or
-                            “up,” with a marked increase in activity level.
-                          </ion-card-content>
-
-                          <ion-footer>
-                            <ion-row>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="thumbs-up"></ion-icon>
-                                  <div>1.5k Likes</div>
-                                </button>
-                              </ion-col>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="text"></ion-icon>
-                                  <div>4 Comments</div>
-                                </button>
-                              </ion-col>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="time"></ion-icon>
-                                  <div>11h ago</div>
-                                </button>
-                              </ion-col>
-                            </ion-row>
-                          </ion-footer>
-                        </ion-card>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-                </ng-template>
-              </ion-modal>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-
-        <ion-col size-md="6">
-          <ion-card class="custom-card" color="primary">
-            <img src="assets/imgs/image21.png" />
-            <ion-card-header>
-              <ion-button
-                size="small"
-                shape="round"
-                color="warning"
-                expand="block"
-                (click)="setOpenb(true)"
-              >
-                Discover
-
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Depression </ion-card-subtitle>
-
-              <ion-modal [isOpen]="isModalOpenb">
-                <!-- This is content for the modal -->
-
-                <ng-template>
-                  <!-- This is the header for the modal -->
-
-                  <ion-header>
-                    <ion-toolbar>
-                      <ion-title>Modal</ion-title>
-                      <ion-buttons slot="end">
-                        <ion-button (click)="setOpenb(false)">Close</ion-button>
-                      </ion-buttons>
-                    </ion-toolbar>
-                  </ion-header>
-
-                  <!-- This is the content for the modal -->
-                  <ion-grid>
-                    <ion-row>
-                      <ion-col
-                        ><ion-card color="success">
-                          <ion-item>
-                            <ion-avatar slot="start">
-                              <img src="https://i.pravatar.cc/300" />
-                            </ion-avatar>
-                            <ion-label>
-                              <h3>Anne Lauret</h3>
-                              <p>Dec 10, 2023</p>
-                            </ion-label>
-                          </ion-item>
-
-                          <img src="assets/imgs/image27.png" alt="ion" />
-                          <ion-card-header>
-                            <ion-card-title>Managing Anxiety</ion-card-title>
-                          </ion-card-header>
-                          <ion-card-content>
-                            Having occasional feelings of anxiety is a normal
-                            part of life, but people with anxiety disorders
-                            experience frequent and excessive anxiety, fear,
-                            terror and panic in everyday situations. These
-                            feelings are unhealthy if they affect your quality
-                            of life and prevent you from functioning normally.
-                            You should see your health care provider if your
-                            anxiety is affecting your life and relationships.
-                            Your provider can help rule out any underlying
-                            physical health issue before seeing a mental health
-                            professional.
-                          </ion-card-content>
-
-                          <ion-footer>
-                            <ion-row>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="thumbs-up"></ion-icon>
-                                  <div>1.5k Likes</div>
-                                </button>
-                              </ion-col>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="text"></ion-icon>
-                                  <div>4 Comments</div>
-                                </button>
-                              </ion-col>
-                              <ion-col center text-center>
-                                <button>
-                                  <ion-icon name="time"></ion-icon>
-                                  <div>11h ago</div>
-                                </button>
-                              </ion-col>
-                            </ion-row>
-                          </ion-footer>
-                        </ion-card>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-                </ng-template>
-              </ion-modal>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col>
-          <ion-card class="custom-card">
-            <img alt="Silhouette of mountains" src="assets/imgs/image22.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>OCD</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-        <ion-col>
-          <ion-card class="custom-card" color="success">
-            <img alt="Silhouette of mountains" src="assets/imgs/image23.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Schizophrenia</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col>
-          <ion-card class="custom-card" color="secondary">
-            <img alt="Silhouette of mountains" src="assets/imgs/image24.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Low mood</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-
-        <ion-col>
-          <ion-card class="custom-card">
-            <img alt="Silhouette of mountains" src="assets/imgs/image25.png" />
-            <ion-card-header>
-              <ion-button size="small" color="warning" shape="round">
-                Discover
-                <ion-icon slot="end" name="arrow-forward"></ion-icon>
-              </ion-button>
-              <ion-card-subtitle>Esteem</ion-card-subtitle>
-            </ion-card-header>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
-  <!-- Content for Segment 2 -->
-  <div *ngIf="selectedSegment === 'segment2'">
-    <div>
-      <ion-list-header class="optional">
-        <ion-label> Self-love and awareness </ion-label>
-      </ion-list-header>
+      <ng-template #pickMood>
+        <p class="card-title">How are you feeling today?</p>
+        <div class="moods">
+          <button
+            *ngFor="let mood of moods"
+            type="button"
+            class="mood"
+            [class.active]="today?.mood === mood.label"
+            (click)="logToday(mood)"
+          >
+            <span class="emoji">{{ mood.emoji }}</span>
+            <span class="mood-label">{{ mood.label }}</span>
+          </button>
+        </div>
+        <ion-button
+          *ngIf="changingToday"
+          class="cancel-change"
+          fill="clear"
+          color="medium"
+          expand="block"
+          (click)="changingToday = false"
+        >
+          Cancel
+        </ion-button>
+      </ng-template>
     </div>
-    <ion-grid>
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-card color="primary" class="customer-card">
-            <ion-card-header> </ion-card-header>
 
-            <ion-card-content>
-              Here's a small text description for the card content. Nothing
-              more, nothing less.
-              <img
-                alt="Silhouette of mountains"
-                src="assets/imgs/image28.png"
-              />
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
+    <!-- This week -->
+    <h3 class="section-title">This week</h3>
+    <div class="card week">
+      <div *ngFor="let day of week" class="day" [class.today]="day.isToday">
+        <span class="weekday">{{ day.weekday }}</span>
+        <span class="day-mood">
+          <ng-container *ngIf="day.entry; else noEntry">{{ day.entry.emoji }}</ng-container>
+          <ng-template #noEntry><span class="empty-dot"></span></ng-template>
+        </span>
+        <span class="day-num">{{ day.day }}</span>
+      </div>
+    </div>
 
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-card color="primary" class="customer-card">
-            <ion-card-header> </ion-card-header>
+    <div class="stats">
+      <div class="card stat">
+        <span class="stat-value">🔥 {{ streak }}</span>
+        <span class="stat-label">day streak</span>
+      </div>
+      <div class="card stat">
+        <span class="stat-value">{{ monthCount }}</span>
+        <span class="stat-label">check-ins this month</span>
+      </div>
+    </div>
 
-            <ion-card-content>
-              Here's a small text description for the card content. Nothing
-              more, nothing less.
-              <img
-                alt="Silhouette of mountains"
-                src="assets/imgs/image29.png"
-              />
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-
-    <ion-fab>
-      <ion-fab-button size="small">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-list side="end">
-        <ion-fab-button>
-          <ion-icon name="document"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button>
-          <ion-icon name="color-palette"></ion-icon>
-        </ion-fab-button>
-        <ion-fab-button>
-          <ion-icon name="globe"></ion-icon>
-        </ion-fab-button>
-      </ion-fab-list>
-    </ion-fab>
+    <!-- History -->
+    <h3 class="section-title">Entries</h3>
+    <ion-list lines="none" class="entries" *ngIf="history.length; else noHistory">
+      <ion-item
+        *ngFor="let entry of history"
+        class="entry"
+        button
+        detail="false"
+        (click)="editNote(entry)"
+      >
+        <span slot="start" class="entry-emoji">{{ entry.emoji }}</span>
+        <ion-label class="ion-text-wrap">
+          <h3>{{ entry.mood }}</h3>
+          <p class="entry-date">{{ formatDate(entry.date) }}</p>
+          <p *ngIf="entry.note" class="entry-note">{{ entry.note }}</p>
+          <p *ngIf="!entry.note" class="entry-add">Tap to add a note</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ng-template #noHistory>
+      <div class="empty" *ngIf="!loadingDiary">
+        <ion-icon name="journal-outline"></ion-icon>
+        <p>No entries yet. Check in above to start your diary.</p>
+      </div>
+    </ng-template>
   </div>
 
-  <!-- Content for Segment 3 -->
-  <div *ngIf="selectedSegment === 'segment3'">
-    <ion-grid>
-      <!-- For the datetime -->
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-item>
-            <ion-datetime
-              displayFormat="MM/DD/YYYY HH:mm"
-              [(ngModel)]="selectedDateTime"
-              class="poppins-datetime"
-            >
-              <span slot="title" class="titledpart">Organise your day</span>
-            </ion-datetime>
+  <!-- ================= Learn ================= -->
+  <div *ngIf="segment === 'learn'" class="section">
+    <p class="intro">
+      Understanding what you're going through is a first step. Tap a topic to learn the
+      common signs and what can help.
+    </p>
+
+    <div class="conditions">
+      <button
+        *ngFor="let c of conditions"
+        type="button"
+        class="condition"
+        [style.background]="c.color"
+        (click)="openCondition(c)"
+      >
+        <img [src]="c.image" [alt]="c.name" />
+        <span class="condition-name">{{ c.name }}</span>
+        <span class="condition-link">
+          Learn more <ion-icon name="arrow-forward"></ion-icon>
+        </span>
+      </button>
+    </div>
+
+    <div class="card disclaimer">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <p>
+        This information is general and isn't a diagnosis. If you're struggling, talk to
+        a professional. If you or someone else is in danger, contact your local emergency
+        services.
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= Calm ================= -->
+  <div *ngIf="segment === 'calm'" class="section">
+    <!-- Breathing -->
+    <div class="card breathing">
+      <p class="card-title">Box breathing</p>
+      <p class="card-sub">Breathe in, hold, breathe out, hold. Four seconds each.</p>
+
+      <div class="breath-stage">
+        <div class="breath-circle" [style.transform]="'scale(' + circleScale + ')'"></div>
+        <div class="breath-text">
+          <ng-container *ngIf="breathing; else idle">
+            <span class="phase">{{ phase.label }}</span>
+            <span class="count">{{ countdown }}</span>
+          </ng-container>
+          <ng-template #idle>
+            <span class="phase">Ready?</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <p class="cycles" *ngIf="breathing || cycles">
+        {{ cycles }} {{ cycles === 1 ? 'cycle' : 'cycles' }} completed
+      </p>
+      <ion-button class="action breath-btn" shape="round" (click)="toggleBreathing()">
+        <ion-icon [name]="breathing ? 'stop' : 'play'" slot="start"></ion-icon>
+        {{ breathing ? 'Stop' : 'Start breathing' }}
+      </ion-button>
+    </div>
+
+    <!-- Routine -->
+    <div class="routine-header">
+      <h3 class="section-title">Today's routine</h3>
+      <span class="routine-count">{{ doneCount }} of {{ routine.length }} done</span>
+    </div>
+    <ion-progress-bar
+      class="routine-progress"
+      [value]="routine.length ? doneCount / routine.length : 0"
+    ></ion-progress-bar>
+    <p class="hint">Tick things off, drag ☰ to reorder, swipe left to remove.</p>
+
+    <ion-list lines="none" class="routine">
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
+        <ion-item-sliding *ngFor="let item of routine">
+          <ion-item class="routine-item" [class.done]="item.done">
+            <ion-checkbox
+              slot="start"
+              [checked]="item.done"
+              (ionChange)="toggleItem(item)"
+              [attr.aria-label]="'Mark ' + item.name + ' done'"
+            ></ion-checkbox>
+            <ion-avatar slot="start">
+              <img [src]="item.image" [alt]="item.name" />
+            </ion-avatar>
+            <ion-label>{{ item.name }}</ion-label>
+            <ion-reorder slot="end"></ion-reorder>
           </ion-item>
-        </ion-col>
-      </ion-row>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="removeItem(item)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-reorder-group>
+    </ion-list>
 
-      <ion-row>
-        <ion-col size-md="6">
-          <ion-list class="updated">
-            <!-- The reorder gesture is disabled by default, enable it to drag and drop items -->
-            <!-- Casting $event to $any is a temporary fix for this bug https://github.com/ionic-team/ionic-framework/issues/24245 -->
-            <ion-reorder-group
-              [disabled]="false"
-              (ionItemReorder)="handleReorder($any($event))"
-            >
-              <ion-item class="ion-margin-bottom">
-                <ion-avatar slot="start">
-                  <img src="assets/imgs/image7.png" />
-                </ion-avatar>
-                <ion-label class="updated"> Meditation </ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-              </ion-item>
-
-              <ion-item class="ion-margin-bottom">
-                <ion-avatar slot="start">
-                  <img src="assets/imgs/image8.png" />
-                </ion-avatar>
-                <ion-label class="updated"> Breathing </ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-              </ion-item>
-
-              <ion-item class="ion-margin-bottom">
-                <ion-avatar slot="start">
-                  <img src="assets/imgs/image9.png" />
-                </ion-avatar>
-                <ion-label class="updated"> Cycling </ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-              </ion-item>
-
-              <ion-item class="ion-margin-bottom">
-                <ion-avatar slot="start">
-                  <img src="assets/imgs/image4.png" />
-                </ion-avatar>
-                <ion-label class="updated"> Reading </ion-label>
-                <ion-reorder slot="end"></ion-reorder>
-              </ion-item>
-
-              <ion-item class="ion-margin-bottom">
-                <ion-avatar slot="start">
-                  <img src="assets/imgs/image5.png" />
-                </ion-avatar>
-                <ion-label class="updated"> Listening to music </ion-label>
-                <ion-reorder  slot="end"></ion-reorder>
-              </ion-item>
-            </ion-reorder-group>
-          </ion-list>
-        </ion-col>
-        <!-- Add more cards for Segment 3 if needed -->
-      </ion-row>
-    </ion-grid>
+    <div class="add-row">
+      <div class="add-field">
+        <ion-input
+          class="add-input"
+          placeholder="Add an activity..."
+          aria-label="New activity"
+          [(ngModel)]="newRoutineItem"
+          (keyup.enter)="addItem()"
+        ></ion-input>
+      </div>
+      <ion-button class="add-btn" (click)="addItem()" aria-label="Add activity">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </div>
+    <p *ngIf="!loggedIn" class="hint">Create a free account to save your routine between visits.</p>
   </div>
+
+  <!-- Condition detail sheet -->
+  <ion-modal
+    class="detail-sheet"
+    [isOpen]="!!selectedCondition"
+    [initialBreakpoint]="0.9"
+    [breakpoints]="[0, 0.9, 1]"
+    (didDismiss)="closeCondition()"
+  >
+    <ng-template>
+      <ion-content class="detail" *ngIf="selectedCondition as c">
+        <div class="detail-hero" [style.background]="c.color">
+          <img [src]="c.image" [alt]="c.name" />
+        </div>
+        <div class="detail-body">
+          <h2>{{ c.name }}</h2>
+          <p class="summary">{{ c.summary }}</p>
+
+          <h4>Common signs</h4>
+          <ul>
+            <li *ngFor="let s of c.signs">{{ s }}</li>
+          </ul>
+
+          <h4>What can help</h4>
+          <ul class="helps">
+            <li *ngFor="let h of c.helps">{{ h }}</li>
+          </ul>
+
+          <ion-button expand="block" shape="round" class="detail-cta" (click)="talkToTherapist()">
+            Talk to a therapist
+            <ion-icon name="chatbubbles" slot="end"></ion-icon>
+          </ion-button>
+          <ion-button expand="block" fill="clear" color="medium" class="detail-close" (click)="closeCondition()">
+            Close
+          </ion-button>
+          <p class="fine-print">
+            General information only, not a diagnosis. In an emergency, contact your local
+            emergency services.
+          </p>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

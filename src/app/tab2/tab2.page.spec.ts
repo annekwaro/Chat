@@ -1,17 +1,68 @@
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { firebaseFakes } from '../../testing/firebase-fakes';
 import { Tab2Page } from './tab2.page';
 
-describe('Tab2Page', () => {
-  let component: Tab2Page;
+describe('Tab2Page (Explore)', () => {
   let fixture: ComponentFixture<Tab2Page>;
+  let component: Tab2Page;
+  let queryParams: BehaviorSubject<any>;
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
+    queryParams = new BehaviorSubject(convertToParamMap({}));
+    await TestBed.configureTestingModule({
+      imports: [Tab2Page, IonicModule.forRoot()],
+      providers: [
+        ...firebaseFakes().providers,
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } },
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(Tab2Page);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+    await fixture.whenStable();
+    fixture.detectChanges();
+  });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('loads the library with three featured sessions', () => {
+    expect(component.filtered.length).toBe(10);
+    expect(component.featured.length).toBe(3);
+    expect(fixture.nativeElement.querySelectorAll('.topic').length).toBe(6);
+  });
+
+  it('filters by topic and toggles the topic off again', () => {
+    const sleep = component.topics.find((t) => t.id === 'sleep')!;
+    component.selectTopic(sleep);
+    expect(component.filtered.map((c) => c.title)).toEqual(['Wind down for sleep']);
+
+    component.selectTopic(sleep);
+    expect(component.filtered.length).toBe(10);
+  });
+
+  it('combines format and search filters', () => {
+    component.selectFormat('podcast');
+    component.onSearch({ detail: { value: 'worry' } });
+    expect(component.filtered.map((c) => c.title)).toEqual(['When worry takes over']);
+  });
+
+  it('opens the session sheet from a Home link (?item=id)', async () => {
+    const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    queryParams.next(convertToParamMap({ item: '6' }));
+    await fixture.whenStable();
+
+    expect(component.selected?.title).toBe('Wind down for sleep');
+    expect(navigate).toHaveBeenCalled(); // clears the link params
+  });
+
+  it('applies the format from a Home "Show all" link (?format=podcast)', async () => {
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    queryParams.next(convertToParamMap({ format: 'podcast' }));
+    await fixture.whenStable();
+
+    expect(component.selectedFormat).toBe('podcast');
+    expect(component.filtered.every((c) => c.format === 'podcast')).toBeTrue();
   });
 });

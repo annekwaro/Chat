@@ -5,13 +5,11 @@
         <swiper-container
           grab-cursor="true"
           [modules]="swiperModules"
-          [slidesPerView]="1"
-          [keyboard]="true"
-          [centerSlides]="true"
-          [loop]="true"
-          [autoplay]="{delay: 2000}"
-          [scrollbar]="true"
-          [pagination]="true"
+          slides-per-view="1"
+          keyboard="true"
+          rewind="true"
+          autoplay-delay="3000"
+          pagination="true"
         >
           <!-- Slide 1 -->
           <swiper-slide>
@@ -91,12 +89,21 @@
           your needs.
         </p>
 
+        <!-- No sign-up needed: guests get a session and can create an account later -->
         <ion-button
+          class="get-started"
           shape="round"
-          type="submit"
+          expand="block"
+          [routerLink]="['/tabs/tab1']"
+          [replaceUrl]="true"
+          >Get started</ion-button
+        >
+        <ion-button
+          class="have-account"
+          fill="clear"
           expand="block"
           [routerLink]="['/login2']"
-          >Get Started</ion-button
+          >I already have an account</ion-button
         >
       </ion-col>
     </ion-row>

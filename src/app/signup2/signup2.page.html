@@ -1,25 +1,62 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Sign Up</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <h1 class="title">{{ reason === 'chat' ? 'Chat with a therapist' : 'Create your account' }}</h1>
+  <p class="subtitle">
+    <ng-container *ngIf="reason === 'chat'">Create a free account so the person you talk to knows who you are. </ng-container>
+    <ng-container *ngIf="isGuest">Your mood diary and routine come with you.</ng-container>
+    <ng-container *ngIf="!isGuest && reason !== 'chat'">It only takes a minute.</ng-container>
+  </p>
+
   <form [formGroup]="signupForm" (ngSubmit)="signUp()">
     <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
+      <ion-input label="Name" labelPlacement="floating" formControlName="username" type="text" autocomplete="name"></ion-input>
     </ion-item>
+
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" type="password"></ion-input>
+      <ion-input label="Email" labelPlacement="floating" formControlName="email" type="email" autocomplete="email"></ion-input>
     </ion-item>
+    <p class="field-error" *ngIf="signupForm.get('email').invalid && signupForm.get('email').touched">
+      <ion-icon name="alert-circle-outline"></ion-icon> Enter a valid email address
+    </p>
+
+    <ion-item>
+      <ion-input
+        label="Password"
+        labelPlacement="floating"
+        formControlName="password"
+        type="password"
+        autocomplete="new-password"
+      ></ion-input>
+    </ion-item>
+    <p class="field-error" *ngIf="signupForm.get('password').invalid && signupForm.get('password').touched">
+      <ion-icon name="alert-circle-outline"></ion-icon> At least 8 characters
+    </p>
+
+    <p class="form-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+
     <ion-button
+      class="submit"
       shape="round"
       type="submit"
       expand="block"
-      [disabled]="!signupForm.valid"
-      >Sign Up
+      [disabled]="!signupForm.valid || isLoading"
+    >
+      {{ isLoading ? 'Creating account…' : 'Create account' }}
     </ion-button>
   </form>
+
+  <p class="switch">
+    Already have an account?
+    <a [routerLink]="['/login2']" [queryParams]="{ returnUrl: returnUrl }">Log in</a>
+  </p>
+  <ion-button class="skip" fill="clear" expand="block" color="medium" (click)="notNow()">
+    Not now
+  </ion-button>
 </ion-content>

@@ -3,6 +3,12 @@ ion-content {
     background: transparent;
   }
 }
+.my-message {
+  text-align: right;
+  background-color: #dcf8c5;
+  border-radius: 8px;
+  padding: 6px;
+}
 ion-footer {
   ion-toolbar {
     padding: 0 3px;
@@ -12,4 +18,31 @@ ion-footer {
       margin: 0.5vh 0;
     }
   }
+}
+.own-message {
+  text-align: right;
+  background-color: #dcf8c5;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 8px;
+  display: inline-block;
+  float: right;
+  clear: both;
+}
+
+.other-message {
+  text-align: left;
+  background-color: white;
+  border-radius: 10px;
+  padding: 8px;
+  margin: 8px;
+  display: inline-block;
+  float: left;
+  clear: both;
+}
+
+ion-item {
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --background: transparent;
 }

@@ -1,20 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { TabsPage } from './tabs.page';
 
 describe('TabsPage', () => {
-  let component: TabsPage;
-  let fixture: ComponentFixture<TabsPage>;
-
-  beforeEach(async(() => {
-    fixture = TestBed.createComponent(TabsPage);
-    component = fixture.componentInstance;
+  it('shows the four tabs', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TabsPage, IonicModule.forRoot()],
+      providers: [provideRouter([])],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(TabsPage);
     fixture.detectChanges();
-  }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const labels = [...fixture.nativeElement.querySelectorAll('ion-tab-button')].map((b: HTMLElement) =>
+      b.textContent?.trim()
+    );
+    expect(labels).toEqual(['Home', 'Explore', 'Discover', 'Chat']);
   });
 });
-function async(arg0: () => void): jasmine.ImplementationCallback {
-  throw new Error('Function not implemented.');
-}

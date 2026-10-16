@@ -1,49 +1,29 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
-import { IonicSlides, PopoverController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { appsOutline, options } from 'ionicons/icons';
-import { register } from 'swiper/element/bundle';
-import {
-  IonCard,
-  IonItem,
-  IonLabel,
-  IonChip,
-  IonButton,
-  IonIcon,
-  IonThumbnail,
-  IonText,
-  IonList,
-} from '@ionic/angular/standalone';
-import { InfiniteScrollCustomEvent } from '@ionic/angular';
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { IonicModule, IonicSlides } from '@ionic/angular';
+import { register } from 'swiper/element/bundle';
+import { AuthService } from '../../services/auth/auth.service';
+
 register();
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.page.html',
   styleUrls: ['./landing.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    IonCard,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonChip,
-    IonButton,
-    IonIcon,
-    IonThumbnail,
-    IonText,
-    CommonModule,
-    RouterModule,
-  ],
+  imports: [IonicModule, CommonModule, RouterModule],
 })
-export class LandingPage implements OnInit {
+export class LandingPage {
   swiperModules = [IonicSlides];
 
-  constructor() {
-    addIcons({ appsOutline, options });
-  }
+  constructor(private auth: AuthService, private router: Router) {}
 
-  ngOnInit() {}
+  // Returning visitors (guest or signed in) go straight into the app
+  async ionViewWillEnter() {
+    if (await this.auth.getCurrentUserId()) {
+      this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+    }
+  }
 }

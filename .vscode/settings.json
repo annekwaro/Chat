@@ -3,5 +3,6 @@
     "@ionic/angular/common",
     "@ionic/angular/standalone"
   ],
-  "CodeGPT.apiKey": "CodeGPT Plus Beta"
+  "CodeGPT.apiKey": "CodeGPT Plus Beta",
+  "bitoAI.codeCompletion.enableAutoCompletion": false
 }

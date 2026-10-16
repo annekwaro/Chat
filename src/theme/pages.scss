@@ -1,0 +1,239 @@
+// Shared look for the Home, Explore and Discover tabs and their bottom sheets.
+// Scoped to those pages so it can't affect login, landing or chat.
+app-tab1,
+app-tab2,
+app-tab4,
+.detail-sheet {
+  // Page title with a subtitle (Explore, Discover)
+  .heading {
+    h1 {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      margin: 2px 0 0;
+      font-size: 0.9rem;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .search {
+    padding: 4px 16px;
+    --background: #ccdefe;
+    --border-radius: 25px;
+    --box-shadow: none;
+  }
+
+  // Same height and alignment on iOS and Android
+  .section-header {
+    align-items: center;
+    min-height: 48px;
+    margin-top: 8px;
+    padding-right: 8px;
+
+    ion-label {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: normal;
+    }
+  }
+
+  // Small button on the right of a section header, still 44px tall for touch
+  .show-all {
+    height: 44px;
+    margin: 0;
+    align-self: center;
+    font-size: 0.85rem;
+  }
+
+  // Horizontally scrolling filter chips
+  .chips {
+    display: flex;
+    overflow-x: auto;
+    padding: 0 12px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    ion-chip {
+      flex-shrink: 0;
+      height: 40px;
+      padding: 0 16px;
+    }
+  }
+
+  // Lists of white rounded cards (Home insights, Explore sessions)
+  .card-list {
+    background: transparent;
+    padding: 8px 16px 24px;
+  }
+
+  .list-card {
+    --background: #ffffff;
+    --border-radius: 16px;
+    --padding-start: 10px;
+    --inner-padding-end: 10px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    ion-thumbnail {
+      --border-radius: 12px;
+      --size: 84px;
+      background: var(--ion-color-light);
+      border-radius: 12px;
+    }
+
+    h3 {
+      font-weight: 600;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      color: #737373;
+    }
+
+    .meta {
+      margin-top: 2px;
+      font-size: 0.75rem;
+      color: var(--ion-color-primary); // beats the grey text colour above
+    }
+  }
+
+  // "Video • 6 min"
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: var(--ion-color-primary);
+
+    .format {
+      text-transform: capitalize;
+    }
+  }
+
+  .dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    margin: 0 4px;
+    border-radius: 50%;
+    background: var(--ion-color-medium);
+  }
+
+  .topic-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: #ccdefe;
+    color: var(--ion-color-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 24px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 2.5rem;
+    }
+  }
+
+  // Mood picker (Home check-in, Mood diary)
+  .moods {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .mood {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 0;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: var(--ion-color-light);
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+
+    .emoji {
+      font-size: 1.6rem;
+    }
+
+    .mood-label {
+      font-size: 0.7rem;
+      color: var(--ion-color-medium);
+    }
+
+    &.active {
+      border-color: var(--ion-color-primary);
+      background: #ccdefe;
+      transform: scale(1.05);
+
+      .mood-label {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Bottom sheets (Explore session, Discover topic)
+.detail-sheet {
+  .detail-hero {
+    padding: 24px 16px 8px;
+    background: #eef3ff;
+
+    img,
+    video {
+      display: block;
+      width: 100%;
+      height: 240px;
+      object-fit: contain;
+    }
+
+    video {
+      margin: 0;
+      background: #000000;
+    }
+  }
+
+  .detail-body {
+    padding: 20px;
+
+    h2 {
+      margin: 10px 0 8px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ion-color-dark);
+    }
+  }
+
+  .player {
+    display: block;
+    width: 100%;
+    margin-bottom: 24px;
+    border-radius: 16px;
+  }
+
+  .detail-cta {
+    height: 52px;
+    font-weight: 600;
+  }
+
+  .detail-close {
+    height: 44px;
+  }
+}

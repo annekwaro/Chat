@@ -1,31 +1,28 @@
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { IonicSlides, PopoverController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { appsOutline, options } from 'ionicons/icons';
-import { register } from 'swiper/element/bundle';
-import { JobComponent } from '../componentsb/job/job.component';
-import {
-  IonCard,
-  IonItem,
-  IonLabel,
-  IonChip,
-  IonButton,
-  IonIcon,
-  IonThumbnail,
-  IonText,
-  IonList,
-} from '@ionic/angular/standalone';
-import { InfiniteScrollCustomEvent } from '@ionic/angular';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MenuController } from '@ionic/angular';
+import { IonicModule, IonicSlides, ToastController } from '@ionic/angular';
+import { register } from 'swiper/element/bundle';
+import { AuthService } from '../services/auth/auth.service';
+import {
+  Content,
+  ContentService,
+  FORMATS,
+  FORMAT_ICONS,
+  Format,
+} from '../services/content/content.service';
+import { MOODS, Mood, MoodService } from '../services/mood/mood.service';
 
 register();
+
+interface Featured {
+  title: string;
+  image: string;
+  color: string;
+  buttonColor: string;
+  cta: string;
+  route: string[];
+}
 
 @Component({
   selector: 'app-tab1',
@@ -33,189 +30,232 @@ register();
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [
-    IonCard,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonChip,
-    IonButton,
-    IonIcon,
-    IonThumbnail,
-    IonText,
-    CommonModule,
-    RouterModule,
-  ],
+  imports: [IonicModule, CommonModule, RouterModule],
 })
 export class Tab1Page implements OnInit {
   swiperModules = [IonicSlides];
 
-  popular: any[] = [];
-  recent: any[] = [];
+  greeting = '';
+  userName = '';
+  userPhoto = '';
+  initials = '';
+  showGuestNote = false;
 
-  constructor(private menu: MenuController) {
-    addIcons({ appsOutline, options });
-  }
+  moods = MOODS;
+  selectedMood: Mood | null = null;
+  private uid: string | null = null;
+
+  featured: Featured[] = [
+    {
+      title: 'Consult a therapist',
+      image: 'assets/imgs/image4.png',
+      color: 'primary',
+      buttonColor: 'warning',
+      cta: 'Start chat',
+      route: ['/', 'tabs', 'home'],
+    },
+    {
+      title: 'Declutter the mind',
+      image: 'assets/imgs/image5.png',
+      color: 'warning',
+      buttonColor: 'primary',
+      cta: 'Discover',
+      route: ['/', 'tabs', 'tab4'],
+    },
+    {
+      title: 'Self-love for you',
+      image: 'assets/imgs/image6.png',
+      color: 'success',
+      buttonColor: 'warning',
+      cta: 'Explore',
+      route: ['/', 'tabs', 'tab2'],
+    },
+    {
+      title: 'Meditation tips',
+      image: 'assets/imgs/image7.png',
+      color: 'tertiary',
+      buttonColor: 'warning',
+      cta: 'Explore',
+      route: ['/', 'tabs', 'tab2'],
+    },
+    {
+      title: 'Manage emotions',
+      image: 'assets/imgs/image8.png',
+      color: 'warning',
+      buttonColor: 'primary',
+      cta: 'Explore',
+      route: ['/', 'tabs', 'tab2'],
+    },
+  ];
+
+  categories = FORMATS;
+  selectedCategory: Format | 'all' = 'all';
+  searchTerm = '';
+
+  // "Insights for you" come from the shared content library (also used by Explore)
+  insights: Content[] = [];
+  filteredInsights: Content[] = [];
+
+  constructor(
+    private auth: AuthService,
+    private toastCtrl: ToastController,
+    private contentService: ContentService,
+    private moodService: MoodService
+  ) {}
 
   ngOnInit() {
-    this.popular = [
-      {
-        id: 1,
-        duration: '12 minutes',
-        location: 'New Delhi',
-        expires_on: '30/11/23',
-        description: 'How to be mindful',
-        type: 'video',
-        salary: '$40-90k/year',
-        logo_dark: 'ct_dark.png',
-        logo_light: 'ct_light.png',
-      },
-      {
-        id: 2,
-        duration: '10 minutes',
-        location: 'Bangalore',
-        expires_on: '07/12/23',
-        description: 'Never be scared',
-        type: 'video',
-        salary: '$30-80k/year',
-        logo_dark: 'uber_dark.png',
-        logo_light: 'uber_light.png',
-      },
-      {
-        id: 3,
-        duration: '20 minutes',
-        location: 'Mumbai',
-        expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'video',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 4,
-        duration: '20 minutes',
-        location: 'Grenoble',
-        expires_on: '15/12/23',
-        description: 'What to do',
-        type: 'video',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-    ];
-    this.recent = [
-      {
-        id: 4,
-        duration: 'video',
-        src: 'assets/imgs/image4.png',
-        alt: 'Image 1',
-        location: 'New Delhi',
-        expires_on: '30/11/23',
-        description: 'Emotional wheel',
-        type: 'How can I get better at life',
-        salary: '$40-90k/year',
-        logo_dark: 'tiktok_dark.png',
-        logo_light: 'tiktok_light.png',
-      },
-      {
-        id: 2,
-        duration: 'podcast',
-        src: 'assets/imgs/image5.png',
-        alt: 'Image 1',
-        location: 'Bangalore',
-        expires_on: '07/12/23',
-        description: 'Talk to someone',
-        type: 'Does it get better?',
-        salary: '$30-80k/year',
-        logo_dark: 'uber_dark.png',
-        logo_light: 'uber_light.png',
-      },
-      {
-        id: 3,
-        duration: 'podcast',
-        src: 'assets/imgs/image7.png',
-        alt: 'Image 1',
-        location: 'Mumbai',
-        expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'How do I cope with loss',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 5,
-        duration: 'audio',
-        location: 'Mumbai',
-        src: 'assets/imgs/image6.png',
-        alt: 'Image 1',
-        expires_on: '15/12/23',
-        description: 'Meditation tips',
-        type: 'Self-love, self-awareness',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 9,
-        duration: 'audio',
-        location: 'Mumbai',
-        src: 'assets/imgs/image25.png',
-        alt: 'Image 1',
-        expires_on: '15/12/23',
-        description: 'A rainy day',
-        type: 'Dealing with emotions',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 10,
-        duration: 'audio',
-        location: 'Mumbai',
-        src: 'assets/imgs/image5.png',
-        alt: 'Image 1',
-        expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'podcasts',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 11,
-        duration: 'audio',
-        location: 'Mumbai',
-        src: 'assets/imgs/image4.png',
-        alt: 'Image 1',
-        expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'podcasts',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-      {
-        id: 12,
-        duration: 'audio',
-        location: 'Mumbai',
-        src: 'assets/imgs/image4.png',
-        alt: 'Image 1',
-        expires_on: '15/12/23',
-        description: 'Sleeping with beauty',
-        type: 'podcasts',
-        salary: '$30-70k/year',
-        logo_dark: 'linkedin_dark.png',
-        logo_light: 'linkedin_light.png',
-      },
-    ];
+    this.greeting = this.getGreeting();
+    this.loadUser();
+    this.contentService.getLibrary().then((library) => {
+      this.insights = library.filter((c) => c.forYou);
+      this.applyFilters();
+    });
+  }
 
-    for (let i = 1; i < 1; i++) {
-      this.recent.push(`Item ${i}`);
+  private getGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  private async loadUser() {
+    const uid = await this.auth.getCurrentUserId();
+    this.uid = uid;
+    this.showGuestNote = this.auth.isGuest() && !this.guestNoteDismissed();
+    if (!uid) return;
+    this.loadTodayMood();
+    try {
+      const user = await this.auth.getProfile();
+      if (user?.name) {
+        this.userName = user.name.split(' ')[0];
+        this.initials = user.name
+          .split(' ')
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((part: string) => part[0].toUpperCase())
+          .join('');
+      }
+      this.userPhoto = user?.photo || '';
+    } catch (err) {
+      console.error('Failed to load user profile', err);
     }
   }
-  toggleMenu() {
-    this.menu.toggle('myMenu');
+
+  // Re-read today's mood when coming back to Home (it can be changed in the Mood diary)
+  ionViewWillEnter() {
+    if (this.uid) this.loadTodayMood();
+  }
+
+  private async loadTodayMood() {
+    try {
+      const entry = await this.moodService.getToday();
+      this.selectedMood = this.moodService.findMood(entry?.mood);
+    } catch (err) {
+      console.error('Failed to load mood', err);
+    }
+  }
+
+  async selectMood(mood: Mood) {
+    const previous = this.selectedMood;
+    this.selectedMood = previous === mood ? null : mood;
+
+    if (!this.uid) {
+      this.showToast('Create a free account to save your mood check-ins.');
+      return;
+    }
+
+    try {
+      if (this.selectedMood) {
+        await this.moodService.setToday(this.selectedMood);
+      } else {
+        await this.moodService.clearToday();
+      }
+    } catch (err) {
+      console.error('Failed to save mood', err);
+      this.selectedMood = previous;
+      this.showToast('Could not save your mood. Please try again.');
+    }
+  }
+
+  private async showToast(message: string) {
+    const toast = await this.toastCtrl.create({
+      message,
+      duration: 2500,
+      color: 'dark',
+      position: 'top',
+    });
+    await toast.present();
+  }
+
+  onSearch(event: any) {
+    this.searchTerm = (event.detail.value || '').toLowerCase().trim();
+    this.applyFilters();
+  }
+
+  selectCategory(value: Format | 'all') {
+    this.selectedCategory = value;
+    this.applyFilters();
+  }
+
+  private applyFilters() {
+    this.filteredInsights = this.insights.filter((item) => {
+      const matchesCategory =
+        this.selectedCategory === 'all' || item.format === this.selectedCategory;
+      const matchesSearch =
+        !this.searchTerm ||
+        item.title.toLowerCase().includes(this.searchTerm) ||
+        this.topicName(item.topic).toLowerCase().includes(this.searchTerm);
+      return matchesCategory && matchesSearch;
+    });
+  }
+
+  iconFor(format: Format): string {
+    return FORMAT_ICONS[format];
+  }
+
+  topicName(id: string): string {
+    return this.contentService.topicName(id);
+  }
+
+  // Gentle, dismissible suggestion for guests; never blocks anything
+  private guestNoteDismissed(): boolean {
+    try {
+      return localStorage.getItem('guestNoteDismissed') === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  dismissGuestNote() {
+    this.showGuestNote = false;
+    try {
+      localStorage.setItem('guestNoteDismissed', '1');
+    } catch {
+      // storage unavailable (e.g. private mode): just hide it for now
+    }
+  }
+
+  // The bell reminds signed-in users who haven't checked in today
+  get needsCheckIn(): boolean {
+    return !!this.uid && !this.selectedMood;
+  }
+
+  async showNotifications() {
+    if (this.needsCheckIn) {
+      document.getElementById('mood-check-in')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      await this.showToast("You haven't checked in today. How are you feeling?");
+      return;
+    }
+    await this.showToast("You're all caught up!");
+  }
+
+  handleRefresh(event: any) {
+    this.greeting = this.getGreeting();
+    return this.loadUser().finally(() => event.target.complete());
+  }
+
+  trackById(_: number, item: Content) {
+    return item.id;
   }
 }

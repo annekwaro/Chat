@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ApiService {
-  constructor(private firestore: Firestore) {}
-  docRef(path) {
-    return doc(this.firestore, path);
+  constructor(private afs: AngularFirestore) {}
+
+  async setDocument(path: string, data: any) {
+    return this.afs.doc(path).set(data);
   }
 
-  setDocument(path, data) {
-    const dataRef = this.docRef(path);
-    return setDoc<any, any>(dataRef, data); //set()
+  async getDocById(path: string) {
+    return this.afs.doc(path).get().toPromise();
   }
 
-  getDocById(path) {
-    const dataRef = this.docRef(path);
-    return getDoc(dataRef);
+  async getCollection(path: string) {
+    const snapshot = await this.afs.collection(path).get().toPromise();
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as object) }));
   }
 }

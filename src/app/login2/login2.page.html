@@ -1,37 +1,60 @@
-<ion-content class="ion-content-center">
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/landing"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1 class="title">Welcome back</h1>
+  <p class="subtitle">Log in to chat and keep your diary on every device.</p>
+
   <form [formGroup]="loginForm" (ngSubmit)="login()">
     <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="email"></ion-input>
+      <ion-input
+        label="Email"
+        labelPlacement="floating"
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+      ></ion-input>
     </ion-item>
-    <ion-item
-      *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched"
-    >
-      <ion-icon name="alert-circle-outline" slot="end"></ion-icon>
-      <ion-text color="danger">Invalid email address</ion-text>
-    </ion-item>
+    <p class="field-error" *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched">
+      <ion-icon name="alert-circle-outline"></ion-icon> Enter a valid email address
+    </p>
+
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" type="password"></ion-input>
+      <ion-input
+        label="Password"
+        labelPlacement="floating"
+        formControlName="password"
+        type="password"
+        autocomplete="current-password"
+      ></ion-input>
     </ion-item>
-    <ion-item
-      *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched"
-    >
-      <ion-icon name="alert-circle-outline" slot="end"></ion-icon>
-      <ion-text color="danger">Password is required</ion-text>
-    </ion-item>
+    <p class="field-error" *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
+      <ion-icon name="alert-circle-outline"></ion-icon> Password must be at least 6 characters
+    </p>
+
+    <p class="form-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+
     <ion-button
+      class="submit"
       shape="round"
       type="submit"
       expand="block"
-      [disabled]="!loginForm.valid"
-      >Login</ion-button
+      [disabled]="!loginForm.valid || isLoading"
     >
-    <p class="signup">
-      <ion-note>
-        Not a member yet?
-        <ion-text routerLink="/signup2" color="primary">Sign Up</ion-text>
-      </ion-note>
-    </p>
+      {{ isLoading ? 'Logging in…' : 'Log in' }}
+    </ion-button>
   </form>
+
+  <p class="switch">
+    New here?
+    <a [routerLink]="['/signup2']" [queryParams]="{ returnUrl: returnUrl }">Create an account</a>
+  </p>
+  <ion-button class="skip" fill="clear" expand="block" color="medium" (click)="continueWithoutAccount()">
+    Continue without an account
+  </ion-button>
 </ion-content>

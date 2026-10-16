@@ -4,7 +4,7 @@
 //configuration from firebase.configuration
 export const environment = {
   production: false,
-  firebase: {
+  firebaseConfig: {
     apiKey: 'AIzaSyDBKdTW5gp5SdpV7HDBSzwvtCcm-VqhmQM',
     authDomain: 'chat-app-376e6.firebaseapp.com',
     projectId: 'chat-app-376e6',
