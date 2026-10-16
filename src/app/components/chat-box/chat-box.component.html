@@ -1,7 +1,4 @@
-<div
-  [class.own-message]="isOwnMessage()"
-  [class.other-message]="!isOwnMessage()"
->
-  <p>{{ getMessageText() }}</p>
-  <small>{{ getTime() }}</small>
+<div class="bubble" [class.mine]="mine">
+  <p class="text">{{ message?.text }}</p>
+  <span class="time">{{ time }}</span>
 </div>

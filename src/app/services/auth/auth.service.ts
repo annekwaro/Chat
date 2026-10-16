@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getAuth, onAuthStateChanged } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, onAuthStateChanged } from '@angular/fire/auth';
+import { environment } from 'src/environments/environment';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
@@ -18,6 +19,7 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
     // Use direct Firebase auth listener
     const auth = getAuth();
+    if (environment.useEmulators) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
     onAuthStateChanged(auth, (user) => {
       this.currentUserId = user?.uid || null;
       this.guest = !!user?.isAnonymous;
@@ -97,7 +99,7 @@ export class AuthService {
         uid: user.uid,
         email: formValue.email,
         name: formValue.username,
-        photo: 'https://i.pravatar.cc/300',
+        photo: '', // no stock photo: the app shows initials until a real one is added
       });
       this.currentUserId = user.uid;
       this.guest = false;

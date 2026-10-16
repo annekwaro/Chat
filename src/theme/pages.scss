@@ -1,9 +1,11 @@
-// Shared look for the Home, Explore and Discover tabs and their bottom sheets.
-// Scoped to those pages so it can't affect login, landing or chat.
+// Shared look for the Home, Explore, Discover and Chat tabs and their bottom sheets.
+// Scoped to those pages so it can't affect login or landing.
 app-tab1,
 app-tab2,
 app-tab4,
-.detail-sheet {
+app-home,
+.detail-sheet,
+.people-sheet {
   // Page title with a subtitle (Explore, Discover)
   .heading {
     h1 {

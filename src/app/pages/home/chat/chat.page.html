@@ -1,25 +1,67 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Chat</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="chat-bar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/home" text=""></ion-back-button>
+    </ion-buttons>
+    <div class="person" *ngIf="state === 'ready'">
+      <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
+      <h1 class="name">{{ otherName }}</h1>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div *ngFor="let msg of messages">
-    <p>
-      <strong>{{ msg.senderId === currentUserId ? 'Me' : 'Other' }}:</strong> {{
-      msg.text }}
-    </p>
-    <small>{{ msg.timestamp | date:'shortTime' }}</small>
+<ion-content class="messages">
+  <div *ngIf="state === 'loading'" class="center">
+    <ion-spinner name="dots"></ion-spinner>
   </div>
+
+  <div *ngIf="state === 'missing' || state === 'error'" class="center notice">
+    <ion-icon [name]="state === 'missing' ? 'chatbubbles-outline' : 'cloud-offline-outline'"></ion-icon>
+    <p *ngIf="state === 'missing'">This conversation isn’t available.</p>
+    <p *ngIf="state === 'error'">We couldn’t load this conversation. Check your connection and try again.</p>
+    <ion-button fill="outline" routerLink="/tabs/home" routerDirection="back">Back to chats</ion-button>
+  </div>
+
+  <ng-container *ngIf="state === 'ready'">
+    <div *ngIf="!messageCount" class="center notice hello">
+      <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
+      <h2>Say hello to {{ otherName }} 👋</h2>
+      <p>Be kind, and take your time. Messages are only seen by the two of you.</p>
+    </div>
+
+    <section *ngFor="let day of days" class="day">
+      <div class="day-label"><span>{{ day.label }}</span></div>
+      <app-chat-box
+        *ngFor="let message of day.messages; trackBy: trackMessage"
+        [message]="message"
+        [mine]="isMine(message)"
+      ></app-chat-box>
+    </section>
+  </ng-container>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="state === 'ready'" class="ion-no-border composer">
   <ion-toolbar>
-    <ion-input
-      placeholder="Type a message..."
-      [(ngModel)]="messageText"
-    ></ion-input>
-    <ion-button (click)="sendMessage()">Send</ion-button>
+    <div class="compose">
+      <ion-textarea
+        aria-label="Message"
+        placeholder="Message"
+        [(ngModel)]="text"
+        [autoGrow]="true"
+        [rows]="1"
+        [maxlength]="maxLength"
+        enterkeyhint="send"
+        (keydown)="onKeydown($event)"
+      ></ion-textarea>
+      <ion-button
+        class="send"
+        shape="round"
+        aria-label="Send message"
+        [disabled]="!canSend"
+        (click)="send()"
+      >
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-footer>

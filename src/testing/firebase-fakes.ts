@@ -39,9 +39,17 @@ class FakeDoc {
     this.store.data.set(this.path, { ...current, ...value });
   }
 
+  // Like Firestore, "a.b" keys update a nested field
   async update(value: Data) {
     if (!this.store.data.has(this.path)) throw new Error(`No document at ${this.path}`);
-    this.store.data.set(this.path, { ...this.store.data.get(this.path), ...value });
+    const next = structuredClone(this.store.data.get(this.path));
+    for (const [key, v] of Object.entries(value)) {
+      const parts = key.split('.');
+      let target = next;
+      for (const part of parts.slice(0, -1)) target = target[part] ??= {};
+      target[parts[parts.length - 1]] = v;
+    }
+    this.store.data.set(this.path, next);
   }
 
   async delete() {

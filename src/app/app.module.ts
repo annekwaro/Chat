@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 // Firebase (compat)
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment';
 
 @NgModule({
@@ -24,7 +24,11 @@ import { environment } from 'src/environments/environment';
     AngularFireAuthModule,
     AngularFirestoreModule,
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    // Local emulators for testing (auth is connected in AuthService)
+    { provide: USE_FIRESTORE_EMULATOR, useValue: environment.useEmulators ? ['127.0.0.1', 8080] : undefined },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

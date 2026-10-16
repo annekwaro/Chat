@@ -1,4 +1,3 @@
-import { UserListComponent } from './../../components/user-list/user-list.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,9 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
+import { AvatarComponent } from 'src/app/components/avatar/avatar.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, HomePageRoutingModule],
-  declarations: [HomePage, UserListComponent],
+  imports: [CommonModule, FormsModule, IonicModule, HomePageRoutingModule, AvatarComponent],
+  declarations: [HomePage],
 })
 export class HomePageModule {}

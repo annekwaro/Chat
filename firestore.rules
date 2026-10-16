@@ -42,8 +42,15 @@ service cloud.firestore {
     match /chats/{chatId} {
       allow read: if hasAccount()
         && (resource == null || request.auth.uid in resource.data.participants);
-      allow create: if hasAccount() && request.auth.uid in request.resource.data.participants;
-      allow update: if hasAccount() && request.auth.uid in resource.data.participants;
+      // Exactly two people, stored sorted, and the id is "uidA_uidB" so there's one chat per pair
+      allow create: if hasAccount()
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants.size() == 2
+        && chatId == request.resource.data.participants[0] + '_' + request.resource.data.participants[1];
+      // Participants update the preview and read receipts, but can't add or remove people
+      allow update: if hasAccount()
+        && request.auth.uid in resource.data.participants
+        && request.resource.data.participants == resource.data.participants;
 
       match /messages/{messageId} {
         function isParticipant() {
@@ -51,8 +58,12 @@ service cloud.firestore {
             get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
         }
         allow read: if hasAccount() && isParticipant();
+        // Messages can't be edited or deleted, and must be your own, non-empty text
         allow create: if hasAccount() && isParticipant()
-          && request.resource.data.senderId == request.auth.uid;
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000;
       }
     }
   }

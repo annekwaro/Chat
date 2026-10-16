@@ -1,25 +1,40 @@
-.own-message {
+:host {
+  display: flex;
+  margin: 2px 0;
+}
+
+.bubble {
+  max-width: 78%;
+  padding: 8px 12px 6px;
+  border-radius: 18px 18px 18px 4px;
+  background: #ffffff;
+  color: var(--ion-color-dark);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  &.mine {
+    margin-left: auto;
+    border-radius: 18px 18px 4px 18px;
+    background: var(--ion-color-primary);
+    color: #ffffff;
+
+    .time {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.35;
+  white-space: pre-wrap; // keep line breaks
+  overflow-wrap: anywhere; // long links don't overflow
+}
+
+.time {
+  display: block;
+  margin-top: 2px;
   text-align: right;
-  background-color: #dcf8c5;
-  border-radius: 10px;
-  padding: 8px;
-  margin: 8px;
-  max-width: 80%;
-  float: right;
-  clear: both;
-}
-
-.other-message {
-  text-align: left;
-  background-color: #ffffff;
-  border-radius: 10px;
-  padding: 8px;
-  margin: 8px;
-  max-width: 80%;
-  float: left;
-  clear: both;
-}
-
-ion-item-group {
-  overflow: auto;
+  font-size: 0.68rem;
+  color: var(--ion-color-medium);
 }

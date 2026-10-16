@@ -1,27 +1,19 @@
 import { Component, Input } from '@angular/core';
+import { Message } from 'src/app/services/chat/chat.service';
 
+// One message bubble: mine on the right in blue, theirs on the left in white
 @Component({
   selector: 'app-chat-box',
   templateUrl: './chat-box.component.html',
   styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent {
-  @Input() chat: any; // expects { text, senderId, timestamp }
-  @Input() current_user_id: string;
+  @Input() message!: Message;
+  @Input() mine = false;
 
-  isOwnMessage(): boolean {
-    return this.chat?.senderId === this.current_user_id;
-  }
-
-  getMessageText(): string {
-    return this.chat?.text || this.chat?.message;
-  }
-
-  getTime(): string {
-    if (!this.chat?.timestamp) return '';
-    if (this.chat.timestamp.toDate) {
-      return this.chat.timestamp.toDate().toLocaleTimeString();
-    }
-    return new Date(this.chat.timestamp).toLocaleTimeString();
+  get time(): string {
+    return this.message?.timestamp
+      ? this.message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : '';
   }
 }

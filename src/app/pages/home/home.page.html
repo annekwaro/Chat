@@ -1,100 +1,159 @@
-<ion-header class="title-header">
-  <ion-toolbar color="primary">
-    <ion-title>Chat</ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="light" class="top-bar">
+    <div class="heading">
+      <h1>Chat</h1>
+      <p *ngIf="!unreadCount">Talk things through with people you trust</p>
+      <p *ngIf="unreadCount" class="unread-summary">
+        {{ unreadCount }} unread conversation{{ unreadCount === 1 ? '' : 's' }}
+      </p>
+    </div>
     <ion-buttons slot="end">
-      <ion-button fill="clear" id="popover">
-        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+      <ion-button id="chat-menu" shape="round" aria-label="More options">
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-popover #popover trigger="popover" triggerAction="click">
+    <ion-popover trigger="chat-menu" triggerAction="click" [dismissOnSelect]="true">
       <ng-template>
-        <ion-content class="ion-padding ion-text-center" (click)="logout()">
-          <ion-label color="danger"> LOGOUT </ion-label>
-        </ion-content>
+        <ion-list lines="none">
+          <ion-item button [detail]="false" (click)="openPicker()">
+            <ion-icon slot="start" name="create-outline"></ion-icon>
+            <ion-label>New chat</ion-label>
+          </ion-item>
+          <ion-item button [detail]="false" (click)="logout()">
+            <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
+            <ion-label color="danger">Log out</ion-label>
+          </ion-item>
+        </ion-list>
       </ng-template>
     </ion-popover>
   </ion-toolbar>
-
-  <ion-segment
-    [value]="segment"
-    mode="md"
-    (ionChange)="onSegmentChanged($event)"
-  >
-    <ion-segment-button value="status">
-      <ion-label>Status</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="chats">
-      <ion-label>Chats</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="calls">
-      <ion-label>Calls</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+  <ion-toolbar color="light" *ngIf="chats.length">
+    <ion-searchbar
+      class="search"
+      placeholder="Search conversations"
+      [(ngModel)]="query"
+      [debounce]="150"
+    ></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content color="light">
-  <!-- RECENT CHATS LIST -->
-  <ion-list *ngIf="segment === 'chats'">
-    <ion-list-header class="ion-padding-bottom" color="light">
-      RECENT CHATS
-    </ion-list-header>
-    <ion-item
-      *ngFor="let room of chatRooms"
-      (click)="getChat(room)"
-      [detail]="true"
-    >
-      <ion-avatar slot="start">
-        <img
-          [src]="room?.participantPhotos?.[getOtherParticipant(room)] || 'https://i.pravatar.cc/300'"
-        />
-      </ion-avatar>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading -->
+  <ion-list *ngIf="loading" class="chat-list" lines="none">
+    <ion-item *ngFor="let i of [1, 2, 3, 4]" class="chat-item">
+      <ion-skeleton-text slot="start" [animated]="true" class="skeleton-avatar"></ion-skeleton-text>
       <ion-label>
-        {{ room?.participantNames?.[getOtherParticipant(room)] || 'User' }}
-        <p><ion-text>{{ room.lastMessage || 'No messages yet' }}</ion-text></p>
+        <h3><ion-skeleton-text [animated]="true" style="width: 45%"></ion-skeleton-text></h3>
+        <p><ion-skeleton-text [animated]="true" style="width: 75%"></ion-skeleton-text></p>
       </ion-label>
-      <ion-text slot="end" color="medium">
-        {{ (room.lastUpdated | date:'shortTime') }}
-      </ion-text>
-    </ion-item>
-    <ion-item *ngIf="chatRooms.length === 0" lines="none">
-      <ion-label class="ion-text-center"
-        >No chats yet. Start a new chat!</ion-label
-      >
     </ion-item>
   </ion-list>
 
-  <!-- FAB BUTTON -->
-  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
-    <ion-fab-button (click)="newChat()">
-      <ion-icon name="add"></ion-icon>
+  <!-- Couldn't load -->
+  <div *ngIf="!loading && error" class="empty">
+    <ion-icon name="cloud-offline-outline"></ion-icon>
+    <p>{{ error }}</p>
+    <ion-button fill="outline" (click)="start()">Try again</ion-button>
+  </div>
+
+  <!-- Conversations -->
+  <ion-list *ngIf="!loading && !error && chats.length" class="chat-list" lines="none">
+    <ion-item
+      *ngFor="let chat of filteredChats; trackBy: trackChat"
+      button
+      [detail]="false"
+      class="chat-item"
+      [class.unread]="chat.unread"
+      (click)="openChat(chat)"
+    >
+      <app-avatar slot="start" [name]="chat.name" [photo]="chat.photo"></app-avatar>
+      <ion-label>
+        <h3>{{ chat.name }}</h3>
+        <p class="preview">{{ chat.preview }}</p>
+      </ion-label>
+      <div slot="end" class="meta-end">
+        <span class="time">{{ time(chat.room) }}</span>
+        <span *ngIf="chat.unread" class="unread-dot" aria-label="Unread"></span>
+      </div>
+    </ion-item>
+    <div *ngIf="!filteredChats.length" class="empty">
+      <p>No conversations match “{{ query }}”.</p>
+    </div>
+  </ion-list>
+
+  <!-- No chats yet -->
+  <div *ngIf="!loading && !error && !chats.length" class="empty first-chat">
+    <img src="assets/imgs/image21.png" alt="" />
+    <h2>No conversations yet</h2>
+    <p>Reaching out is a strong first step. Start a chat with someone in the community.</p>
+    <ion-button shape="round" (click)="openPicker()">
+      <ion-icon slot="start" name="create-outline"></ion-icon>
+      Start a chat
+    </ion-button>
+  </div>
+
+  <ion-fab *ngIf="chats.length" slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button aria-label="New chat" (click)="openPicker()">
+      <ion-icon name="create-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <!-- NEW CHAT MODAL -->
-  <ion-modal [isOpen]="open_new_chat" (willDismiss)="onWillDismiss($event)">
+  <!-- New chat: pick a person -->
+  <ion-modal
+    #peopleSheet
+    class="people-sheet"
+    [isOpen]="pickerOpen"
+    [initialBreakpoint]="0.85"
+    [breakpoints]="[0, 0.85, 1]"
+    (didDismiss)="pickerOpen = false"
+  >
     <ng-template>
-      <ion-header>
-        <ion-toolbar color="primary">
-          <ion-title>New Chat</ion-title>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title>New chat</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="cancel()">Cancel</ion-button>
+            <ion-button (click)="pickerOpen = false">Cancel</ion-button>
           </ion-buttons>
         </ion-toolbar>
+        <ion-toolbar>
+          <ion-searchbar
+            class="search"
+            placeholder="Search people"
+            [(ngModel)]="userQuery"
+            [debounce]="150"
+          ></ion-searchbar>
+        </ion-toolbar>
       </ion-header>
-      <ion-content color="light">
-        <ion-list lines="full">
-          <ion-item *ngFor="let user of users" (click)="startChat(user)">
-            <ion-avatar slot="start">
-              <img [src]="user.photo || 'https://i.pravatar.cc/300'" />
-            </ion-avatar>
-            <ion-label>{{ user.name || user.email }}</ion-label>
-          </ion-item>
-          <ion-item *ngIf="users.length === 0" lines="none">
-            <ion-label class="ion-text-center"
-              >No other users found. Create a second user.</ion-label
-            >
+      <ion-content>
+        <ion-list *ngIf="usersLoading && !users.length" lines="none">
+          <ion-item *ngFor="let i of [1, 2, 3]">
+            <ion-skeleton-text slot="start" [animated]="true" class="skeleton-avatar"></ion-skeleton-text>
+            <ion-label><ion-skeleton-text [animated]="true" style="width: 50%"></ion-skeleton-text></ion-label>
           </ion-item>
         </ion-list>
+        <ion-list *ngIf="filteredUsers.length" lines="full">
+          <ion-item
+            *ngFor="let user of filteredUsers"
+            button
+            [disabled]="starting"
+            (click)="startChat(user)"
+          >
+            <app-avatar slot="start" [name]="user.name" [photo]="user.photo"></app-avatar>
+            <ion-label>
+              <h3>{{ user.name }}</h3>
+            </ion-label>
+            <ion-icon slot="end" name="chatbubble-outline" color="primary"></ion-icon>
+          </ion-item>
+        </ion-list>
+        <div *ngIf="!usersLoading && !filteredUsers.length" class="empty">
+          <ion-icon name="people-outline"></ion-icon>
+          <p *ngIf="userQuery">No one matches “{{ userQuery }}”.</p>
+          <p *ngIf="!userQuery">No one else has joined yet. Invite a friend to Soul App to chat.</p>
+        </div>
       </ion-content>
     </ng-template>
   </ion-modal>

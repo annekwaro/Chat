@@ -4,6 +4,8 @@
 //configuration from firebase.configuration
 export const environment = {
   production: false,
+  // true = talk to the local Firebase emulators instead of the real project (see environment.emulator.ts)
+  useEmulators: false,
   firebaseConfig: {
     apiKey: 'AIzaSyDBKdTW5gp5SdpV7HDBSzwvtCcm-VqhmQM',
     authDomain: 'chat-app-376e6.firebaseapp.com',

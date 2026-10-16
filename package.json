@@ -6,6 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:emulator": "ng serve --configuration emulator",
+    "emulators": "FIREBASE_CLI_EXPERIMENTS=webframeworks firebase emulators:start --only auth,firestore --project demo-soul-app",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

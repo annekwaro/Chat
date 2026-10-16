@@ -8,9 +8,10 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 
 import { ChatPage } from './chat.page';
 import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component';
+import { AvatarComponent } from 'src/app/components/avatar/avatar.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ChatPageRoutingModule],
+  imports: [CommonModule, FormsModule, IonicModule, ChatPageRoutingModule, AvatarComponent],
   declarations: [ChatPage, ChatBoxComponent],
 })
 export class ChatPageModule {}
