@@ -310,6 +310,12 @@
 }
 
 .disclaimer {
+  a {
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    text-decoration: none;
+  }
+
   display: flex;
   gap: 12px;
   align-items: flex-start;

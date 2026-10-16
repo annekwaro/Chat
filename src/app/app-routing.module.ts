@@ -57,6 +57,10 @@ const routes: Routes = [
 
   // Public pages
   {
+    path: 'help',
+    loadComponent: () => import('./pages/help/help.page').then((m) => m.HelpPage),
+  },
+  {
     path: 'landing',
     loadChildren: () =>
       import('./pages/landing/landing.module').then((m) => m.LandingPageModule),
@@ -71,23 +75,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./signup2/signup2.module').then((m) => m.Signup2PageModule),
   },
-  {
-    path: 'login',
-    loadChildren: () =>
-      import('./pages/login/login.module').then((m) => m.LoginPageModule),
-  },
-  {
-    path: 'sign-up',
-    loadChildren: () =>
-      import('./pages/sign-up/sign-up.module').then((m) => m.SignUpPageModule),
-  },
-  {
-    path: 'reset-password',
-    loadChildren: () =>
-      import('./pages/reset-password/reset-password.module').then(
-        (m) => m.ResetPasswordPageModule
-      ),
-  },
+  // Old links to the earlier login/sign-up pages
+  { path: 'login', redirectTo: 'login2', pathMatch: 'full' },
+  { path: 'sign-up', redirectTo: 'signup2', pathMatch: 'full' },
+  { path: 'reset-password', redirectTo: 'login2', pathMatch: 'full' },
 ];
 
 @NgModule({

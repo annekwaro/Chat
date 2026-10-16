@@ -97,7 +97,11 @@ export class HomePage implements OnInit, OnDestroy {
       room,
       name: profile?.name || room.participantNames[otherId] || 'Someone',
       photo: profile?.photo || room.participantPhotos[otherId] || '',
-      preview: room.lastMessage ? (mine ? 'You: ' : '') + room.lastMessage : 'Say hello 👋',
+      preview: this.chatService.blockedByMe(room, this.currentUserId)
+        ? 'Blocked'
+        : room.lastMessage
+          ? (mine ? 'You: ' : '') + room.lastMessage
+          : 'Say hello 👋',
       unread: this.chatService.isUnread(room, this.currentUserId),
     };
   }
@@ -126,9 +130,7 @@ export class HomePage implements OnInit, OnDestroy {
   get filteredUsers(): ChatUser[] {
     const q = this.userQuery.trim().toLowerCase();
     if (!q) return this.users;
-    return this.users.filter(
-      (u) => u.name.toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
-    );
+    return this.users.filter((u) => u.name.toLowerCase().includes(q));
   }
 
   get unreadCount(): number {

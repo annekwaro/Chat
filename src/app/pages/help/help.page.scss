@@ -1,0 +1,89 @@
+.intro {
+  margin: 4px 0 16px;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--ion-color-dark);
+}
+
+.card {
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.emergency {
+  border: 2px solid #ffd6da;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ion-color-danger);
+  }
+
+  p {
+    margin: 0 0 12px;
+    color: #5b6478;
+  }
+
+  ion-button {
+    min-height: 52px;
+    font-weight: 700;
+  }
+}
+
+.section-title {
+  margin: 24px 4px 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.lines {
+  padding: 0;
+  background: transparent;
+}
+
+.line {
+  --background: #ffffff;
+  --border-radius: 16px;
+  --min-height: 72px;
+  margin-bottom: 10px;
+  border-radius: 16px;
+
+  h2 {
+    font-weight: 600;
+  }
+
+  .number {
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    white-space: nowrap;
+  }
+}
+
+.outside {
+  min-height: 44px;
+  text-transform: none;
+}
+
+.steps {
+  ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    color: #5b6478;
+  }
+}
+
+.note {
+  margin: 20px 4px 8px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ion-color-medium);
+}

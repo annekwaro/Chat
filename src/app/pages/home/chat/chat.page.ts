@@ -1,9 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonContent, ToastController } from '@ionic/angular';
+import { ActionSheetController, AlertController, IonContent, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ChatRoom, ChatService, MAX_MESSAGE_LENGTH, Message } from 'src/app/services/chat/chat.service';
+import {
+  ChatRoom,
+  ChatService,
+  MAX_MESSAGE_LENGTH,
+  Message,
+  REPORT_REASONS,
+  ReportReason,
+} from 'src/app/services/chat/chat.service';
 
 export interface MessageDay {
   label: string;
@@ -50,6 +57,7 @@ export class ChatPage implements OnInit, OnDestroy {
   otherName = '';
   otherPhoto = '';
   days: MessageDay[] = [];
+  messages: Message[] = [];
   messageCount = 0;
   text = '';
   sending = false;
@@ -62,7 +70,10 @@ export class ChatPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private auth: AuthService,
     private chatService: ChatService,
-    private toast: ToastController
+    private toast: ToastController,
+    private actionSheets: ActionSheetController,
+    private alerts: AlertController,
+    private nav: NavController
   ) {}
 
   async ngOnInit() {
@@ -90,6 +101,7 @@ export class ChatPage implements OnInit, OnDestroy {
           const isNew = messages.length > this.messageCount;
           const first = this.messageCount === 0;
           this.messageCount = messages.length;
+          this.messages = messages;
           this.days = groupByDay(messages);
           if (isNew) this.scrollToBottom(first ? 0 : 300);
         },
@@ -119,8 +131,108 @@ export class ChatPage implements OnInit, OnDestroy {
     return message.id;
   }
 
+  get blocked(): boolean {
+    return !!this.room && this.chatService.isBlocked(this.room);
+  }
+
+  get blockedByMe(): boolean {
+    return !!this.room && this.chatService.blockedByMe(this.room, this.currentUserId);
+  }
+
   get canSend(): boolean {
-    return !!this.text.trim() && !this.sending && this.state === 'ready';
+    return !!this.text.trim() && !this.sending && this.state === 'ready' && !this.blocked;
+  }
+
+  async openMenu() {
+    const sheet = await this.actionSheets.create({
+      header: this.otherName,
+      buttons: [
+        { text: 'Get help now', icon: 'heart-outline', handler: () => this.openHelp() },
+        { text: `Report ${this.otherName}`, icon: 'flag-outline', handler: () => this.chooseReportReason() },
+        this.blockedByMe
+          ? { text: `Unblock ${this.otherName}`, icon: 'lock-open-outline', handler: () => this.unblock() }
+          : { text: `Block ${this.otherName}`, icon: 'ban-outline', role: 'destructive', handler: () => this.confirmBlock() },
+        { text: 'Cancel', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  openHelp() {
+    this.nav.navigateForward('/help');
+  }
+
+  async confirmBlock() {
+    const alert = await this.alerts.create({
+      header: `Block ${this.otherName}?`,
+      message: 'Neither of you will be able to send messages in this chat. You can unblock at any time.',
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Block', role: 'destructive', handler: () => this.block() },
+      ],
+    });
+    await alert.present();
+  }
+
+  async block() {
+    if (!this.room) return;
+    try {
+      await this.chatService.setBlocked(this.room, true);
+      this.showToast(`${this.otherName} is blocked.`, 'dark');
+    } catch (err) {
+      console.error('Block failed', err);
+      this.showToast('Couldn’t block right now. Please try again.');
+    }
+  }
+
+  async unblock() {
+    if (!this.room) return;
+    try {
+      await this.chatService.setBlocked(this.room, false);
+      this.showToast(`${this.otherName} is unblocked.`, 'dark');
+    } catch (err) {
+      console.error('Unblock failed', err);
+      this.showToast('Couldn’t unblock right now. Please try again.');
+    }
+  }
+
+  async chooseReportReason() {
+    const sheet = await this.actionSheets.create({
+      header: `Why are you reporting ${this.otherName}?`,
+      subHeader: 'Your report is private. They won’t be told who sent it.',
+      buttons: [
+        ...REPORT_REASONS.map((r) => ({ text: r.label, handler: () => this.report(r.value) })),
+        { text: 'Cancel', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  async report(reason: ReportReason) {
+    if (!this.room) return;
+    try {
+      await this.chatService.report(this.room, reason, this.messages);
+    } catch (err) {
+      console.error('Report failed', err);
+      this.showToast('Couldn’t send the report. Please try again.');
+      return;
+    }
+    const followUp = await this.alerts.create({
+      header: 'Thanks for telling us',
+      message:
+        reason === 'risk'
+          ? 'We’ll look at this. If someone is in danger right now, contact emergency services or a helpline.'
+          : this.blockedByMe
+            ? 'We’ll review this conversation.'
+            : `We’ll review this conversation. Do you also want to block ${this.otherName}?`,
+      buttons:
+        reason === 'risk'
+          ? [{ text: 'Close', role: 'cancel' }, { text: 'See helplines', handler: () => this.openHelp() }]
+          : this.blockedByMe
+            ? [{ text: 'OK', role: 'cancel' }]
+            : [{ text: 'Not now', role: 'cancel' }, { text: 'Block', role: 'destructive', handler: () => this.block() }],
+    });
+    await followUp.present();
   }
 
   // Enter sends; Shift+Enter starts a new line
@@ -163,8 +275,8 @@ export class ChatPage implements OnInit, OnDestroy {
     this.state = err?.code === 'permission-denied' ? 'missing' : 'error';
   }
 
-  private async showToast(message: string) {
-    const toast = await this.toast.create({ message, duration: 3000, position: 'top', color: 'danger' });
+  private async showToast(message: string, color = 'danger') {
+    const toast = await this.toast.create({ message, duration: 3000, position: 'top', color });
     await toast.present();
   }
 }

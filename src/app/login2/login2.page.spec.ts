@@ -53,4 +53,14 @@ describe('Login2Page', () => {
     component.continueWithoutAccount();
     expect(navigate).toHaveBeenCalledWith('/tabs/tab1', { replaceUrl: true });
   });
+
+  it('sends a password reset link for a valid email', async () => {
+    expect(await component.sendReset('me@example.com')).toBeTrue();
+    expect(TestBed.inject(AuthService).sendPasswordReset).toHaveBeenCalledWith('me@example.com');
+  });
+
+  it('keeps the reset box open for an invalid email', async () => {
+    expect(await component.sendReset('nope')).toBeFalse();
+    expect(TestBed.inject(AuthService).sendPasswordReset).not.toHaveBeenCalled();
+  });
 });

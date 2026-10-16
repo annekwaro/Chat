@@ -106,4 +106,17 @@ describe('HomePage (Chat list)', () => {
     expect(shortTime(new Date(2026, 9, 16, 9, 30), now)).toContain('30');
     expect(shortTime(undefined, now)).toBe('');
   });
+
+  it('labels chats I blocked', async () => {
+    await setup((data) => {
+      data.set('chats/alice_bob', {
+        participants: ['alice', 'bob'],
+        lastMessage: 'Something unkind',
+        lastSenderId: 'bob',
+        lastUpdated: new Date(),
+        blockedBy: ['alice'],
+      });
+    });
+    expect(component.chats[0].preview).toBe('Blocked');
+  });
 });

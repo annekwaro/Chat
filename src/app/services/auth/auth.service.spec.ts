@@ -34,13 +34,30 @@ describe('AuthService', () => {
     expect(afAuth.signInWithEmailAndPassword).toHaveBeenCalledWith('me@example.com', 'secret123');
   });
 
-  it('creates a profile document when registering', async () => {
+  it('creates a public profile without the email, and keeps the email private', async () => {
     const { service, firestore } = setup();
     await service.register({ email: 'new@example.com', password: 'secret123', username: 'New Person' });
-    expect(firestore.data.get('users/new-user')).toEqual(
-      jasmine.objectContaining({ uid: 'new-user', email: 'new@example.com', name: 'New Person' })
-    );
+    expect(firestore.data.get('users/new-user')).toEqual({ uid: 'new-user', name: 'New Person', photo: '' });
+    expect(firestore.data.get('users/new-user/private/account')).toEqual({ email: 'new@example.com' });
     expect(service.getId()).toBe('new-user');
+  });
+
+  it('moves an older account’s email out of the public profile on login', async () => {
+    const { service, firestore } = setup();
+    firestore.data.set('users/test-user', { uid: 'test-user', name: 'Old', email: 'old@example.com', photo: 'p.png' });
+    await service.login('old@example.com', 'secret123');
+    expect(firestore.data.get('users/test-user')).toEqual({ uid: 'test-user', name: 'Old', photo: 'p.png' });
+    expect(firestore.data.get('users/test-user/private/account')).toEqual({ email: 'old@example.com' });
+  });
+
+  it('sends a password reset without revealing whether the email exists', async () => {
+    const { service, afAuth } = setup();
+    afAuth.sendPasswordResetEmail = jasmine
+      .createSpy('sendPasswordResetEmail')
+      .and.rejectWith({ code: 'auth/user-not-found' });
+    await expectAsync(service.sendPasswordReset('nobody@example.com')).toBeResolved();
+    afAuth.sendPasswordResetEmail.and.rejectWith({ code: 'auth/network-request-failed' });
+    await expectAsync(service.sendPasswordReset('me@example.com')).toBeRejected();
   });
 
   it('starts a guest session without any details', async () => {
@@ -63,7 +80,7 @@ describe('AuthService', () => {
 
     expect(linkWithCredential).toHaveBeenCalled();
     expect(afAuth.createUserWithEmailAndPassword).not.toHaveBeenCalled();
-    expect(firestore.data.get('users/guest-user')?.['email']).toBe('me@example.com');
+    expect(firestore.data.get('users/guest-user/private/account')?.['email']).toBe('me@example.com');
     expect(service.isGuest()).toBeFalse();
     expect(await service.hasAccount()).toBeTrue();
   });

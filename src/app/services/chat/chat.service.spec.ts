@@ -97,4 +97,36 @@ describe('ChatService', () => {
     expect(toDate({ toDate: () => date })).toBe(date);
     expect(toDate(undefined)).toBeUndefined();
   });
+
+  it('blocks and unblocks, only changing my own entry', async () => {
+    const { service, firestore } = setup();
+    const id = await service.getOrCreateChatRoom(bob);
+    firestore.data.get(`chats/${id}`)!['blockedBy'] = ['bob'];
+    const room = (await firstValueFrom(service.watchRoom(id)))!;
+
+    await service.setBlocked(room, true);
+    expect(firestore.data.get(`chats/${id}`)!['blockedBy']).toEqual(['bob', 'alice']);
+    const blocked = (await firstValueFrom(service.watchRoom(id)))!;
+    expect(service.isBlocked(blocked)).toBeTrue();
+    expect(service.blockedByMe(blocked, 'alice')).toBeTrue();
+
+    await service.setBlocked(blocked, false);
+    expect(firestore.data.get(`chats/${id}`)!['blockedBy']).toEqual(['bob']);
+  });
+
+  it('files a report with the reason and recent messages', async () => {
+    const { service, firestore } = setup();
+    const id = await service.getOrCreateChatRoom(bob);
+    const room = (await firstValueFrom(service.watchRoom(id)))!;
+    const msgs = Array.from({ length: 25 }, (_, i) => ({ text: `m${i}`, senderId: 'bob', timestamp: new Date() }));
+    await service.report(room, 'harassment', msgs);
+
+    const [key] = [...firestore.data.keys()].filter((k) => k.startsWith('reports/'));
+    const report = firestore.data.get(key)!;
+    expect(report['reporterId']).toBe('alice');
+    expect(report['reportedId']).toBe('bob');
+    expect(report['reason']).toBe('harassment');
+    expect(report['messages'].length).toBe(20);
+    expect(report['messages'][19].text).toBe('m24');
+  });
 });

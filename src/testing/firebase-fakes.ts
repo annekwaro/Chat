@@ -170,6 +170,7 @@ export class FakeAuthService {
   login = jasmine.createSpy('login').and.resolveTo({ user: { uid: 'test-user' } });
   register = jasmine.createSpy('register').and.resolveTo({ user: { uid: 'test-user' } });
   logout = jasmine.createSpy('logout').and.resolveTo();
+  sendPasswordReset = jasmine.createSpy('sendPasswordReset').and.resolveTo();
 }
 
 export const fakeAngularFireAuth = () => ({
@@ -184,6 +185,7 @@ export const fakeAngularFireAuth = () => ({
     .createSpy('createUserWithEmailAndPassword')
     .and.resolveTo({ user: { uid: 'new-user' } }),
   signOut: jasmine.createSpy('signOut').and.resolveTo(),
+  sendPasswordResetEmail: jasmine.createSpy('sendPasswordResetEmail').and.resolveTo(),
 });
 
 // Replaces Firebase for a test; pass uid: null for no session, guest: true for a guest session.

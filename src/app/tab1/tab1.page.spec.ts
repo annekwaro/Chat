@@ -66,6 +66,13 @@ describe('Tab1Page (Home)', () => {
     expect(component.initials).toBe('AK');
   });
 
+  it('ignores the old random stock photo and shows initials instead', async () => {
+    await setup();
+    firestore.data.set('users/test-user', { name: 'Anne Kwaro', photo: 'https://i.pravatar.cc/300' });
+    await component.handleRefresh({ target: { complete: () => {} } });
+    expect(component.userPhoto).toBe('');
+  });
+
   it('flags the bell until today\'s mood is checked in', async () => {
     await setup();
     expect(component.needsCheckIn).toBeTrue();

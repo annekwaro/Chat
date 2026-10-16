@@ -21,12 +21,22 @@ export interface ChatRoom {
   lastSenderId?: string;
   lastUpdated?: Date;
   readBy?: { [uid: string]: Date }; // when each person last opened the chat
+  blockedBy?: string[]; // anyone listed here has blocked the chat: nobody can send
 }
+
+export type ReportReason = 'harassment' | 'spam' | 'hate' | 'risk' | 'other';
+
+export const REPORT_REASONS: { value: ReportReason; label: string }[] = [
+  { value: 'harassment', label: 'Harassment or bullying' },
+  { value: 'hate', label: 'Hate or discrimination' },
+  { value: 'spam', label: 'Spam or scam' },
+  { value: 'risk', label: 'I’m worried they may be at risk' },
+  { value: 'other', label: 'Something else' },
+];
 
 export interface ChatUser {
   uid: string;
   name: string;
-  email?: string;
   photo?: string;
 }
 
@@ -62,6 +72,7 @@ function toRoom(data: any): ChatRoom {
     participantPhotos: data.participantPhotos || {},
     lastUpdated: toDate(data.lastUpdated),
     readBy,
+    blockedBy: data.blockedBy || [],
   };
 }
 
@@ -99,6 +110,38 @@ export class ChatService {
       return false;
     const seen = room.readBy?.[myUid];
     return !seen || seen < room.lastUpdated;
+  }
+
+  isBlocked(room: ChatRoom): boolean {
+    return !!room.blockedBy?.length;
+  }
+
+  blockedByMe(room: ChatRoom, myUid: string | null): boolean {
+    return !!myUid && !!room.blockedBy?.includes(myUid);
+  }
+
+  // Blocking stops new messages in this chat (for both people) until I unblock
+  async setBlocked(room: ChatRoom, blocked: boolean): Promise<void> {
+    const uid = await this.requireUid();
+    const others = (room.blockedBy || []).filter((id) => id !== uid);
+    await this.afs
+      .collection('chats')
+      .doc(room.id)
+      .update({ blockedBy: blocked ? [...others, uid] : others });
+  }
+
+  // Saved to `reports` for the team to review in the Firebase console. Nobody can read
+  // a chat except its two people, so a copy of the recent messages goes with the report.
+  async report(room: ChatRoom, reason: ReportReason, recent: Message[]): Promise<void> {
+    const uid = await this.requireUid();
+    await this.afs.collection('reports').add({
+      chatId: room.id,
+      reporterId: uid,
+      reportedId: this.otherParticipant(room, uid),
+      reason,
+      messages: recent.slice(-20).map((m) => ({ text: m.text, senderId: m.senderId, timestamp: m.timestamp })),
+      createdAt: new Date(),
+    });
   }
 
   // My chats, most recent first. Sorted here rather than in the query, so Firestore
@@ -157,8 +200,7 @@ export class ChatService {
       .filter((u) => u.uid !== uid)
       .map((u) => ({
         uid: u.uid,
-        name: u.name || u.email || 'Someone',
-        email: u.email,
+        name: u.name || 'Someone',
         photo: u.photo || '',
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -175,7 +217,7 @@ export class ChatService {
       await doc.set({
         participants: [uid, other.uid].sort(),
         participantNames: {
-          [uid]: me.name || me.email || 'Someone',
+          [uid]: me.name || 'Someone',
           [other.uid]: other.name,
         },
         participantPhotos: {

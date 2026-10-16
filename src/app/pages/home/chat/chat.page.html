@@ -7,6 +7,11 @@
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
       <h1 class="name">{{ otherName }}</h1>
     </div>
+    <ion-buttons slot="end" *ngIf="state === 'ready'">
+      <ion-button id="chat-room-menu" aria-label="Chat options" (click)="openMenu()">
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -27,6 +32,10 @@
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
       <h2>Say hello to {{ otherName }} 👋</h2>
       <p>Be kind, and take your time. Messages are only seen by the two of you.</p>
+      <p class="peer-note">
+        Chat is support from other members, not a crisis service.
+        <a routerLink="/help">Need help now?</a>
+      </p>
     </div>
 
     <section *ngFor="let day of days" class="day">
@@ -40,7 +49,19 @@
   </ng-container>
 </ion-content>
 
-<ion-footer *ngIf="state === 'ready'" class="ion-no-border composer">
+<ion-footer *ngIf="state === 'ready' && blocked" class="ion-no-border composer">
+  <ion-toolbar>
+    <div class="blocked-note" *ngIf="blockedByMe">
+      <span>You blocked {{ otherName }}.</span>
+      <ion-button fill="clear" size="small" (click)="unblock()">Unblock</ion-button>
+    </div>
+    <div class="blocked-note" *ngIf="!blockedByMe">
+      <span>You can’t reply to this conversation.</span>
+    </div>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-footer *ngIf="state === 'ready' && !blocked" class="ion-no-border composer">
   <ion-toolbar>
     <div class="compose">
       <ion-textarea

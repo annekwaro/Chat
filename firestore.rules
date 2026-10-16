@@ -19,14 +19,18 @@ service cloud.firestore {
       return signedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
     }
 
-    // Profiles: people with an account can see the user list (needed to start a chat);
-    // guests can only see their own. Only you can change your own profile.
+    // Public profiles: name and photo only (emails live in the private account doc below).
+    // People with an account can see the list (needed to start a chat); guests only their own.
     match /users/{userId} {
       allow read: if hasAccount() || isOwner(userId);
-      allow write: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'photo']);
+      allow delete: if isOwner(userId);
 
-      // Private data: mood check-ins, diary notes, daily routine (guests included)
-      match /{document=**} {
+      // Private data: email, mood check-ins, diary notes, daily routine (guests included).
+      // {sub} makes this match only documents *below* the profile; a bare {document=**}
+      // would also match the profile itself and bypass the name/photo-only rule above.
+      match /{sub}/{document=**} {
         allow read, write: if isOwner(userId);
       }
     }
@@ -40,31 +44,58 @@ service cloud.firestore {
     // Chats need an account. Only participants can read or write a chat and its messages.
     // A chat that doesn't exist yet can be read (to check) and created by a participant.
     match /chats/{chatId} {
+      function blockedBy(data) {
+        return data.get('blockedBy', []);
+      }
+      // Each person can only add or remove themselves from blockedBy
+      function onlyOwnBlockChanged() {
+        let before = blockedBy(resource.data).toSet();
+        let after = blockedBy(request.resource.data).toSet();
+        return after.difference(before).hasOnly([request.auth.uid])
+          && before.difference(after).hasOnly([request.auth.uid]);
+      }
+
       allow read: if hasAccount()
         && (resource == null || request.auth.uid in resource.data.participants);
       // Exactly two people, stored sorted, and the id is "uidA_uidB" so there's one chat per pair
       allow create: if hasAccount()
         && request.auth.uid in request.resource.data.participants
         && request.resource.data.participants.size() == 2
-        && chatId == request.resource.data.participants[0] + '_' + request.resource.data.participants[1];
-      // Participants update the preview and read receipts, but can't add or remove people
+        && chatId == request.resource.data.participants[0] + '_' + request.resource.data.participants[1]
+        && blockedBy(request.resource.data).size() == 0;
+      // Participants update the preview, read receipts and their own block, but can't change
+      // who is in the chat. While blocked, only read receipts and blocks can change.
       allow update: if hasAccount()
         && request.auth.uid in resource.data.participants
-        && request.resource.data.participants == resource.data.participants;
+        && request.resource.data.participants == resource.data.participants
+        && onlyOwnBlockChanged()
+        && (blockedBy(resource.data).size() == 0
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['blockedBy', 'readBy']));
 
       match /messages/{messageId} {
-        function isParticipant() {
-          return request.auth.uid in
-            get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        function chat() {
+          return get(/databases/$(database)/documents/chats/$(chatId)).data;
         }
-        allow read: if hasAccount() && isParticipant();
-        // Messages can't be edited or deleted, and must be your own, non-empty text
-        allow create: if hasAccount() && isParticipant()
+        allow read: if hasAccount() && request.auth.uid in chat().participants;
+        // Messages can't be edited or deleted, must be your own non-empty text,
+        // and can't be sent while the chat is blocked
+        allow create: if hasAccount() && request.auth.uid in chat().participants
+          && chat().get('blockedBy', []).size() == 0
           && request.resource.data.senderId == request.auth.uid
           && request.resource.data.text is string
           && request.resource.data.text.size() > 0
           && request.resource.data.text.size() <= 2000;
       }
+    }
+
+    // Reports about a conversation, reviewed in the Firebase console.
+    // You can only report a chat you're in, and nobody can read reports from the app.
+    match /reports/{reportId} {
+      allow create: if hasAccount()
+        && request.resource.data.reporterId == request.auth.uid
+        && request.auth.uid in get(/databases/$(database)/documents/chats/$(request.resource.data.chatId)).data.participants
+        && request.resource.data.reason in ['harassment', 'spam', 'hate', 'risk', 'other'];
+      allow read, update, delete: if false;
     }
   }
 }

@@ -52,6 +52,9 @@
       </button>
     </div>
     <p *ngIf="selectedMood" class="mood-message">{{ selectedMood.message }}</p>
+    <a *ngIf="selectedMood && selectedMood.score <= 2" class="mood-help" routerLink="/help">
+      <ion-icon name="heart-outline"></ion-icon> Need to talk to someone now?
+    </a>
   </section>
 
   <!-- Search -->
@@ -164,11 +167,20 @@
     <p>No insights match your search.</p>
   </div>
 
+  <!-- Always within reach -->
+  <ion-item class="help-card" lines="none" button [detail]="true" routerLink="/help">
+    <ion-icon slot="start" name="heart" color="danger"></ion-icon>
+    <ion-label>
+      <h3>Need help now?</h3>
+      <p>Helplines and emergency contacts</p>
+    </ion-label>
+  </ion-item>
+
   <!-- Guests: optional nudge to create an account -->
   <section *ngIf="showGuestNote" class="guest-note">
     <div class="guest-text">
       <p class="guest-title">You're using Soul as a guest</p>
-      <p>Create a free account to chat with a therapist and keep your diary on any device.</p>
+      <p>Create a free account to chat with others in the community and keep your diary on any device.</p>
       <ion-button class="guest-cta" size="small" shape="round" [routerLink]="['/signup2']">
         Create free account
       </ion-button>

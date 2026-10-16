@@ -64,3 +64,17 @@ ion-item {
 .skip {
   height: 44px;
 }
+
+.forgot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -6px;
+
+  ion-button {
+    height: 44px; // comfortable touch target
+    margin: 0;
+    --padding-end: 4px;
+    text-transform: none;
+    font-weight: 600;
+  }
+}

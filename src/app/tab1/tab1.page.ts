@@ -136,7 +136,9 @@ export class Tab1Page implements OnInit {
           .map((part: string) => part[0].toUpperCase())
           .join('');
       }
-      this.userPhoto = user?.photo || '';
+      // pravatar.cc was a random stock photo given to older accounts, not the person
+      const photo = user?.photo || '';
+      this.userPhoto = photo.includes('pravatar.cc') ? '' : photo;
     } catch (err) {
       console.error('Failed to load user profile', err);
     }

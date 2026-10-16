@@ -116,3 +116,30 @@
     --padding-end: 0;
   }
 }
+
+.peer-note {
+  margin-top: 4px;
+  font-size: 0.85rem;
+
+  a {
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    text-decoration: none;
+  }
+}
+
+.blocked-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+
+  ion-button {
+    height: 44px;
+    margin: 0;
+    font-weight: 600;
+  }
+}

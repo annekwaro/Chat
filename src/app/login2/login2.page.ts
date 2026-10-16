@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 import { AuthService } from '../services/auth/auth.service';
 
 @Component({
@@ -18,7 +19,9 @@ export class Login2Page implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alerts: AlertController,
+    private toasts: ToastController
   ) {}
 
   ngOnInit() {
@@ -46,6 +49,49 @@ export class Login2Page implements OnInit {
     }
   }
 
+  // Asks for the email (filled in from the form) and sends Firebase's reset link
+  async forgotPassword() {
+    const alert = await this.alerts.create({
+      header: 'Reset your password',
+      message: 'We’ll email you a link to choose a new password.',
+      inputs: [
+        {
+          name: 'email',
+          type: 'email',
+          placeholder: 'Email',
+          value: this.loginForm.value.email || '',
+          attributes: { autocomplete: 'email' },
+        },
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        { text: 'Send link', handler: (data) => this.sendReset((data?.email || '').trim()) },
+      ],
+    });
+    await alert.present();
+  }
+
+  // Returns false to keep the alert open when the email isn't valid
+  async sendReset(email: string): Promise<boolean> {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      this.showToast('Enter a valid email address.', 'danger');
+      return false;
+    }
+    try {
+      await this.authService.sendPasswordReset(email);
+      this.showToast(`If ${email} has an account, a reset link is on its way. Check your inbox.`);
+      return true;
+    } catch (error: any) {
+      this.showToast(this.describeError(error?.code), 'danger');
+      return false;
+    }
+  }
+
+  private async showToast(message: string, color?: string) {
+    const toast = await this.toasts.create({ message, duration: 4000, position: 'top', color });
+    await toast.present();
+  }
+
   continueWithoutAccount() {
     this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
   }
@@ -57,6 +103,8 @@ export class Login2Page implements OnInit {
       case 'auth/wrong-password':
       case 'auth/user-not-found':
         return "That email and password don't match an account.";
+      case 'auth/invalid-email':
+        return 'Enter a valid email address.';
       case 'auth/too-many-requests':
         return 'Too many attempts. Please wait a moment and try again.';
       case 'auth/network-request-failed':

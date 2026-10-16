@@ -17,14 +17,12 @@ export class AuthService {
   });
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
-    // Use direct Firebase auth listener
     const auth = getAuth();
     if (environment.useEmulators) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
     onAuthStateChanged(auth, (user) => {
       this.currentUserId = user?.uid || null;
       this.guest = !!user?.isAnonymous;
       this.authChecked = true;
-      console.log('🔐 onAuthStateChanged: user UID =', this.currentUserId);
       if (this.authResolve) {
         this.authResolve(this.currentUserId);
         this.authResolve = null;
@@ -63,8 +61,8 @@ export class AuthService {
     return this.currentUserId;
   }
 
-  // The signed-in user's profile document (users/{uid}), or null
-  async getProfile(): Promise<{ name?: string; photo?: string; email?: string } | null> {
+  // The signed-in user's public profile (users/{uid}: name and photo), or null
+  async getProfile(): Promise<{ name?: string; photo?: string } | null> {
     const uid = await this.getCurrentUserId();
     if (!uid) return null;
     const snap = await this.afs.doc(`users/${uid}`).ref.get();
@@ -74,14 +72,38 @@ export class AuthService {
   async login(email: string, password: string) {
     try {
       const res = await this.afAuth.signInWithEmailAndPassword(email, password);
-      console.log('✅ login success, user:', res.user?.uid);
       this.currentUserId = res.user?.uid || null;
       this.guest = false;
       this.authChecked = true;
+      if (this.currentUserId) await this.moveEmailToPrivate(this.currentUserId);
       return res;
     } catch (err) {
-      console.error('❌ login error:', err);
+      console.error('Login error', err);
       throw err;
+    }
+  }
+
+  // Sends Firebase's reset link. Resolves even for unknown emails, so the
+  // screen can't be used to find out who has an account.
+  async sendPasswordReset(email: string): Promise<void> {
+    try {
+      await this.afAuth.sendPasswordResetEmail(email);
+    } catch (err: any) {
+      if (err?.code !== 'auth/user-not-found') throw err;
+    }
+  }
+
+  // Older accounts kept their email in the shared profile, which every member can read.
+  // Move it to users/{uid}/private/account, which only the owner can read.
+  private async moveEmailToPrivate(uid: string) {
+    try {
+      const profile = this.afs.doc(`users/${uid}`);
+      const data = (await profile.ref.get()).data() as any;
+      if (!data?.email) return;
+      await this.afs.doc(`users/${uid}/private/account`).set({ email: data.email }, { merge: true });
+      await profile.set({ uid, name: data.name || '', photo: data.photo || '' });
+    } catch (err) {
+      console.warn('Could not update profile privacy', err);
     }
   }
 
@@ -95,12 +117,13 @@ export class AuthService {
       : await this.afAuth.createUserWithEmailAndPassword(formValue.email, formValue.password);
     const user = res.user;
     if (user) {
+      // Public profile: what other members see in chat. No email here.
       await this.afs.collection('users').doc(user.uid).set({
         uid: user.uid,
-        email: formValue.email,
         name: formValue.username,
         photo: '', // no stock photo: the app shows initials until a real one is added
       });
+      await this.afs.doc(`users/${user.uid}/private/account`).set({ email: formValue.email });
       this.currentUserId = user.uid;
       this.guest = false;
       this.authChecked = true;

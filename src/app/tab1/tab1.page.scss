@@ -94,6 +94,30 @@
   color: var(--ion-color-primary);
 }
 
+.mood-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ion-color-danger);
+  text-decoration: none;
+}
+
+.help-card {
+  --background: #fff1f2;
+  --border-radius: 16px;
+  --min-height: 64px;
+  margin: 8px 16px 16px;
+  border-radius: 16px;
+
+  h3 {
+    font-weight: 700;
+    color: var(--ion-color-dark);
+  }
+}
+
 // Featured carousel
 .featured {
   margin-bottom: 4px;

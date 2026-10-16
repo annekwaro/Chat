@@ -19,6 +19,10 @@
             <ion-icon slot="start" name="create-outline"></ion-icon>
             <ion-label>New chat</ion-label>
           </ion-item>
+          <ion-item button [detail]="false" routerLink="/help">
+            <ion-icon slot="start" name="heart-outline"></ion-icon>
+            <ion-label>Get help now</ion-label>
+          </ion-item>
           <ion-item button [detail]="false" (click)="logout()">
             <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
             <ion-label color="danger">Log out</ion-label>
