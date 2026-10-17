@@ -31,7 +31,7 @@ describe('Signup2Page', () => {
   it('explains why when sent from Chat, and tells guests their data comes along', async () => {
     await setup({ reason: 'chat', returnUrl: '/tabs/home' }, true);
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain('Chat with a therapist');
+    expect(text).toContain('Sign up to chat');
     expect(text).toContain('Your mood diary and routine come with you');
   });
 

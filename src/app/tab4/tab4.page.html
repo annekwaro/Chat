@@ -5,7 +5,7 @@
       <p>Tools to understand and care for your mind</p>
     </div>
   </ion-toolbar>
-  <ion-toolbar color="light" class="segment-bar">
+  <ion-toolbar class="segment-bar">
     <ion-segment [(ngModel)]="segment" mode="ios">
       <ion-segment-button value="learn">
         <ion-label>Learn</ion-label>
@@ -63,7 +63,7 @@
             class="bar"
             [style.height.%]="day.height"
             [style.background]="day.mood?.color || null"
-            [class.empty]="!day.mood"
+            [class.no-mood]="!day.mood"
           >
             <app-mood-face *ngIf="day.mood" [mood]="day.mood"></app-mood-face>
           </div>
@@ -207,13 +207,15 @@
     <!-- Routine -->
     <div class="routine-header">
       <h3 class="section-title">Today's routine</h3>
-      <span class="routine-count">{{ doneCount }} of {{ routine.length }} done</span>
+      <span *ngIf="routine.length" class="routine-count">{{ doneCount }} of {{ routine.length }} done</span>
     </div>
-    <ion-progress-bar
-      class="routine-progress"
-      [value]="routine.length ? doneCount / routine.length : 0"
-    ></ion-progress-bar>
-    <p class="hint">Tick things off, drag ☰ to reorder, swipe left to remove.</p>
+    <ng-container *ngIf="routine.length">
+      <ion-progress-bar class="routine-progress" [value]="doneCount / routine.length"></ion-progress-bar>
+      <p class="hint">Tick things off, drag ☰ to reorder, swipe left to remove.</p>
+    </ng-container>
+    <p *ngIf="!routine.length" class="hint">
+      Add a few small things to do today, like a walk, a glass of water or calling a friend.
+    </p>
 
     <ion-list lines="none" class="routine">
       <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">

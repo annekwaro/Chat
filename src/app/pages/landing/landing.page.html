@@ -1,111 +1,42 @@
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <swiper-container
-          grab-cursor="true"
-          [modules]="swiperModules"
-          slides-per-view="1"
-          keyboard="true"
-          rewind="true"
-          autoplay-delay="3000"
-          pagination="true"
-        >
-          <!-- Slide 1 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
+  <div class="landing">
+    <div class="brand-row">
+      <span class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></span>
+      <span class="brand-name">Soul App</span>
+    </div>
 
-              <img
-                src="assets/imgs/image36.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
+    <swiper-container
+      class="intro"
+      grab-cursor="true"
+      [modules]="swiperModules"
+      slides-per-view="1"
+      keyboard="true"
+      rewind="true"
+      autoplay-delay="3500"
+      pagination="true"
+    >
+      <swiper-slide *ngFor="let slide of slides">
+        <div class="art" [style.background]="slide.tint">
+          <img [src]="slide.image" alt="" />
+        </div>
+        <h1>{{ slide.title }}</h1>
+        <p>{{ slide.text }}</p>
+      </swiper-slide>
+    </swiper-container>
 
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content"> </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-          <!-- Slide 2 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
-              <img
-                src="assets/imgs/image37.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content"> </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-          <!-- Slide 3 -->
-          <swiper-slide>
-            <ion-card class="custom-card">
-              <!-- Card Image -->
-
-              <img
-                src="assets/imgs/image38.png"
-                alt="Descriptive Alt Text"
-                class="custom-card-img"
-              />
-              <!-- Card Header (Optional) 
-          <ion-card-header class="custom-card-header">
-            <ion-card-title>Card Title</ion-card-title>
-            <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-          </ion-card-header>-->
-
-              <!-- Card Content -->
-              <ion-card-content class="custom-card-content"> </ion-card-content>
-
-              <!-- Card Button -->
-            </ion-card>
-          </swiper-slide>
-        </swiper-container>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <h2 class="custom-title" class="ion-text-center">Soul App</h2>
-
-        <p class="ion-text-center">
-          Start your journey with Soul App. We will tailor your experience to
-          your needs.
-        </p>
-
-        <!-- No sign-up needed: guests get a session and can create an account later -->
-        <ion-button
-          class="get-started"
-          shape="round"
-          expand="block"
-          [routerLink]="['/tabs/tab1']"
-          [replaceUrl]="true"
-          >Get started</ion-button
-        >
-        <ion-button
-          class="have-account"
-          fill="clear"
-          expand="block"
-          [routerLink]="['/login2']"
-          >I already have an account</ion-button
-        >
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <div class="actions">
+      <!-- No sign-up needed: guests get a session and can create an account later -->
+      <ion-button
+        class="get-started"
+        shape="round"
+        expand="block"
+        [routerLink]="['/tabs/tab1']"
+        [replaceUrl]="true"
+        >Get started</ion-button
+      >
+      <ion-button class="have-account" fill="clear" expand="block" [routerLink]="['/login2']"
+        >I already have an account</ion-button
+      >
+    </div>
+  </div>
 </ion-content>

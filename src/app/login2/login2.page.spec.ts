@@ -25,6 +25,16 @@ describe('Login2Page', () => {
     expect(component).toBeTruthy();
   });
 
+  it('shows and hides the password', () => {
+    const reveal: HTMLElement = fixture.nativeElement.querySelector('.reveal');
+    const input = () => fixture.nativeElement.querySelector('ion-input[formControlName=password]');
+    expect(input().type).toBe('password');
+    reveal.click();
+    fixture.detectChanges();
+    expect(input().type).toBe('text');
+    expect(reveal.getAttribute('aria-label')).toBe('Hide password');
+  });
+
   it("doesn't try to log in with an invalid form", async () => {
     component.loginForm.setValue({ email: 'not-an-email', password: '123' });
     await component.login();

@@ -18,6 +18,27 @@ register();
 export class LandingPage {
   swiperModules = [IonicSlides];
 
+  readonly slides = [
+    {
+      image: 'assets/imgs/image36.png',
+      tint: '#e4edff',
+      title: 'Check in with yourself',
+      text: 'Log how you feel in a few taps and watch your mood over time.',
+    },
+    {
+      image: 'assets/imgs/image37.png',
+      tint: '#ffe9ef',
+      title: 'Talk things through',
+      text: 'Chat one-to-one with people in the community, whenever you need.',
+    },
+    {
+      image: 'assets/imgs/image38.png',
+      tint: '#e3f6e8',
+      title: 'Find your calm',
+      text: 'Breathing, a daily routine and guides to understand your mind.',
+    },
+  ];
+
   constructor(private auth: AuthService, private router: Router) {}
 
   // Returning visitors (guest or signed in) go straight into the app

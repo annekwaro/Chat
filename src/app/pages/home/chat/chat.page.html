@@ -5,7 +5,10 @@
     </ion-buttons>
     <div class="person" *ngIf="state === 'ready'">
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
-      <h1 class="name">{{ otherName }}</h1>
+      <div class="who">
+        <h1 class="name">{{ otherName }}</h1>
+        <p class="status">{{ blocked ? 'Blocked' : 'Community member' }}</p>
+      </div>
     </div>
     <ion-buttons slot="end" *ngIf="state === 'ready'">
       <ion-button id="chat-room-menu" aria-label="Chat options" (click)="openMenu()">
@@ -40,8 +43,21 @@
 
     <section *ngFor="let day of days" class="day">
       <div class="day-label"><span>{{ day.label }}</span></div>
-      <ng-container *ngFor="let message of day.messages; trackBy: trackMessage">
-        <app-chat-box [message]="message" [mine]="isMine(message)"></app-chat-box>
+      <ng-container *ngFor="let message of day.messages; let i = index; trackBy: trackMessage">
+        <div
+          class="row"
+          [class.mine]="isMine(message)"
+          [class.run-end]="endsRun(day.messages, i)"
+        >
+          <span *ngIf="!isMine(message)" class="row-avatar">
+            <app-avatar *ngIf="endsRun(day.messages, i)" [name]="otherName" [photo]="otherPhoto"></app-avatar>
+          </span>
+          <app-chat-box
+            [message]="message"
+            [mine]="isMine(message)"
+            [tail]="endsRun(day.messages, i)"
+          ></app-chat-box>
+        </div>
         <p *ngIf="message.id === lastMineId" class="receipt" [class.seen]="seen(message)">
           <ion-icon [name]="seen(message) ? 'checkmark-done' : 'checkmark'"></ion-icon>
           {{ seen(message) ? 'Seen' : 'Sent' }}

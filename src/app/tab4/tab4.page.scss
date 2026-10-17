@@ -4,27 +4,34 @@
 }
 
 .segment-bar {
+  --background: var(--ion-color-light);
   padding: 4px 16px 8px;
 
+  // White pill with the selected tab in blue
   ion-segment {
     width: 100%;
-    --background: #ccdefe;
+    padding: 4px;
+    border-radius: 24px;
+    --background: #ffffff;
+    box-shadow: 0 4px 14px rgba(16, 24, 64, 0.06);
   }
 
   ion-segment-button {
-    --indicator-color: #ffffff;
-    --color: var(--ion-color-primary);
-    --color-checked: var(--ion-color-primary);
+    --indicator-color: var(--ion-color-primary);
+    --indicator-box-shadow: 0 4px 10px rgba(5, 88, 231, 0.25);
+    --border-radius: 20px;
+    --color: #5b6478;
+    --color-checked: #ffffff;
     min-height: 40px;
     font-weight: 600;
 
-    &::part(indicator-background) {
-      background: #ffffff;
+    &::before {
+      display: none; // no dividers between the options
     }
 
-    // the light toolbar otherwise turns the selected label white
-    &.segment-button-checked::part(native) {
-      color: var(--ion-color-primary);
+    &::part(indicator-background) {
+      border-radius: 20px;
+      background: var(--ion-color-primary);
     }
   }
 }
@@ -193,7 +200,8 @@
   border-radius: 20px;
   transition: height 0.3s ease;
 
-  &.empty {
+  // not ".empty": that's the shared empty-state style with big padding
+  &.no-mood {
     background: #e6e9f2;
   }
 

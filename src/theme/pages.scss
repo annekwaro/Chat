@@ -24,9 +24,12 @@ app-home,
 
   .search {
     padding: 4px 16px;
-    --background: #ccdefe;
+    --background: #ffffff;
     --border-radius: 25px;
-    --box-shadow: none;
+    --box-shadow: 0 4px 14px rgba(16, 24, 64, 0.06);
+    --icon-color: var(--ion-color-primary);
+    --placeholder-color: #8a90a2;
+    --placeholder-opacity: 1;
   }
 
   // Same height and alignment on iOS and Android

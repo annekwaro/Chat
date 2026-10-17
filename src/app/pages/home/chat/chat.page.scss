@@ -1,6 +1,8 @@
 .chat-bar {
   --background: #ffffff;
-  border-bottom: 1px solid #eef0f4;
+  --min-height: 64px;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 6px 20px rgba(16, 24, 64, 0.06);
 
   .person {
     display: flex;
@@ -9,7 +11,17 @@
     min-width: 0;
 
     app-avatar {
-      --size: 40px;
+      --size: 42px;
+    }
+
+    .who {
+      min-width: 0;
+    }
+
+    .status {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--ion-color-medium);
     }
 
     .name {
@@ -25,7 +37,7 @@
 }
 
 .messages {
-  --background: #f4f6fb;
+  --background: var(--ion-color-light);
   --padding-start: 12px;
   --padding-end: 12px;
   --padding-top: 8px;
@@ -40,7 +52,8 @@
   span {
     padding: 4px 12px;
     border-radius: 12px;
-    background: #e3e8f3;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(16, 24, 64, 0.04);
     font-size: 0.72rem;
     font-weight: 600;
     color: #5b6478;
@@ -81,28 +94,56 @@
   --size: 72px;
 }
 
-.composer ion-toolbar {
-  --background: #ffffff;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --padding-top: 6px;
-  --padding-bottom: 6px;
-  border-top: 1px solid #eef0f4;
+// One row per message; their messages have a small avatar column on the left
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 2px 0;
+
+  &.run-end {
+    margin-bottom: 10px;
+  }
+
+  &.mine {
+    justify-content: flex-end;
+  }
 }
 
+.row-avatar {
+  flex-shrink: 0;
+  width: 28px;
+
+  app-avatar {
+    --size: 28px;
+  }
+}
+
+.composer ion-toolbar {
+  --background: var(--ion-color-light);
+  --border-width: 0;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 8px;
+  --padding-bottom: 10px;
+}
+
+// White pill holding the text box and the send button
 .compose {
   display: flex;
   align-items: flex-end;
   gap: 6px;
+  padding: 4px 4px 4px 6px;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(16, 24, 64, 0.08);
 
   ion-textarea {
     flex: 1;
     min-height: 44px;
     max-height: 140px;
     margin: 0;
-    padding: 0 14px;
-    border-radius: 22px;
-    background: #f1f3f8;
+    padding: 0 12px;
     --padding-top: 11px;
     --padding-bottom: 11px;
     overflow-y: auto;
@@ -114,6 +155,13 @@
     margin: 0;
     --padding-start: 0;
     --padding-end: 0;
+    --box-shadow: none;
+
+    &[disabled] {
+      --background: #e6e9f2;
+      --color: #9aa1b5;
+      opacity: 1;
+    }
   }
 }
 
@@ -149,7 +197,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 3px;
-  margin: 2px 4px 6px;
+  margin: -6px 4px 8px;
   font-size: 0.7rem;
   color: var(--ion-color-medium);
 

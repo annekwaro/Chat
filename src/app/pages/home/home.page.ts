@@ -141,6 +141,10 @@ export class HomePage implements OnInit, OnDestroy {
     return shortTime(room.lastUpdated);
   }
 
+  firstName(name: string): string {
+    return (name || '').trim().split(/\s+/)[0] || 'Someone';
+  }
+
   trackChat(_: number, chat: ChatPreview) {
     return chat.room.id;
   }

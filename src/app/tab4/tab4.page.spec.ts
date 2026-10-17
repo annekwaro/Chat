@@ -90,7 +90,7 @@ describe('Tab4Page (Discover)', () => {
     const bars = fixture.nativeElement.querySelectorAll('.chart .bar');
     expect(bars.length).toBe(7);
     expect(bars[6].querySelector('app-mood-face')).toBeTruthy();
-    expect(bars[4].classList).toContain('empty');
+    expect(bars[4].classList).toContain('no-mood');
   });
 
   it('builds a Monday-first calendar for the month, with faces on logged days', async () => {

@@ -11,7 +11,7 @@ const MOUTHS: Record<number, string> = {
   5: 'M14.5 27.5 Q24 39 33.5 27.5 Z',
 };
 
-// A simple round face in the mood's colour. Grey and blank when there's no mood.
+// A simple round face in the mood's colour. A faint grey face when there's no mood yet.
 // Size it with the --size CSS variable (default 40px).
 @Component({
   selector: 'app-mood-face',
@@ -25,6 +25,11 @@ const MOUTHS: Record<number, string> = {
         <circle cx="31" cy="20" r="2.6" class="ink" />
         <path *ngIf="mood.score === 1" d="M12.5 16.5 L20 13.5 M35.5 16.5 L28 13.5" class="line" />
         <path [attr.d]="mouth" class="line" [class.filled]="mood.score === 5" />
+      </ng-container>
+      <ng-container *ngIf="!mood">
+        <circle cx="17" cy="21" r="2.4" class="faint-ink" />
+        <circle cx="31" cy="21" r="2.4" class="faint-ink" />
+        <path d="M18 31 Q24 33 30 31" class="line faint" />
       </ng-container>
     </svg>
   `,
@@ -52,6 +57,12 @@ const MOUTHS: Record<number, string> = {
       }
       .filled {
         fill: #2d2a3e;
+      }
+      .faint-ink {
+        fill: #b4bbd0;
+      }
+      .line.faint {
+        stroke: #b4bbd0;
       }
     `,
   ],

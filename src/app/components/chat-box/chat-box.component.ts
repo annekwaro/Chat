@@ -10,6 +10,7 @@ import { Message } from 'src/app/services/chat/chat.service';
 export class ChatBoxComponent {
   @Input() message!: Message;
   @Input() mine = false;
+  @Input() tail = true; // false for a message followed by another from the same person
 
   get time(): string {
     return this.message?.timestamp

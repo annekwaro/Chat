@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class Signup2Page implements OnInit {
   signupForm: FormGroup;
-  isTypePassword: boolean = true;
+  showPassword = false;
   isLoading: boolean = false;
   errorMessage = '';
   returnUrl = '/tabs/tab1';
@@ -66,10 +66,6 @@ export class Signup2Page implements OnInit {
     // Chat is the page that needed an account, so go home instead of back there
     const back = this.reason === 'chat' ? '/tabs/tab1' : this.returnUrl;
     this.router.navigateByUrl(back, { replaceUrl: true });
-  }
-
-  onChange() {
-    this.isTypePassword = !this.isTypePassword;
   }
 
   private describeError(code: string | undefined): string {

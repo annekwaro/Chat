@@ -139,6 +139,11 @@ export class ChatPage implements OnInit, OnDestroy {
     return !!opened && opened >= message.timestamp;
   }
 
+  // Last of a run of messages from the same person: gets the bubble tail and their avatar
+  endsRun(messages: Message[], i: number): boolean {
+    return messages[i + 1]?.senderId !== messages[i].senderId;
+  }
+
   isMine(message: Message): boolean {
     return message.senderId === this.currentUserId;
   }

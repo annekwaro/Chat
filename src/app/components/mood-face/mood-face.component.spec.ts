@@ -18,10 +18,11 @@ describe('MoodFaceComponent', () => {
     expect(el.querySelector('svg')?.getAttribute('aria-label')).toBe('Great');
   });
 
-  it('is a plain grey circle when there is no check-in', () => {
+  it('is a faint grey face when there is no check-in', () => {
     const el = render(null);
     expect(el.querySelector('circle')?.getAttribute('fill')).toBe('#e6e9f2');
-    expect(el.querySelectorAll('path').length).toBe(0);
+    expect(el.querySelectorAll('.faint').length).toBe(1);
+    expect(el.querySelectorAll('.ink').length).toBe(0);
   });
 
   it('has a different mouth for every mood', () => {

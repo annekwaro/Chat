@@ -7,11 +7,13 @@
 </ion-header>
 
 <ion-content>
+  <div class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></div>
   <h1 class="title">Welcome back</h1>
   <p class="subtitle">Log in to chat and keep your diary on every device.</p>
 
   <form [formGroup]="loginForm" (ngSubmit)="login()">
-    <ion-item>
+    <ion-item class="field" lines="none">
+      <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
       <ion-input
         label="Email"
         labelPlacement="floating"
@@ -24,14 +26,24 @@
       <ion-icon name="alert-circle-outline"></ion-icon> Enter a valid email address
     </p>
 
-    <ion-item>
+    <ion-item class="field" lines="none">
+      <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
       <ion-input
         label="Password"
         labelPlacement="floating"
         formControlName="password"
-        type="password"
+        [type]="showPassword ? 'text' : 'password'"
         autocomplete="current-password"
       ></ion-input>
+      <ion-button
+        slot="end"
+        fill="clear"
+        class="reveal"
+        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        (click)="showPassword = !showPassword"
+      >
+        <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+      </ion-button>
     </ion-item>
     <p class="field-error" *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
       <ion-icon name="alert-circle-outline"></ion-icon> Password must be at least 6 characters

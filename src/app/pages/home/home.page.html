@@ -2,12 +2,15 @@
   <ion-toolbar color="light" class="top-bar">
     <div class="heading">
       <h1>Chat</h1>
-      <p *ngIf="!unreadCount">Talk things through with people you trust</p>
+      <p *ngIf="!unreadCount">Talk with people you trust</p>
       <p *ngIf="unreadCount" class="unread-summary">
         {{ unreadCount }} unread conversation{{ unreadCount === 1 ? '' : 's' }}
       </p>
     </div>
     <ion-buttons slot="end">
+      <ion-button class="new-chat" shape="round" aria-label="New chat" (click)="openPicker()">
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+      </ion-button>
       <ion-button id="chat-menu" shape="round" aria-label="More options">
         <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
@@ -15,10 +18,6 @@
     <ion-popover trigger="chat-menu" triggerAction="click" [dismissOnSelect]="true">
       <ng-template>
         <ion-list lines="none">
-          <ion-item button [detail]="false" (click)="openPicker()">
-            <ion-icon slot="start" name="create-outline"></ion-icon>
-            <ion-label>New chat</ion-label>
-          </ion-item>
           <ion-item button [detail]="false" routerLink="/help">
             <ion-icon slot="start" name="heart-outline"></ion-icon>
             <ion-label>Get help now</ion-label>
@@ -31,7 +30,7 @@
       </ng-template>
     </ion-popover>
   </ion-toolbar>
-  <ion-toolbar color="light" *ngIf="chats.length">
+  <ion-toolbar class="search-bar" *ngIf="chats.length">
     <ion-searchbar
       class="search"
       placeholder="Search conversations"
@@ -64,7 +63,30 @@
     <ion-button fill="outline" (click)="start()">Try again</ion-button>
   </div>
 
+  <!-- People to start a chat with -->
+  <section *ngIf="!loading && !error && chats.length && users.length && !query" class="people">
+    <div class="section-title">
+      <h2>People</h2>
+      <button type="button" class="see-all" (click)="openPicker()">See all</button>
+    </div>
+    <div class="people-row">
+      <button
+        *ngFor="let user of users.slice(0, 12)"
+        type="button"
+        class="person"
+        [disabled]="starting"
+        (click)="startChat(user)"
+      >
+        <app-avatar [name]="user.name" [photo]="user.photo"></app-avatar>
+        <span>{{ firstName(user.name) }}</span>
+      </button>
+    </div>
+  </section>
+
   <!-- Conversations -->
+  <div *ngIf="!loading && !error && chats.length" class="section-title">
+    <h2>Messages</h2>
+  </div>
   <ion-list *ngIf="!loading && !error && chats.length" class="chat-list" lines="none">
     <ion-item
       *ngFor="let chat of filteredChats; trackBy: trackChat"
@@ -99,12 +121,6 @@
       Start a chat
     </ion-button>
   </div>
-
-  <ion-fab *ngIf="chats.length" slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button aria-label="New chat" (click)="openPicker()">
-      <ion-icon name="create-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 
   <!-- New chat: pick a person -->
   <ion-modal

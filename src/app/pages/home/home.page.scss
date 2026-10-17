@@ -2,6 +2,82 @@
   padding: 8px 8px 0 16px;
 }
 
+.search-bar {
+  --background: var(--ion-color-light);
+}
+
+.new-chat {
+  --background: #e4edff;
+  --color: var(--ion-color-primary);
+  width: 44px;
+  height: 44px;
+  margin-right: 4px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px 6px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+  }
+
+  .see-all {
+    min-height: 44px;
+    padding: 0 4px;
+    background: none;
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+  }
+}
+
+// Horizontally scrolling row of people, tap one to chat
+.people-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 2px 16px 8px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 64px;
+  padding: 0;
+  background: none;
+  font: inherit;
+
+  app-avatar {
+    --size: 60px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(5, 88, 231, 0.12);
+  }
+
+  span {
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 0.78rem;
+    color: var(--ion-color-dark);
+  }
+}
+
 .unread-summary {
   color: var(--ion-color-primary) !important;
   font-weight: 600;
@@ -9,7 +85,7 @@
 
 .chat-list {
   background: transparent;
-  padding: 4px 16px 96px; // room for the button above the tab bar
+  padding: 4px 16px 24px;
 }
 
 .chat-item {
@@ -19,8 +95,9 @@
   --inner-padding-end: 12px;
   --min-height: 76px;
   margin-bottom: 10px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(16, 24, 64, 0.05);
+  --border-radius: 20px;
 
   app-avatar {
     --size: 52px;
@@ -80,8 +157,8 @@
 }
 
 .unread-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--ion-color-primary);
 }
@@ -114,6 +191,11 @@
 }
 
 .people-sheet {
+  .search {
+    --background: #f1f3f8;
+    --box-shadow: none;
+  }
+
   app-avatar {
     --size: 44px;
     margin-right: 12px;

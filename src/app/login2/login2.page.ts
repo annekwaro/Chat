@@ -14,6 +14,7 @@ export class Login2Page implements OnInit {
   returnUrl = '/tabs/tab1';
   errorMessage = '';
   isLoading = false;
+  showPassword = false;
 
   constructor(
     private authService: AuthService,

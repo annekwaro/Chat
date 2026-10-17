@@ -94,6 +94,17 @@ describe('ChatPage', () => {
     expect(fixture.nativeElement.textContent).toContain('isn’t available');
   });
 
+  it('gives only the last message of a run the tail and their avatar', async () => {
+    await setup();
+    const t = new Date();
+    const msgs = [
+      { id: 'a', text: '1', senderId: 'bob', timestamp: t },
+      { id: 'b', text: '2', senderId: 'bob', timestamp: t },
+      { id: 'c', text: '3', senderId: 'alice', timestamp: t },
+    ];
+    expect(msgs.map((_, i) => component.endsRun(msgs, i))).toEqual([false, true, true]);
+  });
+
   it('groups messages by day', () => {
     const now = new Date(2026, 9, 16, 12);
     const msg = (d: Date) => ({ text: 'x', senderId: 'a', timestamp: d });
