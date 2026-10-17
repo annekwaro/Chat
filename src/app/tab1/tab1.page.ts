@@ -1,6 +1,6 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { IonicModule, IonicSlides, ToastController } from '@ionic/angular';
 import { register } from 'swiper/element/bundle';
 import { AuthService } from '../services/auth/auth.service';
@@ -17,6 +17,21 @@ import { CheckInService } from '../components/check-in/check-in.service';
 import { Subscription } from 'rxjs';
 
 register();
+
+interface HeroSlide {
+  tag: string;
+  icon: string;
+  title: string;
+  highlight: string; // second line, in the accent colour
+  text: string;
+  cta: string;
+  image: string;
+  background: string;
+  accent: string;
+  route?: any[];
+  queryParams?: Record<string, string>;
+  checkIn?: boolean; // opens the daily check-in instead of navigating
+}
 
 interface Featured {
   title: string;
@@ -36,6 +51,8 @@ interface Featured {
   imports: [IonicModule, CommonModule, RouterModule, MoodFaceComponent],
 })
 export class Tab1Page implements OnInit, OnDestroy {
+  @ViewChild('heroCarousel') heroCarousel?: ElementRef;
+
   swiperModules = [IonicSlides];
 
   greeting = '';
@@ -48,6 +65,59 @@ export class Tab1Page implements OnInit, OnDestroy {
   selectedMood: Mood | null = null;
   private uid: string | null = null;
   private moodSub?: Subscription;
+
+  heroSlides: HeroSlide[] = [
+    {
+      tag: 'Your daily space',
+      icon: 'sparkles',
+      title: 'Better mind,',
+      highlight: 'brighter you',
+      text: 'Check in, learn and talk things through. Your mental health matters.',
+      cta: 'Start a chat',
+      image: 'assets/imgs/image33.png',
+      background: 'linear-gradient(135deg, #e6efff 0%, #cfe0ff 100%)',
+      accent: '#0558e7',
+      route: ['/', 'tabs', 'home'],
+    },
+    {
+      tag: 'Daily check-in',
+      icon: 'happy',
+      title: 'How are you,',
+      highlight: 'really?',
+      text: 'Log your mood in a few seconds and spot patterns over time.',
+      cta: 'Check in',
+      image: 'assets/imgs/image27.png',
+      background: 'linear-gradient(135deg, #e7f8ec 0%, #c8eed4 100%)',
+      accent: '#1f9d55',
+      checkIn: true,
+    },
+    {
+      tag: 'Learn',
+      icon: 'book',
+      title: 'Find your way,',
+      highlight: 'one step at a time',
+      text: 'Understand anxiety, low mood and more, and what can help.',
+      cta: 'Learn',
+      image: 'assets/imgs/image31.png',
+      background: 'linear-gradient(135deg, #fff7dc 0%, #ffe7a6 100%)',
+      accent: '#b45309',
+      route: ['/', 'tabs', 'tab4'],
+      queryParams: { segment: 'learn' },
+    },
+    {
+      tag: 'Calm',
+      icon: 'leaf',
+      title: 'Make space',
+      highlight: 'for calm',
+      text: 'A few slow breaths and small routines can change your day.',
+      cta: 'Breathe',
+      image: 'assets/imgs/image34.png',
+      background: 'linear-gradient(135deg, #f2edff 0%, #dcd2ff 100%)',
+      accent: '#6d4ae6',
+      route: ['/', 'tabs', 'tab4'],
+      queryParams: { segment: 'calm' },
+    },
+  ];
 
   shortcuts = [
     { label: 'Chat', icon: 'chatbubbles', color: '#1f9d55', tint: '#e3f8e9', route: ['/', 'tabs', 'home'] },
@@ -112,7 +182,8 @@ export class Tab1Page implements OnInit, OnDestroy {
     private toastCtrl: ToastController,
     private contentService: ContentService,
     private moodService: MoodService,
-    private checkIn: CheckInService
+    private checkIn: CheckInService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -158,12 +229,27 @@ export class Tab1Page implements OnInit, OnDestroy {
     }
   }
 
+  // Start the hero carousel once the page is showing and its slides are rendered,
+  // so loop mode can measure them (starting it while hidden breaks the loop)
+  private heroStarted = false;
+
+  ionViewDidEnter() {
+    if (this.heroStarted || !this.heroCarousel?.nativeElement.initialize) return;
+    this.heroCarousel.nativeElement.initialize();
+    this.heroStarted = true;
+  }
+
   ngOnDestroy() {
     this.moodSub?.unsubscribe();
   }
 
   openCheckIn() {
     this.checkIn.open();
+  }
+
+  heroAction(slide: HeroSlide) {
+    if (slide.checkIn) this.openCheckIn();
+    else if (slide.route) this.router.navigate(slide.route, { queryParams: slide.queryParams });
   }
 
   // Re-read today's mood when coming back to Home (it can be changed in the Mood diary)

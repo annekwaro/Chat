@@ -60,11 +60,21 @@
   background: var(--ion-color-danger);
 }
 
+// Hero carousel
+.hero-carousel {
+  margin-top: 12px;
+  padding: 0 16px;
+  --swiper-pagination-color: var(--ion-color-primary);
+  --swiper-pagination-bullet-inactive-color: var(--ion-color-medium);
+  --swiper-pagination-bottom: 0px;
+}
+
 // Hero card
 .hero {
   position: relative;
   display: flex;
-  margin: 12px 16px 4px;
+  height: 100%;
+  margin: 0;
   padding: 18px 0 18px 18px;
   overflow: hidden;
   border-radius: 24px;
@@ -89,6 +99,7 @@
   }
 
   p {
+    min-height: 3.4em; // same height on every slide
     max-width: 88%; // keeps the text clear of the illustration
     margin: 0 0 12px;
     font-size: 0.85rem;

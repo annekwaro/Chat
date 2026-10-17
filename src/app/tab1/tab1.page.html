@@ -31,19 +31,44 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-text">
-      <span class="hero-tag"><ion-icon name="sparkles"></ion-icon> Your daily space</span>
-      <h1>Better mind,<br /><span>brighter you</span></h1>
-      <p>Check in, learn and talk things through. Your mental health matters.</p>
-      <ion-button class="hero-cta" shape="round" [routerLink]="['/', 'tabs', 'home']">
-        Start a chat
-        <ion-icon name="arrow-forward" slot="end"></ion-icon>
-      </ion-button>
-    </div>
-    <img class="hero-art" src="assets/imgs/image33.png" alt="" />
-  </section>
+  <!-- Hero carousel: loops through a few welcome messages -->
+  <swiper-container
+    #heroCarousel
+    class="hero-carousel"
+    init="false"
+    [modules]="swiperModules"
+    slides-per-view="1"
+    space-between="12"
+    loop="true"
+    autoplay-delay="5000"
+    autoplay-disable-on-interaction="false"
+    autoplay-pause-on-mouse-enter="true"
+    pagination="true"
+    pagination-clickable="true"
+    observer="true"
+  >
+    <swiper-slide *ngFor="let slide of heroSlides">
+      <section class="hero" [style.background]="slide.background">
+        <div class="hero-text">
+          <span class="hero-tag" [style.color]="slide.accent">
+            <ion-icon [name]="slide.icon"></ion-icon> {{ slide.tag }}
+          </span>
+          <h1>{{ slide.title }}<br /><span [style.color]="slide.accent">{{ slide.highlight }}</span></h1>
+          <p>{{ slide.text }}</p>
+          <ion-button
+            class="hero-cta"
+            shape="round"
+            [style.--background]="slide.accent"
+            (click)="heroAction(slide)"
+          >
+            {{ slide.cta }}
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+        </div>
+        <img class="hero-art" [src]="slide.image" alt="" />
+      </section>
+    </swiper-slide>
+  </swiper-container>
 
   <!-- Shortcuts -->
   <nav class="shortcuts" aria-label="Shortcuts">

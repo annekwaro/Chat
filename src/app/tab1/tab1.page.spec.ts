@@ -1,3 +1,5 @@
+import { CheckInService } from '../components/check-in/check-in.service';
+import { Router } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -123,5 +125,16 @@ describe('Tab1Page (Home)', () => {
     await setup();
     const links = [...fixture.nativeElement.querySelectorAll('.shortcut')].map((a: HTMLAnchorElement) => a.getAttribute('href'));
     expect(links).toEqual(['/tabs/home', '/tabs/tab4?segment=calm', '/tabs/tab4?segment=diary', '/help']);
+  });
+
+  it('hero slides: "Check in" opens the check-in, the others navigate', async () => {
+    await setup();
+    expect(component.heroSlides.length).toBe(4);
+    const open = spyOn(TestBed.inject(CheckInService), 'open').and.resolveTo(false);
+    const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    component.heroAction(component.heroSlides.find((s) => s.checkIn)!);
+    expect(open).toHaveBeenCalled();
+    component.heroAction(component.heroSlides.find((s) => s.cta === 'Learn')!);
+    expect(navigate).toHaveBeenCalledWith(['/', 'tabs', 'tab4'], { queryParams: { segment: 'learn' } });
   });
 });
