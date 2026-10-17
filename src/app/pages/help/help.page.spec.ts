@@ -18,7 +18,7 @@ describe('HelpPage', () => {
 
   it('offers the emergency number and every helpline as a call link', () => {
     const el: HTMLElement = fixture.nativeElement;
-    expect((el.querySelector('.emergency ion-button') as any).href).toBe('tel:999');
+    expect((el.querySelector('.emergency ion-button') as any).href).toBe('tel:112');
     const lines = el.querySelectorAll('.line');
     expect(lines.length).toBe(HELPLINES.length);
     expect((lines[0] as any).href).toBe('tel:' + HELPLINES[0].tel);

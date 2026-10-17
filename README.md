@@ -20,7 +20,7 @@ A mobile-first wellbeing app. People can check in on their mood, explore guided 
   - Messages are grouped by day.
   - Only the two people in a conversation can read it, enforced by Firestore rules.
   - Block or report someone from the ⋮ menu in a conversation. Reports go to the `reports` collection for review in the Firebase console.
-- **Get help now:** emergency number and helplines (`/help`), linked from Home, Discover and Chat. Edit the numbers in `src/app/pages/help/helplines.ts`.
+- **Get help now:** emergency number and French helplines (`/help`), linked from Home, Discover and Chat. Edit the numbers in `src/app/pages/help/helplines.ts`.
 - **Privacy:** other members see only your name and photo. Your email is kept in a private document only you can read.
 - **Forgot password:** sends a reset link from the login screen.
 

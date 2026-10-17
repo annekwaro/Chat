@@ -8,26 +8,27 @@ export interface Helpline {
   tel: string; // what the phone dials
 }
 
-export const EMERGENCY = { display: '999 or 112', tel: '999' };
+// 112 works across Europe; 15 is France's medical emergency number (SAMU)
+export const EMERGENCY = { display: '112 or 15', tel: '112' };
 
 export const HELPLINES: Helpline[] = [
   {
-    name: 'Kenya Red Cross',
-    description: 'Free counselling and psychological first aid.',
-    display: '1199',
-    tel: '1199',
+    name: '3114: suicide prevention line',
+    description: 'Free national line for anyone thinking about suicide, or worried about someone. 24/7.',
+    display: '3114',
+    tel: '3114',
   },
   {
-    name: 'Befrienders Kenya',
-    description: 'Emotional support for anyone feeling distressed or suicidal.',
-    display: '+254 722 178 177',
-    tel: '+254722178177',
+    name: 'SOS Amitié',
+    description: 'Someone to listen if you feel lonely, low or in distress. 24/7.',
+    display: '09 72 39 40 50',
+    tel: '+33972394050',
   },
   {
-    name: 'Niskize',
-    description: 'Confidential counselling by phone.',
-    display: '0900 620 800',
-    tel: '0900620800',
+    name: 'Fil Santé Jeunes',
+    description: 'Free and anonymous support for 12–25 year olds.',
+    display: '0 800 235 236',
+    tel: '0800235236',
   },
 ];
 
