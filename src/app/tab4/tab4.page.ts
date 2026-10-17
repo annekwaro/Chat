@@ -1,5 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import {
   AlertController,
   ItemReorderEventDetail,
@@ -12,6 +13,7 @@ import {
   MoodEntry,
   MoodService,
 } from '../services/mood/mood.service';
+import { CheckInService } from '../components/check-in/check-in.service';
 
 type Segment = 'diary' | 'learn' | 'calm';
 
@@ -31,7 +33,12 @@ interface DayCell {
   day: number;
   isToday: boolean;
   entry?: MoodEntry;
+  mood?: Mood | null;
+  height?: number; // bar height in the weekly chart, as a percentage
 }
+
+// Calendar weeks start on Monday
+const CALENDAR_WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
 interface RoutineItem {
   name: string;
@@ -61,7 +68,7 @@ const PHASE_SECONDS = 4;
   templateUrl: './tab4.page.html',
   styleUrls: ['./tab4.page.scss'],
 })
-export class Tab4Page implements OnDestroy {
+export class Tab4Page implements OnInit, OnDestroy {
   segment: Segment = 'learn';
 
   // Mood diary
@@ -70,10 +77,14 @@ export class Tab4Page implements OnDestroy {
   loadingDiary = true;
   history: MoodEntry[] = [];
   today: MoodEntry | null = null;
-  changingToday = false;
   week: DayCell[] = [];
   streak = 0;
   monthCount = 0;
+  historyView: 'list' | 'calendar' = 'list';
+  readonly calendarWeekdays = CALENDAR_WEEKDAYS;
+  calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  calendar: (DayCell | null)[] = [];
+  private moodSub?: Subscription;
 
   // Learn
   conditions: Condition[] = [
@@ -217,10 +228,23 @@ export class Tab4Page implements OnDestroy {
     private afs: AngularFirestore,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private checkIn: CheckInService
   ) {}
 
+  ngOnInit() {
+    // Check-ins from the "+" button or Home
+    this.moodSub = this.moodService.changed.subscribe(() => this.loadDiary());
+  }
+
   async ionViewWillEnter() {
+    // Home's shortcuts link straight to a section, e.g. ?segment=calm
+    const segment = this.route.snapshot?.queryParamMap?.get('segment') as Segment | null;
+    if (segment && ['diary', 'learn', 'calm'].includes(segment)) {
+      this.segment = segment;
+      this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+    }
     this.uid = await this.moodService.userId();
     this.loggedIn = !!this.uid;
     await Promise.all([this.loadDiary(), this.loadRoutine()]);
@@ -232,6 +256,7 @@ export class Tab4Page implements OnDestroy {
 
   ngOnDestroy() {
     this.stopBreathing();
+    this.moodSub?.unsubscribe();
   }
 
   // ---------- Mood diary ----------
@@ -251,6 +276,7 @@ export class Tab4Page implements OnDestroy {
     const todayKey = this.moodService.dateKey();
     this.today = this.history.find((e) => e.date === todayKey) || null;
     this.buildWeek();
+    this.buildCalendar();
     this.streak = this.calcStreak();
     const month = todayKey.slice(0, 7);
     this.monthCount = this.history.filter((e) => e.date.startsWith(month)).length;
@@ -270,9 +296,48 @@ export class Tab4Page implements OnDestroy {
         day: d.getDate(),
         isToday: i === 0,
         entry: byDate.get(key),
+        mood: this.moodFor(byDate.get(key)),
       });
     }
+    // Great fills the chart; an empty day still shows a short grey bar
+    for (const day of days) day.height = day.mood ? 30 + day.mood.score * 14 : 22;
     this.week = days;
+  }
+
+  private buildCalendar() {
+    const byDate = new Map(this.history.map((e) => [e.date, e]));
+    const year = this.calendarMonth.getFullYear();
+    const month = this.calendarMonth.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const leading = (new Date(year, month, 1).getDay() + 6) % 7; // Monday = 0
+    const todayKey = this.moodService.dateKey();
+    const cells: (DayCell | null)[] = Array(leading).fill(null);
+    for (let day = 1; day <= daysInMonth; day++) {
+      const key = this.moodService.dateKey(new Date(year, month, day));
+      const entry = byDate.get(key);
+      cells.push({ key, weekday: '', day, isToday: key === todayKey, entry, mood: this.moodFor(entry) });
+    }
+    this.calendar = cells;
+  }
+
+  get calendarTitle(): string {
+    return this.calendarMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  }
+
+  get canGoForward(): boolean {
+    const now = new Date();
+    return this.calendarMonth < new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+
+  changeMonth(step: number) {
+    if (step > 0 && !this.canGoForward) return;
+    this.calendarMonth = new Date(this.calendarMonth.getFullYear(), this.calendarMonth.getMonth() + step, 1);
+    this.buildCalendar();
+  }
+
+  openDay(cell: DayCell | null) {
+    if (cell?.entry) this.editNote(cell.entry);
+    else if (cell?.isToday) this.openCheckIn();
   }
 
   // Consecutive days with a check-in, counting back from today (or yesterday if today isn't logged yet)
@@ -303,25 +368,15 @@ export class Tab4Page implements OnDestroy {
     });
   }
 
-  async logToday(mood: Mood) {
-    if (!this.loggedIn) {
-      this.showToast('Create a free account to keep a mood diary.');
-      return;
-    }
-    try {
-      await this.moodService.setToday(mood);
-      this.changingToday = false;
-      await this.loadDiary();
-    } catch (err) {
-      console.error('Failed to save mood', err);
-      this.showToast('Could not save your mood. Please try again.');
-    }
+  // Today's check-in sheet (mood, who you were with, note); the diary reloads when it's saved
+  openCheckIn() {
+    this.checkIn.open(this.today);
   }
 
   async editNote(entry: MoodEntry) {
     const alert = await this.alertCtrl.create({
       header: this.formatDate(entry.date),
-      subHeader: `${entry.emoji} ${entry.mood}`,
+      subHeader: entry.mood,
       inputs: [
         {
           name: 'note',
@@ -337,7 +392,6 @@ export class Tab4Page implements OnDestroy {
           handler: async (data) => {
             try {
               await this.moodService.saveNote(entry.date, (data.note || '').trim());
-              await this.loadDiary();
             } catch (err) {
               console.error('Failed to save note', err);
               this.showToast('Could not save your note. Please try again.');

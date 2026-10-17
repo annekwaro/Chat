@@ -32,98 +32,107 @@
     </div>
 
     <!-- Today -->
-    <div class="card today" *ngIf="loggedIn && !loadingDiary">
-      <ng-container *ngIf="today && !changingToday; else pickMood">
-        <div class="today-row">
-          <span class="today-emoji">{{ today.emoji }}</span>
-          <div class="today-text">
-            <p class="eyebrow">Today</p>
-            <h2>You're feeling {{ today.mood | lowercase }}</h2>
-            <p class="today-message">{{ moodFor(today)?.message }}</p>
-          </div>
-        </div>
-        <p *ngIf="today.note" class="note">“{{ today.note }}”</p>
-        <div class="today-actions">
-          <ion-button class="action" shape="round" (click)="editNote(today)">
-            <ion-icon name="create-outline" slot="start"></ion-icon>
-            {{ today.note ? 'Edit note' : 'Add a note' }}
-          </ion-button>
-          <ion-button class="action" shape="round" fill="outline" (click)="changingToday = true">
-            Change mood
-          </ion-button>
-        </div>
-      </ng-container>
-
-      <ng-template #pickMood>
-        <p class="card-title">How are you feeling today?</p>
-        <div class="moods">
-          <button
-            *ngFor="let mood of moods"
-            type="button"
-            class="mood"
-            [class.active]="today?.mood === mood.label"
-            (click)="logToday(mood)"
-          >
-            <span class="emoji">{{ mood.emoji }}</span>
-            <span class="mood-label">{{ mood.label }}</span>
-          </button>
-        </div>
-        <ion-button
-          *ngIf="changingToday"
-          class="cancel-change"
-          fill="clear"
-          color="medium"
-          expand="block"
-          (click)="changingToday = false"
-        >
-          Cancel
-        </ion-button>
-      </ng-template>
-    </div>
+    <section
+      class="today-hero"
+      *ngIf="loggedIn && !loadingDiary"
+      [style.background]="moodFor(today)?.tint || null"
+    >
+      <app-mood-face [mood]="moodFor(today)"></app-mood-face>
+      <p class="eyebrow">Today</p>
+      <h2 *ngIf="today">You're feeling {{ today.mood | lowercase }}</h2>
+      <h2 *ngIf="!today">How are you feeling?</h2>
+      <p class="today-message" *ngIf="today">{{ moodFor(today)?.message }}</p>
+      <div class="pills">
+        <span class="pill">🔥 {{ streak }}-day streak</span>
+        <span class="pill">{{ monthCount }} this month</span>
+        <span class="pill" *ngIf="today?.with?.length">With {{ today!.with!.join(', ') | lowercase }}</span>
+      </div>
+      <p *ngIf="today?.note" class="note">“{{ today!.note }}”</p>
+      <ion-button class="check-in-cta" shape="round" (click)="openCheckIn()">
+        <ion-icon [name]="today ? 'create-outline' : 'add'" slot="start"></ion-icon>
+        {{ today ? 'Update today' : 'Check in' }}
+      </ion-button>
+    </section>
 
     <!-- This week -->
     <h3 class="section-title">This week</h3>
-    <div class="card week">
-      <div *ngFor="let day of week" class="day" [class.today]="day.isToday">
+    <div class="card chart" role="img" aria-label="Your moods over the last 7 days">
+      <div *ngFor="let day of week" class="bar-col" [class.today]="day.isToday">
+        <div class="bar-track">
+          <div
+            class="bar"
+            [style.height.%]="day.height"
+            [style.background]="day.mood?.color || null"
+            [class.empty]="!day.mood"
+          >
+            <app-mood-face *ngIf="day.mood" [mood]="day.mood"></app-mood-face>
+          </div>
+        </div>
         <span class="weekday">{{ day.weekday }}</span>
-        <span class="day-mood">
-          <ng-container *ngIf="day.entry; else noEntry">{{ day.entry.emoji }}</ng-container>
-          <ng-template #noEntry><span class="empty-dot"></span></ng-template>
-        </span>
-        <span class="day-num">{{ day.day }}</span>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="card stat">
-        <span class="stat-value">🔥 {{ streak }}</span>
-        <span class="stat-label">day streak</span>
-      </div>
-      <div class="card stat">
-        <span class="stat-value">{{ monthCount }}</span>
-        <span class="stat-label">check-ins this month</span>
       </div>
     </div>
 
     <!-- History -->
-    <h3 class="section-title">Entries</h3>
-    <ion-list lines="none" class="entries" *ngIf="history.length; else noHistory">
-      <ion-item
-        *ngFor="let entry of history"
-        class="entry"
-        button
-        detail="false"
-        (click)="editNote(entry)"
-      >
-        <span slot="start" class="entry-emoji">{{ entry.emoji }}</span>
-        <ion-label class="ion-text-wrap">
-          <h3>{{ entry.mood }}</h3>
-          <p class="entry-date">{{ formatDate(entry.date) }}</p>
-          <p *ngIf="entry.note" class="entry-note">{{ entry.note }}</p>
-          <p *ngIf="!entry.note" class="entry-add">Tap to add a note</p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="history-head">
+      <h3 class="section-title">History</h3>
+      <ion-segment class="view-toggle" [(ngModel)]="historyView" mode="ios">
+        <ion-segment-button value="list"><ion-label>List</ion-label></ion-segment-button>
+        <ion-segment-button value="calendar"><ion-label>Calendar</ion-label></ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <div *ngIf="historyView === 'calendar'" class="card calendar">
+      <div class="calendar-head">
+        <ion-button fill="clear" shape="round" aria-label="Previous month" (click)="changeMonth(-1)">
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+        <span class="calendar-title">{{ calendarTitle }}</span>
+        <ion-button fill="clear" shape="round" aria-label="Next month" [disabled]="!canGoForward" (click)="changeMonth(1)">
+          <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="calendar-grid">
+        <span *ngFor="let d of calendarWeekdays" class="calendar-weekday">{{ d }}</span>
+        <button
+          *ngFor="let cell of calendar"
+          type="button"
+          class="calendar-day"
+          [class.blank]="!cell"
+          [class.today]="cell?.isToday"
+          [disabled]="!cell || (!cell.entry && !cell.isToday)"
+          [attr.aria-label]="cell ? cell.day + (cell.mood ? ': ' + cell.mood.label : '') : null"
+          (click)="openDay(cell)"
+        >
+          <ng-container *ngIf="cell">
+            <app-mood-face *ngIf="cell.mood; else plainDay" [mood]="cell.mood"></app-mood-face>
+            <ng-template #plainDay><span class="day-number">{{ cell.day }}</span></ng-template>
+          </ng-container>
+        </button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="historyView === 'list'">
+      <ion-list lines="none" class="entries" *ngIf="history.length; else noHistory">
+        <ion-item
+          *ngFor="let entry of history"
+          class="entry"
+          button
+          detail="false"
+          (click)="editNote(entry)"
+        >
+          <app-mood-face slot="start" [mood]="moodFor(entry)"></app-mood-face>
+          <ion-label class="ion-text-wrap">
+            <h3>{{ entry.mood }}</h3>
+            <p class="entry-date">{{ formatDate(entry.date) }}</p>
+            <p *ngIf="entry.with?.length" class="entry-with">
+              <span *ngFor="let w of entry.with" class="with-tag">{{ w }}</span>
+            </p>
+            <p *ngIf="entry.note" class="entry-note">{{ entry.note }}</p>
+            <p *ngIf="!entry.note" class="entry-add">Tap to add a note</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-container>
     <ng-template #noHistory>
       <div class="empty" *ngIf="!loadingDiary">
         <ion-icon name="journal-outline"></ion-icon>

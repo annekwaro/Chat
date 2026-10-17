@@ -101,4 +101,27 @@ describe('Tab1Page (Home)', () => {
     await component.selectMood(MOODS[0]);
     expect([...firestore.data.keys()].some((k) => k.includes('/moods/'))).toBeFalse();
   });
+
+  it('keeps today’s note and company when the mood is changed with a quick tap', async () => {
+    await setup();
+    const key = TestBed.inject(MoodService).dateKey();
+    firestore.data.set(`users/test-user/moods/${key}`, { date: key, mood: 'Low', note: 'Long day', with: ['Alone'] });
+    await component.selectMood(MOODS[1]);
+    expect(firestore.data.get(`users/test-user/moods/${key}`)).toEqual(
+      jasmine.objectContaining({ mood: 'Good', note: 'Long day', with: ['Alone'] })
+    );
+  });
+
+  it('updates when a check-in is saved from the + button', async () => {
+    await setup();
+    await TestBed.inject(MoodService).setToday(MOODS[2]);
+    await new Promise((resolve) => setTimeout(resolve)); // let Home reload today's mood
+    expect(component.selectedMood?.label).toBe('Okay');
+  });
+
+  it('has shortcuts to chat, breathing, the diary and help', async () => {
+    await setup();
+    const links = [...fixture.nativeElement.querySelectorAll('.shortcut')].map((a: HTMLAnchorElement) => a.getAttribute('href'));
+    expect(links).toEqual(['/tabs/home', '/tabs/tab4?segment=calm', '/tabs/tab4?segment=diary', '/help']);
+  });
 });

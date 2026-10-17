@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { provideRouter, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, convertToParamMap, provideRouter } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { firebaseFakes, FakeFirestore } from '../../testing/firebase-fakes';
 import { MOODS, MoodService } from '../services/mood/mood.service';
@@ -43,7 +43,7 @@ describe('Tab4Page (Discover)', () => {
     expect(fixture.nativeElement.querySelectorAll('.condition').length).toBe(6);
   });
 
-  it('builds the diary: today, week strip and streak', async () => {
+  it('builds the diary: today, week and streak', async () => {
     await setup(() => {
       for (const [n, mood] of [[0, 'Good'], [1, 'Okay'], [3, 'Low']] as [number, string][]) {
         const m = moods.findMood(mood)!;
@@ -67,11 +67,66 @@ describe('Tab4Page (Discover)', () => {
     expect(component.streak).toBe(2);
   });
 
-  it("logs today's mood from the diary", async () => {
+  it('reloads the diary when a check-in is saved elsewhere (the + button or Home)', async () => {
     await setup();
-    await component.logToday(MOODS[3]);
-    expect(firestore.data.get(`users/test-user/moods/${moods.dateKey()}`)?.['mood']).toBe('Low');
+    expect(component.today).toBeNull();
+    await moods.setToday(MOODS[3], { with: ['Family'] });
+    await new Promise((resolve) => setTimeout(resolve)); // let the diary reload
     expect(component.today?.mood).toBe('Low');
+    expect(component.today?.with).toEqual(['Family']);
+  });
+
+  it('draws the week chart: taller, coloured bars for better days', async () => {
+    await setup(() => {
+      firestore.data.set(`users/test-user/moods/${daysAgo(0)}`, { date: daysAgo(0), mood: 'Great', emoji: '😄' });
+      firestore.data.set(`users/test-user/moods/${daysAgo(1)}`, { date: daysAgo(1), mood: 'Awful', emoji: '😢' });
+    });
+    const [today, yesterday, empty] = [component.week[6], component.week[5], component.week[4]];
+    expect(today.height!).toBeGreaterThan(yesterday.height!);
+    expect(yesterday.height!).toBeGreaterThan(empty.height!);
+    expect(today.mood?.color).toBe(MOODS[0].color);
+    component.segment = 'diary';
+    fixture.detectChanges();
+    const bars = fixture.nativeElement.querySelectorAll('.chart .bar');
+    expect(bars.length).toBe(7);
+    expect(bars[6].querySelector('app-mood-face')).toBeTruthy();
+    expect(bars[4].classList).toContain('empty');
+  });
+
+  it('builds a Monday-first calendar for the month, with faces on logged days', async () => {
+    await setup(() => {
+      firestore.data.set(`users/test-user/moods/${daysAgo(0)}`, { date: daysAgo(0), mood: 'Good', emoji: '🙂' });
+    });
+    const now = new Date();
+    const leading = (new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7;
+    const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    expect(component.calendar.length).toBe(leading + days);
+    const today = component.calendar.find((c) => c?.isToday)!;
+    expect(today.day).toBe(now.getDate());
+    expect(today.mood?.label).toBe('Good');
+    expect(component.canGoForward).toBeFalse();
+
+    component.changeMonth(-1);
+    expect(component.calendarMonth.getMonth()).toBe(new Date(now.getFullYear(), now.getMonth() - 1, 1).getMonth());
+    expect(component.canGoForward).toBeTrue();
+  });
+
+  it('opens the section named in the link, e.g. ?segment=diary from Home', async () => {
+    const fakes = firebaseFakes();
+    firestore = fakes.firestore;
+    await TestBed.configureTestingModule({
+      declarations: [Tab4Page],
+      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot()],
+      providers: [
+        ...fakes.providers,
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({ segment: 'calm' }) } } },
+      ],
+    }).compileComponents();
+    const page = TestBed.createComponent(Tab4Page).componentInstance;
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    await page.ionViewWillEnter();
+    expect(page.segment).toBe('calm');
   });
 
   it('runs box breathing in 4-second phases and stops cleanly', fakeAsync(() => {

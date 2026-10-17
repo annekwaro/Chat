@@ -6,12 +6,15 @@
     </ion-tab-button>
 
     <ion-tab-button tab="tab2" href="/tabs/tab2">
-      <ion-icon aria-hidden="true" name="book"></ion-icon>
+      <ion-icon aria-hidden="true" name="compass"></ion-icon>
       <ion-label>Explore</ion-label>
     </ion-tab-button>
 
+    <!-- room for the check-in button below -->
+    <div class="tab-gap" aria-hidden="true"></div>
+
     <ion-tab-button tab="tab4" href="/tabs/tab4">
-      <ion-icon aria-hidden="true" name="list-circle"></ion-icon>
+      <ion-icon aria-hidden="true" name="leaf"></ion-icon>
       <ion-label>Discover</ion-label>
     </ion-tab-button>
 
@@ -21,3 +24,8 @@
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
+
+<!-- One tap to log today's mood from any tab -->
+<button type="button" class="check-in-button" aria-label="Daily check-in" (click)="openCheckIn()">
+  <ion-icon name="add" aria-hidden="true"></ion-icon>
+</button>

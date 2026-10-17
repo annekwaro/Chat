@@ -114,3 +114,70 @@ swiper-slide {
   line-height: 1.6rem;
   color: #4a4a4a;
 }
+
+// Popular tools: 2 x 2 pastel tiles
+.tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px 4px;
+}
+
+.tool {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 112px;
+  padding: 14px;
+  border-radius: 18px;
+  text-decoration: none;
+}
+
+.tool-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  font-size: 1.3rem;
+}
+
+.tool-text {
+  display: flex;
+  flex-direction: column;
+  padding-right: 18px; // room for the arrow
+}
+
+.tool-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.tool-sub {
+  font-size: 0.75rem;
+  color: #5b6478;
+}
+
+.tool-arrow {
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
+  color: #8a93a8;
+}
+
+.recommended {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #e3ebff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  vertical-align: middle;
+}

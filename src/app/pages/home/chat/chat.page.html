@@ -40,11 +40,13 @@
 
     <section *ngFor="let day of days" class="day">
       <div class="day-label"><span>{{ day.label }}</span></div>
-      <app-chat-box
-        *ngFor="let message of day.messages; trackBy: trackMessage"
-        [message]="message"
-        [mine]="isMine(message)"
-      ></app-chat-box>
+      <ng-container *ngFor="let message of day.messages; trackBy: trackMessage">
+        <app-chat-box [message]="message" [mine]="isMine(message)"></app-chat-box>
+        <p *ngIf="message.id === lastMineId" class="receipt" [class.seen]="seen(message)">
+          <ion-icon [name]="seen(message) ? 'checkmark-done' : 'checkmark'"></ion-icon>
+          {{ seen(message) ? 'Seen' : 'Sent' }}
+        </p>
+      </ng-container>
     </section>
   </ng-container>
 </ion-content>

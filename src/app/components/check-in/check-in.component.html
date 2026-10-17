@@ -1,0 +1,68 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Daily check-in</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2 class="question">How are you feeling today?</h2>
+  <div class="faces" role="radiogroup" aria-label="Mood">
+    <button
+      *ngFor="let mood of moods"
+      type="button"
+      class="face"
+      role="radio"
+      [attr.aria-checked]="selected === mood"
+      [class.active]="selected === mood"
+      [style.--ring]="mood.color"
+      (click)="selected = mood"
+    >
+      <app-mood-face [mood]="mood"></app-mood-face>
+      <span>{{ mood.label }}</span>
+    </button>
+  </div>
+
+  <ng-container *ngIf="selected">
+    <p class="message" [style.background]="selected.tint">{{ selected.message }}</p>
+    <button *ngIf="selected.score <= 2" type="button" class="help-link" (click)="getHelp()">
+      <ion-icon name="heart-outline"></ion-icon> Need to talk to someone now?
+    </button>
+
+    <h3 class="label">Who were you with? <span>(optional)</span></h3>
+    <div class="company">
+      <ion-chip
+        *ngFor="let name of company"
+        [outline]="!withWhom.has(name)"
+        [color]="withWhom.has(name) ? 'primary' : 'medium'"
+        (click)="toggleCompany(name)"
+      >
+        <ion-icon *ngIf="withWhom.has(name)" name="checkmark"></ion-icon>
+        <ion-label>{{ name }}</ion-label>
+      </ion-chip>
+    </div>
+
+    <h3 class="label">Anything on your mind? <span>(optional)</span></h3>
+    <ion-textarea
+      class="note"
+      aria-label="Note"
+      placeholder="What happened today? How did it make you feel?"
+      [(ngModel)]="note"
+      [autoGrow]="true"
+      [rows]="3"
+      [maxlength]="1000"
+    ></ion-textarea>
+  </ng-container>
+
+  <p *ngIf="error" class="error" role="alert">{{ error }}</p>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button class="save" expand="block" shape="round" [disabled]="!selected || saving" (click)="save()">
+      {{ saving ? 'Saving…' : entry ? 'Update check-in' : 'Save check-in' }}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

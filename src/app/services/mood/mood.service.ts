@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Subject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 export interface Mood {
@@ -7,6 +8,8 @@ export interface Mood {
   label: string;
   message: string;
   score: number; // 5 = great ... 1 = awful
+  color: string; // the mood's colour in faces, charts and the calendar
+  tint: string; // a soft background in the same colour
 }
 
 export interface MoodEntry {
@@ -14,19 +17,26 @@ export interface MoodEntry {
   mood: string;
   emoji: string;
   note?: string;
+  with?: string[]; // who they were with, e.g. ['Family', 'Friends']
 }
 
+// "Who were you with?" choices in the check-in
+export const COMPANY = ['Alone', 'Partner', 'Family', 'Friends', 'Coworkers', 'Classmates'];
+
 export const MOODS: Mood[] = [
-  { emoji: '😄', label: 'Great', score: 5, message: 'Love that! Keep the momentum going.' },
-  { emoji: '🙂', label: 'Good', score: 4, message: 'Nice. A short meditation can keep you grounded.' },
-  { emoji: '😐', label: 'Okay', score: 3, message: 'That is valid. Maybe try the emotional wheel in Explore.' },
-  { emoji: '😔', label: 'Low', score: 2, message: 'Be gentle with yourself today. Talking helps.' },
-  { emoji: '😢', label: 'Awful', score: 1, message: 'You are not alone. Consider reaching out to a therapist.' },
+  { emoji: '😄', label: 'Great', score: 5, color: '#34c759', tint: '#e3f8e9', message: 'Love that! Keep the momentum going.' },
+  { emoji: '🙂', label: 'Good', score: 4, color: '#7ccf95', tint: '#eaf7ee', message: 'Nice. A short meditation can keep you grounded.' },
+  { emoji: '😐', label: 'Okay', score: 3, color: '#f7c948', tint: '#fff6d9', message: 'That is valid. Maybe try the emotional wheel in Explore.' },
+  { emoji: '😔', label: 'Low', score: 2, color: '#f59e5b', tint: '#ffecde', message: 'Be gentle with yourself today. Talking helps.' },
+  { emoji: '😢', label: 'Awful', score: 1, color: '#a78bfa', tint: '#f0ebff', message: 'You are not alone. Reaching out to someone can help.' },
 ];
 
 // One check-in per day, stored at users/{uid}/moods/{YYYY-MM-DD}
 @Injectable({ providedIn: 'root' })
 export class MoodService {
+  // Fires after any check-in change, so Home and the Mood diary stay in step
+  readonly changed = new Subject<void>();
+
   constructor(private afs: AngularFirestore, private auth: AuthService) {}
 
   dateKey(date = new Date()): string {
@@ -53,25 +63,28 @@ export class MoodService {
     return (snap.data() as MoodEntry) || null;
   }
 
-  async setToday(mood: Mood): Promise<void> {
+  // Details left out are kept (merge), so a quick tap on Home doesn't wipe today's note
+  async setToday(mood: Mood, details: { with?: string[]; note?: string } = {}): Promise<void> {
     const date = this.dateKey();
-    // merge so an existing note for today is kept
-    await (await this.moods()).doc(date).set(
-      { date, mood: mood.label, emoji: mood.emoji, timestamp: new Date() } as any,
-      { merge: true }
-    );
+    const data: any = { date, mood: mood.label, emoji: mood.emoji, timestamp: new Date() };
+    if (details.with !== undefined) data.with = details.with;
+    if (details.note !== undefined) data.note = details.note;
+    await (await this.moods()).doc(date).set(data, { merge: true });
+    this.changed.next();
   }
 
   async clearToday(): Promise<void> {
     await (await this.moods()).doc(this.dateKey()).delete();
+    this.changed.next();
   }
 
   async saveNote(date: string, note: string): Promise<void> {
     await (await this.moods()).doc(date).set({ note } as any, { merge: true });
+    this.changed.next();
   }
 
-  // Most recent entries first
-  async getHistory(limit = 60): Promise<MoodEntry[]> {
+  // Most recent entries first (a year by default, for the calendar)
+  async getHistory(limit = 366): Promise<MoodEntry[]> {
     const col = await this.moods();
     const snap = await col.ref.orderBy('date', 'desc').limit(limit).get();
     return snap.docs.map((d) => d.data() as MoodEntry);

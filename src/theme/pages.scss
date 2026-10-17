@@ -149,47 +149,6 @@ app-home,
       font-size: 2.5rem;
     }
   }
-
-  // Mood picker (Home check-in, Mood diary)
-  .moods {
-    display: flex;
-    justify-content: space-between;
-    gap: 6px;
-  }
-
-  .mood {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 8px 0;
-    border: 2px solid transparent;
-    border-radius: 14px;
-    background: var(--ion-color-light);
-    cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-
-    .emoji {
-      font-size: 1.6rem;
-    }
-
-    .mood-label {
-      font-size: 0.7rem;
-      color: var(--ion-color-medium);
-    }
-
-    &.active {
-      border-color: var(--ion-color-primary);
-      background: #ccdefe;
-      transform: scale(1.05);
-
-      .mood-label {
-        color: var(--ion-color-primary);
-        font-weight: 600;
-      }
-    }
-  }
 }
 
 // Bottom sheets (Explore session, Discover topic)

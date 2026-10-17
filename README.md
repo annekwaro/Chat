@@ -6,14 +6,17 @@ A mobile-first wellbeing app. People can check in on their mood, explore guided 
 
 - **No sign-up wall.** The app opens straight to Home as a guest. An account is only needed for chat. If a guest signs up later, they keep their mood diary and routine.
 - **Home**
-  - Daily mood check-in, saved to Firestore.
+  - "Better mind, brighter you" welcome card and shortcuts to Chat, Breathe, Diary and Get help.
+  - Daily mood with a coloured face for each mood, saved to Firestore.
   - Featured sessions and personalised insights.
+- **Daily check-in (the + in the tab bar)**: mood, who you were with and an optional note, from any tab.
 - **Explore**
+  - Popular tools (breathing, mood tracker, routine, learn).
   - Sessions by topic and by format (video, podcast or audio).
   - A detail sheet with media playback.
 - **Discover**
   - Learn: condition guides.
-  - Mood diary: notes, week strip and streak.
+  - Mood diary: today's summary with streak, a weekly mood chart, and history as a list or a calendar.
   - Calm: box breathing and a daily routine checklist.
 - **Chat**
   - Real-time one-to-one conversations with unread markers and search.

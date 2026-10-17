@@ -143,3 +143,17 @@
     font-weight: 600;
   }
 }
+
+.receipt {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  margin: 2px 4px 6px;
+  font-size: 0.7rem;
+  color: var(--ion-color-medium);
+
+  &.seen {
+    color: var(--ion-color-primary);
+  }
+}

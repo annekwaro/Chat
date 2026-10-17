@@ -1,13 +1,46 @@
 ion-tab-bar {
-  --background: var(--ion-color-primary);
-  border-bottom-left-radius: 10px;
-  border-top-right-radius: 10px;
-  padding-top: 1vh;
+  --background: #ffffff;
+  --border: 0;
+  height: 64px;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -4px 20px rgba(5, 88, 231, 0.08);
+
   ion-tab-button {
-    --color: var(--ion-color-medium);
-    --color-selected: var(--ion-color-light);
+    --color: #9aa3b8;
+    --color-selected: var(--ion-color-primary);
+    font-weight: 600;
+
     ion-icon {
-      font-size: 1.3 rem;
+      font-size: 1.45rem;
     }
+  }
+}
+
+.tab-gap {
+  flex: 0 0 72px;
+}
+
+// Raised round button in the middle of the tab bar
+.check-in-button {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--ion-safe-area-bottom, 0px) + 30px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background: var(--ion-color-primary);
+  color: #ffffff;
+  font-size: 2rem;
+  box-shadow: 0 8px 20px rgba(5, 88, 231, 0.35);
+  transform: translateX(-50%);
+  cursor: pointer;
+
+  &:active {
+    transform: translateX(-50%) scale(0.94);
   }
 }

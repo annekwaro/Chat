@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { CheckInService } from '../components/check-in/check-in.service';
 
 @Component({
   selector: 'app-tabs',
@@ -8,4 +9,10 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule],
 })
-export class TabsPage {}
+export class TabsPage {
+  constructor(private checkIn: CheckInService) {}
+
+  openCheckIn() {
+    this.checkIn.open();
+  }
+}

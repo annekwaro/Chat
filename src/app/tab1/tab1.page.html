@@ -31,27 +31,66 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- Tagline -->
-  <section class="tagline ion-padding-horizontal">
-    <h1>Make yourself <span>better</span></h1>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-text">
+      <span class="hero-tag"><ion-icon name="sparkles"></ion-icon> Your daily space</span>
+      <h1>Better mind,<br /><span>brighter you</span></h1>
+      <p>Check in, learn and talk things through. Your mental health matters.</p>
+      <ion-button class="hero-cta" shape="round" [routerLink]="['/', 'tabs', 'home']">
+        Start a chat
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    <img class="hero-art" src="assets/imgs/image33.png" alt="" />
   </section>
 
-  <!-- Mood check-in -->
-  <section class="mood-card" id="mood-check-in">
-    <p class="mood-title">How are you feeling today?</p>
-    <div class="moods">
+  <!-- Shortcuts -->
+  <nav class="shortcuts" aria-label="Shortcuts">
+    <a
+      *ngFor="let s of shortcuts"
+      class="shortcut"
+      [routerLink]="s.route"
+      [queryParams]="s.query || null"
+    >
+      <span class="shortcut-icon" [style.background]="s.tint" [style.color]="s.color">
+        <ion-icon [name]="s.icon"></ion-icon>
+      </span>
+      <span class="shortcut-label">{{ s.label }}</span>
+    </a>
+  </nav>
+
+  <!-- Daily mood -->
+  <section class="mood-card" id="mood-check-in" [style.background]="selectedMood?.tint || null">
+    <a class="mood-head" [routerLink]="['/', 'tabs', 'tab4']" [queryParams]="{ segment: 'diary' }">
+      <app-mood-face [mood]="selectedMood"></app-mood-face>
+      <span class="mood-head-text">
+        <span class="mood-title">Daily mood</span>
+        <span class="mood-sub">{{ selectedMood ? 'You’re feeling ' + (selectedMood.label | lowercase) + ' today' : 'How are you feeling today?' }}</span>
+      </span>
+      <ion-icon name="chevron-forward" color="medium"></ion-icon>
+    </a>
+    <div class="faces">
       <button
         *ngFor="let mood of moods"
         type="button"
-        class="mood"
+        class="face"
         [class.active]="selectedMood === mood"
+        [style.--ring]="mood.color"
+        [attr.aria-pressed]="selectedMood === mood"
         (click)="selectMood(mood)"
       >
-        <span class="emoji">{{ mood.emoji }}</span>
+        <app-mood-face [mood]="mood"></app-mood-face>
         <span class="mood-label">{{ mood.label }}</span>
       </button>
     </div>
     <p *ngIf="selectedMood" class="mood-message">{{ selectedMood.message }}</p>
+    <div *ngIf="selectedMood" class="mood-actions">
+      <ion-button size="small" fill="clear" (click)="openCheckIn()">
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        Add who you were with or a note
+      </ion-button>
+    </div>
     <a *ngIf="selectedMood && selectedMood.score <= 2" class="mood-help" routerLink="/help">
       <ion-icon name="heart-outline"></ion-icon> Need to talk to someone now?
     </a>

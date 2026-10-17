@@ -16,6 +16,27 @@
     (ionInput)="onSearch($event)"
   ></ion-searchbar>
 
+  <!-- Popular tools -->
+  <ion-list-header class="section-header">
+    <ion-label>Popular tools</ion-label>
+  </ion-list-header>
+  <div class="tools">
+    <a
+      *ngFor="let tool of tools"
+      class="tool"
+      [style.background]="tool.tint"
+      [routerLink]="['/', 'tabs', 'tab4']"
+      [queryParams]="{ segment: tool.segment }"
+    >
+      <span class="tool-icon" [style.color]="tool.color"><ion-icon [name]="tool.icon"></ion-icon></span>
+      <span class="tool-text">
+        <span class="tool-name">{{ tool.name }}</span>
+        <span class="tool-sub">{{ tool.sub }}</span>
+      </span>
+      <ion-icon class="tool-arrow" name="chevron-forward"></ion-icon>
+    </a>
+  </div>
+
   <!-- Featured -->
   <ion-list-header class="section-header">
     <ion-label>Featured</ion-label>
@@ -117,7 +138,10 @@
       </ion-thumbnail>
       <ion-label>
         <h3>{{ item.title }}</h3>
-        <p class="topic-line">{{ topicName(item.topic) }}</p>
+        <p class="topic-line">
+          {{ topicName(item.topic) }}
+          <span *ngIf="item.forYou" class="recommended">Recommended</span>
+        </p>
         <p class="meta">
           <ion-icon [name]="iconFor(item.format)"></ion-icon>
           <span class="format">{{ item.format }}</span>

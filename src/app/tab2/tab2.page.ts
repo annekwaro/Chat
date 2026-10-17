@@ -50,6 +50,14 @@ export class Tab2Page implements OnInit, OnDestroy {
   private ready!: Promise<void>;
   private paramsSub?: Subscription;
 
+  // Shortcuts into Discover
+  tools = [
+    { name: 'Breathing', sub: 'Box breathing', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', segment: 'calm' },
+    { name: 'Mood tracker', sub: 'Daily check-in', icon: 'happy', color: '#1f9d55', tint: '#e3f8e9', segment: 'diary' },
+    { name: 'Daily routine', sub: 'Small steps', icon: 'checkmark-done', color: '#0558e7', tint: '#e3ebff', segment: 'calm' },
+    { name: 'Learn', sub: 'Understand your mind', icon: 'book', color: '#d97706', tint: '#fff4cc', segment: 'learn' },
+  ];
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,

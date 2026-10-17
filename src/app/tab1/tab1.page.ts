@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IonicModule, IonicSlides, ToastController } from '@ionic/angular';
@@ -12,6 +12,9 @@ import {
   Format,
 } from '../services/content/content.service';
 import { MOODS, Mood, MoodService } from '../services/mood/mood.service';
+import { MoodFaceComponent } from '../components/mood-face/mood-face.component';
+import { CheckInService } from '../components/check-in/check-in.service';
+import { Subscription } from 'rxjs';
 
 register();
 
@@ -30,9 +33,9 @@ interface Featured {
   styleUrls: ['./tab1.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonicModule, CommonModule, RouterModule],
+  imports: [IonicModule, CommonModule, RouterModule, MoodFaceComponent],
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page implements OnInit, OnDestroy {
   swiperModules = [IonicSlides];
 
   greeting = '';
@@ -44,6 +47,14 @@ export class Tab1Page implements OnInit {
   moods = MOODS;
   selectedMood: Mood | null = null;
   private uid: string | null = null;
+  private moodSub?: Subscription;
+
+  shortcuts = [
+    { label: 'Chat', icon: 'chatbubbles', color: '#1f9d55', tint: '#e3f8e9', route: ['/', 'tabs', 'home'] },
+    { label: 'Breathe', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', route: ['/', 'tabs', 'tab4'], query: { segment: 'calm' } },
+    { label: 'Diary', icon: 'book', color: '#e0567a', tint: '#ffe3ec', route: ['/', 'tabs', 'tab4'], query: { segment: 'diary' } },
+    { label: 'Get help', icon: 'heart', color: '#d97706', tint: '#fff4cc', route: ['/', 'help'] },
+  ];
 
   featured: Featured[] = [
     {
@@ -100,10 +111,13 @@ export class Tab1Page implements OnInit {
     private auth: AuthService,
     private toastCtrl: ToastController,
     private contentService: ContentService,
-    private moodService: MoodService
+    private moodService: MoodService,
+    private checkIn: CheckInService
   ) {}
 
   ngOnInit() {
+    // Check-ins from the "+" button or the Mood diary
+    this.moodSub = this.moodService.changed.subscribe(() => this.loadTodayMood());
     this.greeting = this.getGreeting();
     this.loadUser();
     this.contentService.getLibrary().then((library) => {
@@ -142,6 +156,14 @@ export class Tab1Page implements OnInit {
     } catch (err) {
       console.error('Failed to load user profile', err);
     }
+  }
+
+  ngOnDestroy() {
+    this.moodSub?.unsubscribe();
+  }
+
+  openCheckIn() {
+    this.checkIn.open();
   }
 
   // Re-read today's mood when coming back to Home (it can be changed in the Mood diary)

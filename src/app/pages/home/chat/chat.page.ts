@@ -123,6 +123,22 @@ export class ChatPage implements OnInit, OnDestroy {
     this.subs.forEach((s) => s.unsubscribe());
   }
 
+  // My most recent message, which gets a "Sent" / "Seen" label
+  get lastMineId(): string | undefined {
+    for (let i = this.messages.length - 1; i >= 0; i--) {
+      if (this.isMine(this.messages[i])) return this.messages[i].id;
+    }
+    return undefined;
+  }
+
+  // Seen once the other person has opened the chat after it was sent
+  seen(message: Message): boolean {
+    if (!this.room) return false;
+    const otherId = this.chatService.otherParticipant(this.room, this.currentUserId);
+    const opened = this.room.readBy?.[otherId];
+    return !!opened && opened >= message.timestamp;
+  }
+
   isMine(message: Message): boolean {
     return message.senderId === this.currentUserId;
   }
