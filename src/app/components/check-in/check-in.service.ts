@@ -20,7 +20,7 @@ export class CheckInService {
     await modal.present();
     const { role } = await modal.onDidDismiss();
     if (role === 'saved') {
-      const toast = await this.toasts.create({ message: 'Check-in saved 💙', duration: 2000, position: 'top', color: 'dark' });
+      const toast = await this.toasts.create({ message: 'Humeur enregistrée 💙', duration: 2000, position: 'top', color: 'dark' });
       await toast.present();
     }
     return role === 'saved';

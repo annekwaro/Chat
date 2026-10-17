@@ -8,31 +8,31 @@
 
 <ion-content>
   <div class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></div>
-  <h1 class="title">{{ reason === 'chat' ? 'Sign up to chat' : 'Create your account' }}</h1>
+  <h1 class="title">{{ reason === 'chat' ? 'Inscrivez-vous pour discuter' : 'Créer votre compte' }}</h1>
   <p class="subtitle">
-    <ng-container *ngIf="reason === 'chat'">Chat is for members, so the people you talk to know who you are. </ng-container>
-    <ng-container *ngIf="isGuest">Your mood diary and routine come with you.</ng-container>
-    <ng-container *ngIf="!isGuest && reason !== 'chat'">It only takes a minute.</ng-container>
+    <ng-container *ngIf="reason === 'chat'">Les messages sont réservés aux membres, pour que vos interlocuteurs sachent qui vous êtes. </ng-container>
+    <ng-container *ngIf="isGuest">Votre journal d’humeur et votre routine vous suivent.</ng-container>
+    <ng-container *ngIf="!isGuest && reason !== 'chat'">Cela ne prend qu’une minute.</ng-container>
   </p>
 
   <form [formGroup]="signupForm" (ngSubmit)="signUp()">
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="person-outline" aria-hidden="true"></ion-icon>
-      <ion-input label="Name" labelPlacement="floating" formControlName="username" type="text" autocomplete="name"></ion-input>
+      <ion-input label="Prénom" labelPlacement="floating" formControlName="username" type="text" autocomplete="name"></ion-input>
     </ion-item>
 
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
-      <ion-input label="Email" labelPlacement="floating" formControlName="email" type="email" autocomplete="email"></ion-input>
+      <ion-input label="E-mail" labelPlacement="floating" formControlName="email" type="email" autocomplete="email"></ion-input>
     </ion-item>
     <p class="field-error" *ngIf="signupForm.get('email').invalid && signupForm.get('email').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> Enter a valid email address
+      <ion-icon name="alert-circle-outline"></ion-icon> Saisissez une adresse e-mail valide
     </p>
 
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
       <ion-input
-        label="Password"
+        label="Mot de passe"
         labelPlacement="floating"
         formControlName="password"
         [type]="showPassword ? 'text' : 'password'"
@@ -42,14 +42,14 @@
         slot="end"
         fill="clear"
         class="reveal"
-        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
         (click)="showPassword = !showPassword"
       >
         <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
       </ion-button>
     </ion-item>
     <p class="field-error" *ngIf="signupForm.get('password').invalid && signupForm.get('password').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> At least 8 characters
+      <ion-icon name="alert-circle-outline"></ion-icon> Au moins 8 caractères
     </p>
 
     <p class="form-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
@@ -61,15 +61,15 @@
       expand="block"
       [disabled]="!signupForm.valid || isLoading"
     >
-      {{ isLoading ? 'Creating account…' : 'Create account' }}
+      {{ isLoading ? 'Création du compte…' : 'Créer mon compte' }}
     </ion-button>
   </form>
 
   <p class="switch">
-    Already have an account?
-    <a [routerLink]="['/login2']" [queryParams]="{ returnUrl: returnUrl }">Log in</a>
+    Déjà un compte&nbsp;?
+    <a [routerLink]="['/login2']" [queryParams]="{ returnUrl: returnUrl }">Se connecter</a>
   </p>
   <ion-button class="skip" fill="clear" expand="block" color="medium" (click)="notNow()">
-    Not now
+    Plus tard
   </ion-button>
 </ion-content>

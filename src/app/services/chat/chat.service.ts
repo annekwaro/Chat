@@ -27,11 +27,11 @@ export interface ChatRoom {
 export type ReportReason = 'harassment' | 'spam' | 'hate' | 'risk' | 'other';
 
 export const REPORT_REASONS: { value: ReportReason; label: string }[] = [
-  { value: 'harassment', label: 'Harassment or bullying' },
-  { value: 'hate', label: 'Hate or discrimination' },
-  { value: 'spam', label: 'Spam or scam' },
-  { value: 'risk', label: 'I’m worried they may be at risk' },
-  { value: 'other', label: 'Something else' },
+  { value: 'harassment', label: 'Harcèlement ou intimidation' },
+  { value: 'hate', label: 'Haine ou discrimination' },
+  { value: 'spam', label: 'Spam ou arnaque' },
+  { value: 'risk', label: 'Je m’inquiète pour sa sécurité' },
+  { value: 'other', label: 'Autre chose' },
 ];
 
 export interface ChatUser {
@@ -200,7 +200,7 @@ export class ChatService {
       .filter((u) => u.uid !== uid)
       .map((u) => ({
         uid: u.uid,
-        name: u.name || 'Someone',
+        name: u.name || 'Quelqu’un',
         photo: u.photo || '',
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -217,7 +217,7 @@ export class ChatService {
       await doc.set({
         participants: [uid, other.uid].sort(),
         participantNames: {
-          [uid]: me.name || 'Someone',
+          [uid]: me.name || 'Quelqu’un',
           [other.uid]: other.name,
         },
         participantPhotos: {

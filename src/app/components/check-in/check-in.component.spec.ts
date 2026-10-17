@@ -57,10 +57,10 @@ describe('CheckInComponent', () => {
     await setup((key) =>
       firestore.data.set(`users/test-user/moods/${key}`, { date: key, mood: 'Low', emoji: '😔', with: ['Alone'], note: 'Tired' })
     );
-    expect(component.selected?.label).toBe('Low');
+    expect(component.selected?.key).toBe('Low');
     expect(component.withWhom.has('Alone')).toBeTrue();
     expect(component.note).toBe('Tired');
-    expect(fixture.nativeElement.querySelector('.save').textContent).toContain('Update');
+    expect(fixture.nativeElement.querySelector('.save').textContent).toContain('Mettre à jour');
   });
 
   it('offers help on a hard day', async () => {
@@ -79,7 +79,7 @@ describe('CheckInComponent', () => {
     spyOn(console, 'error');
     component.selected = MOODS[2];
     await component.save();
-    expect(component.error).toContain('Couldn’t save');
+    expect(component.error).toContain('Impossible d’enregistrer');
     expect(modal.dismiss).not.toHaveBeenCalled();
   });
 });

@@ -56,13 +56,13 @@ export class CheckInComponent implements OnInit {
     this.error = '';
     try {
       await this.moodService.setToday(this.selected, {
-        with: this.company.filter((c) => this.withWhom.has(c)),
+        with: this.company.filter((c) => this.withWhom.has(c.key)).map((c) => c.key),
         note: this.note.trim(),
       });
       await this.modalCtrl.dismiss({ saved: true, mood: this.selected }, 'saved');
     } catch (err) {
       console.error('Could not save check-in', err);
-      this.error = 'Couldn’t save your check-in. Check your connection and try again.';
+      this.error = 'Impossible d’enregistrer votre humeur. Vérifiez votre connexion et réessayez.';
     } finally {
       this.saving = false;
     }

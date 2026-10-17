@@ -53,7 +53,7 @@ describe('ChatPage', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('.person .name')?.textContent).toContain('Bob');
     expect(el.querySelectorAll('app-chat-box').length).toBe(1);
-    expect(el.querySelector('.day-label')?.textContent).toContain('Today');
+    expect(el.querySelector('.day-label')?.textContent).toContain('Aujourd’hui');
   });
 
   it('marks the chat as read when opened', async () => {
@@ -91,7 +91,7 @@ describe('ChatPage', () => {
   it('says so when the chat does not exist', async () => {
     await setup('nope', false);
     expect(component.state).toBe('missing');
-    expect(fixture.nativeElement.textContent).toContain('isn’t available');
+    expect(fixture.nativeElement.textContent).toContain('n’est pas disponible');
   });
 
   it('gives only the last message of a run the tail and their avatar', async () => {
@@ -113,8 +113,8 @@ describe('ChatPage', () => {
       now
     );
     expect(groups.map((g) => [g.label, g.messages.length])).toEqual([
-      ['Yesterday', 1],
-      ['Today', 2],
+      ['Hier', 1],
+      ['Aujourd’hui', 2],
     ]);
     expect(dayLabel(new Date(2026, 9, 12), now)).toContain('12');
   });
@@ -124,14 +124,16 @@ describe('ChatPage', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(component.canSend).toBeFalse();
     expect(el.querySelector('.compose')).toBeNull();
-    expect(el.querySelector('.blocked-note')?.textContent).toContain('You blocked Bob');
+    expect(el.querySelector('.blocked-note')?.textContent).toContain('Vous avez bloqué Bob');
+    expect(el.querySelector('.status')?.textContent).toContain('Bloqué');
   });
 
   it('tells the other person they can’t reply, without saying why', async () => {
     await setup('alice_bob', true, ['bob']);
     const note = fixture.nativeElement.querySelector('.blocked-note');
-    expect(note.textContent).toContain('can’t reply');
+    expect(note.textContent).toContain('ne pouvez pas répondre');
     expect(note.querySelector('ion-button')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.status').textContent).not.toContain('Bloqué');
   });
 
   it('blocks from the menu', async () => {

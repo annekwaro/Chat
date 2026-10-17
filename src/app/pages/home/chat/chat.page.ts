@@ -11,6 +11,7 @@ import {
   REPORT_REASONS,
   ReportReason,
 } from 'src/app/services/chat/chat.service';
+import { LOCALE } from 'src/app/locale';
 
 export interface MessageDay {
   label: string;
@@ -21,9 +22,9 @@ export interface MessageDay {
 export function dayLabel(date: Date, now = new Date()): string {
   const startOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   const days = Math.round((startOf(now) - startOf(date)) / (24 * 60 * 60 * 1000));
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  return date.toLocaleDateString([], {
+  if (days === 0) return 'Aujourd’hui';
+  if (days === 1) return 'Hier';
+  return date.toLocaleDateString(LOCALE, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -89,7 +90,7 @@ export class ChatPage implements OnInit, OnDestroy {
           }
           this.room = room;
           const otherId = this.chatService.otherParticipant(room, this.currentUserId);
-          this.otherName = room.participantNames[otherId] || 'Someone';
+          this.otherName = room.participantNames[otherId] || 'Quelqu’un';
           this.otherPhoto = room.participantPhotos[otherId] || '';
           if (this.state === 'loading') this.state = 'ready';
           this.markReadIfNeeded();
@@ -168,12 +169,12 @@ export class ChatPage implements OnInit, OnDestroy {
     const sheet = await this.actionSheets.create({
       header: this.otherName,
       buttons: [
-        { text: 'Get help now', icon: 'heart-outline', handler: () => this.openHelp() },
-        { text: `Report ${this.otherName}`, icon: 'flag-outline', handler: () => this.chooseReportReason() },
+        { text: 'Obtenir de l’aide', icon: 'heart-outline', handler: () => this.openHelp() },
+        { text: `Signaler ${this.otherName}`, icon: 'flag-outline', handler: () => this.chooseReportReason() },
         this.blockedByMe
-          ? { text: `Unblock ${this.otherName}`, icon: 'lock-open-outline', handler: () => this.unblock() }
-          : { text: `Block ${this.otherName}`, icon: 'ban-outline', role: 'destructive', handler: () => this.confirmBlock() },
-        { text: 'Cancel', role: 'cancel' },
+          ? { text: `Débloquer ${this.otherName}`, icon: 'lock-open-outline', handler: () => this.unblock() }
+          : { text: `Bloquer ${this.otherName}`, icon: 'ban-outline', role: 'destructive', handler: () => this.confirmBlock() },
+        { text: 'Annuler', role: 'cancel' },
       ],
     });
     await sheet.present();
@@ -185,11 +186,11 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async confirmBlock() {
     const alert = await this.alerts.create({
-      header: `Block ${this.otherName}?`,
-      message: 'Neither of you will be able to send messages in this chat. You can unblock at any time.',
+      header: `Bloquer ${this.otherName}\u00a0?`,
+      message: 'Aucun de vous deux ne pourra envoyer de messages dans cette conversation. Vous pouvez débloquer à tout moment.',
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Block', role: 'destructive', handler: () => this.block() },
+        { text: 'Annuler', role: 'cancel' },
+        { text: 'Bloquer', role: 'destructive', handler: () => this.block() },
       ],
     });
     await alert.present();
@@ -199,10 +200,10 @@ export class ChatPage implements OnInit, OnDestroy {
     if (!this.room) return;
     try {
       await this.chatService.setBlocked(this.room, true);
-      this.showToast(`${this.otherName} is blocked.`, 'dark');
+      this.showToast(`${this.otherName} est bloqué.`, 'dark');
     } catch (err) {
       console.error('Block failed', err);
-      this.showToast('Couldn’t block right now. Please try again.');
+      this.showToast('Impossible de bloquer pour le moment. Réessayez.');
     }
   }
 
@@ -210,20 +211,20 @@ export class ChatPage implements OnInit, OnDestroy {
     if (!this.room) return;
     try {
       await this.chatService.setBlocked(this.room, false);
-      this.showToast(`${this.otherName} is unblocked.`, 'dark');
+      this.showToast(`${this.otherName} est débloqué.`, 'dark');
     } catch (err) {
       console.error('Unblock failed', err);
-      this.showToast('Couldn’t unblock right now. Please try again.');
+      this.showToast('Impossible de débloquer pour le moment. Réessayez.');
     }
   }
 
   async chooseReportReason() {
     const sheet = await this.actionSheets.create({
-      header: `Why are you reporting ${this.otherName}?`,
-      subHeader: 'Your report is private. They won’t be told who sent it.',
+      header: `Pourquoi signalez-vous ${this.otherName}\u00a0?`,
+      subHeader: 'Votre signalement est confidentiel. La personne ne saura pas qui l’a envoyé.',
       buttons: [
         ...REPORT_REASONS.map((r) => ({ text: r.label, handler: () => this.report(r.value) })),
-        { text: 'Cancel', role: 'cancel' },
+        { text: 'Annuler', role: 'cancel' },
       ],
     });
     await sheet.present();
@@ -235,23 +236,23 @@ export class ChatPage implements OnInit, OnDestroy {
       await this.chatService.report(this.room, reason, this.messages);
     } catch (err) {
       console.error('Report failed', err);
-      this.showToast('Couldn’t send the report. Please try again.');
+      this.showToast('Impossible d’envoyer le signalement. Réessayez.');
       return;
     }
     const followUp = await this.alerts.create({
-      header: 'Thanks for telling us',
+      header: 'Merci de nous avoir prévenus',
       message:
         reason === 'risk'
-          ? 'We’ll look at this. If someone is in danger right now, contact emergency services or a helpline.'
+          ? 'Nous allons examiner la situation. Si quelqu’un est en danger maintenant, appelez le 112 ou une ligne d’écoute.'
           : this.blockedByMe
-            ? 'We’ll review this conversation.'
-            : `We’ll review this conversation. Do you also want to block ${this.otherName}?`,
+            ? 'Nous allons examiner cette conversation.'
+            : `Nous allons examiner cette conversation. Voulez-vous aussi bloquer ${this.otherName}\u00a0?`,
       buttons:
         reason === 'risk'
-          ? [{ text: 'Close', role: 'cancel' }, { text: 'See helplines', handler: () => this.openHelp() }]
+          ? [{ text: 'Fermer', role: 'cancel' }, { text: 'Voir les lignes d’écoute', handler: () => this.openHelp() }]
           : this.blockedByMe
             ? [{ text: 'OK', role: 'cancel' }]
-            : [{ text: 'Not now', role: 'cancel' }, { text: 'Block', role: 'destructive', handler: () => this.block() }],
+            : [{ text: 'Pas maintenant', role: 'cancel' }, { text: 'Bloquer', role: 'destructive', handler: () => this.block() }],
     });
     await followUp.present();
   }
@@ -274,7 +275,7 @@ export class ChatPage implements OnInit, OnDestroy {
     } catch (err) {
       console.error('Send failed', err);
       this.text = text; // give the message back so nothing is lost
-      this.showToast('Message not sent. Check your connection and try again.');
+      this.showToast('Message non envoyé. Vérifiez votre connexion et réessayez.');
     } finally {
       this.sending = false;
     }

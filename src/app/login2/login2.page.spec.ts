@@ -32,7 +32,7 @@ describe('Login2Page', () => {
     reveal.click();
     fixture.detectChanges();
     expect(input().type).toBe('text');
-    expect(reveal.getAttribute('aria-label')).toBe('Hide password');
+    expect(reveal.getAttribute('aria-label')).toBe('Masquer le mot de passe');
   });
 
   it("doesn't try to log in with an invalid form", async () => {
@@ -55,7 +55,7 @@ describe('Login2Page', () => {
     component.loginForm.setValue({ email: 'me@example.com', password: 'wrongpass' });
     await component.login();
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.form-error').textContent).toContain("don't match an account");
+    expect(fixture.nativeElement.querySelector('.form-error').textContent).toContain('ne correspondent à aucun compte');
   });
 
   it('lets people continue without an account', () => {

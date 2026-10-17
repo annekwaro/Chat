@@ -1,17 +1,17 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="light" class="top-bar">
     <div class="heading">
-      <h1>Chat</h1>
-      <p *ngIf="!unreadCount">Talk with people you trust</p>
+      <h1>Messages</h1>
+      <p *ngIf="!unreadCount">Parlez avec des personnes de confiance</p>
       <p *ngIf="unreadCount" class="unread-summary">
-        {{ unreadCount }} unread conversation{{ unreadCount === 1 ? '' : 's' }}
+        {{ unreadCount }} {{ unreadCount === 1 ? 'conversation non lue' : 'conversations non lues' }}
       </p>
     </div>
     <ion-buttons slot="end">
-      <ion-button class="new-chat" shape="round" aria-label="New chat" (click)="openPicker()">
+      <ion-button class="new-chat" shape="round" aria-label="Nouvelle conversation" (click)="openPicker()">
         <ion-icon slot="icon-only" name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button id="chat-menu" shape="round" aria-label="More options">
+      <ion-button id="chat-menu" shape="round" aria-label="Plus d’options">
         <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -20,11 +20,11 @@
         <ion-list lines="none">
           <ion-item button [detail]="false" routerLink="/help">
             <ion-icon slot="start" name="heart-outline"></ion-icon>
-            <ion-label>Get help now</ion-label>
+            <ion-label>Obtenir de l’aide</ion-label>
           </ion-item>
           <ion-item button [detail]="false" (click)="logout()">
             <ion-icon slot="start" name="log-out-outline" color="danger"></ion-icon>
-            <ion-label color="danger">Log out</ion-label>
+            <ion-label color="danger">Se déconnecter</ion-label>
           </ion-item>
         </ion-list>
       </ng-template>
@@ -33,7 +33,7 @@
   <ion-toolbar class="search-bar" *ngIf="chats.length">
     <ion-searchbar
       class="search"
-      placeholder="Search conversations"
+      placeholder="Rechercher une conversation"
       [(ngModel)]="query"
       [debounce]="150"
     ></ion-searchbar>
@@ -60,14 +60,14 @@
   <div *ngIf="!loading && error" class="empty">
     <ion-icon name="cloud-offline-outline"></ion-icon>
     <p>{{ error }}</p>
-    <ion-button fill="outline" (click)="start()">Try again</ion-button>
+    <ion-button fill="outline" (click)="start()">Réessayer</ion-button>
   </div>
 
   <!-- People to start a chat with -->
   <section *ngIf="!loading && !error && chats.length && users.length && !query" class="people">
     <div class="section-title">
-      <h2>People</h2>
-      <button type="button" class="see-all" (click)="openPicker()">See all</button>
+      <h2>Personnes</h2>
+      <button type="button" class="see-all" (click)="openPicker()">Tout voir</button>
     </div>
     <div class="people-row">
       <button
@@ -85,7 +85,7 @@
 
   <!-- Conversations -->
   <div *ngIf="!loading && !error && chats.length" class="section-title">
-    <h2>Messages</h2>
+    <h2>Conversations</h2>
   </div>
   <ion-list *ngIf="!loading && !error && chats.length" class="chat-list" lines="none">
     <ion-item
@@ -103,22 +103,22 @@
       </ion-label>
       <div slot="end" class="meta-end">
         <span class="time">{{ time(chat.room) }}</span>
-        <span *ngIf="chat.unread" class="unread-dot" aria-label="Unread"></span>
+        <span *ngIf="chat.unread" class="unread-dot" aria-label="Non lu"></span>
       </div>
     </ion-item>
     <div *ngIf="!filteredChats.length" class="empty">
-      <p>No conversations match “{{ query }}”.</p>
+      <p>Aucune conversation ne correspond à «&nbsp;{{ query }}&nbsp;».</p>
     </div>
   </ion-list>
 
   <!-- No chats yet -->
   <div *ngIf="!loading && !error && !chats.length" class="empty first-chat">
     <img src="assets/imgs/image21.png" alt="" />
-    <h2>No conversations yet</h2>
-    <p>Reaching out is a strong first step. Start a chat with someone in the community.</p>
+    <h2>Pas encore de conversation</h2>
+    <p>Tendre la main est déjà un grand pas. Commencez une conversation avec un membre de la communauté.</p>
     <ion-button shape="round" (click)="openPicker()">
       <ion-icon slot="start" name="create-outline"></ion-icon>
-      Start a chat
+      Commencer une conversation
     </ion-button>
   </div>
 
@@ -134,15 +134,15 @@
     <ng-template>
       <ion-header class="ion-no-border">
         <ion-toolbar>
-          <ion-title>New chat</ion-title>
+          <ion-title>Nouvelle conversation</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="pickerOpen = false">Cancel</ion-button>
+            <ion-button (click)="pickerOpen = false">Annuler</ion-button>
           </ion-buttons>
         </ion-toolbar>
         <ion-toolbar>
           <ion-searchbar
             class="search"
-            placeholder="Search people"
+            placeholder="Rechercher une personne"
             [(ngModel)]="userQuery"
             [debounce]="150"
           ></ion-searchbar>
@@ -171,8 +171,8 @@
         </ion-list>
         <div *ngIf="!usersLoading && !filteredUsers.length" class="empty">
           <ion-icon name="people-outline"></ion-icon>
-          <p *ngIf="userQuery">No one matches “{{ userQuery }}”.</p>
-          <p *ngIf="!userQuery">No one else has joined yet. Invite a friend to Soul App to chat.</p>
+          <p *ngIf="userQuery">Personne ne correspond à «&nbsp;{{ userQuery }}&nbsp;».</p>
+          <p *ngIf="!userQuery">Personne d’autre n’a encore rejoint l’app. Invitez un ami sur Soul App pour discuter.</p>
         </div>
       </ion-content>
     </ng-template>

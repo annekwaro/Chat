@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { firebaseFakes } from '../../../testing/firebase-fakes';
-import { MOODS, MoodService } from './mood.service';
+import { MOODS, MoodService, moodLabel, companyLabel } from './mood.service';
 
 describe('MoodService', () => {
   function setup(uid: string | null = 'test-user') {
@@ -52,5 +52,12 @@ describe('MoodService', () => {
     const { service } = setup();
     expect(service.findMood('Low')?.emoji).toBe('😔');
     expect(service.findMood('Unknown')).toBeNull();
+  });
+
+  it('shows French labels for the English keys saved in Firestore', () => {
+    expect(moodLabel('Great')).toBe('Super');
+    expect(moodLabel('Awful')).toBe('Très mal');
+    expect(companyLabel('Family')).toBe('Famille');
+    expect(MOODS.find((m) => m.key === 'Okay')?.label).toBe('Moyen');
   });
 });

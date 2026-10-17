@@ -7,11 +7,11 @@
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
       <div class="who">
         <h1 class="name">{{ otherName }}</h1>
-        <p class="status">{{ blocked ? 'Blocked' : 'Community member' }}</p>
+        <p class="status">{{ blockedByMe ? 'Bloqué' : 'Membre de la communauté' }}</p>
       </div>
     </div>
     <ion-buttons slot="end" *ngIf="state === 'ready'">
-      <ion-button id="chat-room-menu" aria-label="Chat options" (click)="openMenu()">
+      <ion-button id="chat-room-menu" aria-label="Options de la discussion" (click)="openMenu()">
         <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -25,19 +25,19 @@
 
   <div *ngIf="state === 'missing' || state === 'error'" class="center notice">
     <ion-icon [name]="state === 'missing' ? 'chatbubbles-outline' : 'cloud-offline-outline'"></ion-icon>
-    <p *ngIf="state === 'missing'">This conversation isn’t available.</p>
-    <p *ngIf="state === 'error'">We couldn’t load this conversation. Check your connection and try again.</p>
-    <ion-button fill="outline" routerLink="/tabs/home" routerDirection="back">Back to chats</ion-button>
+    <p *ngIf="state === 'missing'">Cette conversation n’est pas disponible.</p>
+    <p *ngIf="state === 'error'">Impossible de charger cette conversation. Vérifiez votre connexion et réessayez.</p>
+    <ion-button fill="outline" routerLink="/tabs/home" routerDirection="back">Retour aux messages</ion-button>
   </div>
 
   <ng-container *ngIf="state === 'ready'">
     <div *ngIf="!messageCount" class="center notice hello">
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
-      <h2>Say hello to {{ otherName }} 👋</h2>
-      <p>Be kind, and take your time. Messages are only seen by the two of you.</p>
+      <h2>Dites bonjour à {{ otherName }} 👋</h2>
+      <p>Soyez bienveillant et prenez votre temps. Seuls vous deux voyez ces messages.</p>
       <p class="peer-note">
-        Chat is support from other members, not a crisis service.
-        <a routerLink="/help">Need help now?</a>
+        Les messages sont un soutien entre membres, pas un service de crise.
+        <a routerLink="/help">Besoin d’aide maintenant&nbsp;?</a>
       </p>
     </div>
 
@@ -60,7 +60,7 @@
         </div>
         <p *ngIf="message.id === lastMineId" class="receipt" [class.seen]="seen(message)">
           <ion-icon [name]="seen(message) ? 'checkmark-done' : 'checkmark'"></ion-icon>
-          {{ seen(message) ? 'Seen' : 'Sent' }}
+          {{ seen(message) ? 'Vu' : 'Envoyé' }}
         </p>
       </ng-container>
     </section>
@@ -70,11 +70,11 @@
 <ion-footer *ngIf="state === 'ready' && blocked" class="ion-no-border composer">
   <ion-toolbar>
     <div class="blocked-note" *ngIf="blockedByMe">
-      <span>You blocked {{ otherName }}.</span>
-      <ion-button fill="clear" size="small" (click)="unblock()">Unblock</ion-button>
+      <span>Vous avez bloqué {{ otherName }}.</span>
+      <ion-button fill="clear" size="small" (click)="unblock()">Débloquer</ion-button>
     </div>
     <div class="blocked-note" *ngIf="!blockedByMe">
-      <span>You can’t reply to this conversation.</span>
+      <span>Vous ne pouvez pas répondre à cette conversation.</span>
     </div>
   </ion-toolbar>
 </ion-footer>
@@ -95,7 +95,7 @@
       <ion-button
         class="send"
         shape="round"
-        aria-label="Send message"
+        aria-label="Envoyer le message"
         [disabled]="!canSend"
         (click)="send()"
       >

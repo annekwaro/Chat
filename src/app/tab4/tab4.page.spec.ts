@@ -103,7 +103,7 @@ describe('Tab4Page (Discover)', () => {
     expect(component.calendar.length).toBe(leading + days);
     const today = component.calendar.find((c) => c?.isToday)!;
     expect(today.day).toBe(now.getDate());
-    expect(today.mood?.label).toBe('Good');
+    expect(today.mood?.key).toBe('Good');
     expect(component.canGoForward).toBeFalse();
 
     component.changeMonth(-1);
@@ -138,12 +138,12 @@ describe('Tab4Page (Discover)', () => {
     const page = TestBed.createComponent(Tab4Page).componentInstance;
 
     page.toggleBreathing();
-    expect(page.phase.label).toBe('Breathe in');
+    expect(page.phase.label).toBe('Inspirez');
     tick(4000);
-    expect(page.phase.label).toBe('Hold');
+    expect(page.phase.label).toBe('Retenez');
     tick(12000);
     expect(page.cycles).toBe(1);
-    expect(page.phase.label).toBe('Breathe in');
+    expect(page.phase.label).toBe('Inspirez');
 
     page.toggleBreathing();
     expect(page.breathing).toBeFalse();

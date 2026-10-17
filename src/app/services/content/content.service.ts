@@ -25,11 +25,18 @@ export interface Content {
 }
 
 export const FORMATS: { value: Format | 'all'; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'video', label: 'Videos' },
+  { value: 'all', label: 'Tout' },
+  { value: 'video', label: 'Vidéos' },
   { value: 'podcast', label: 'Podcasts' },
   { value: 'audio', label: 'Audio' },
 ];
+
+// "Vidéo • 6 min"
+export const FORMAT_NAMES: Record<Format, string> = {
+  video: 'Vidéo',
+  podcast: 'Podcast',
+  audio: 'Audio',
+};
 
 export const FORMAT_ICONS: Record<Format, string> = {
   video: 'play',
@@ -38,21 +45,21 @@ export const FORMAT_ICONS: Record<Format, string> = {
 };
 
 const TOPICS: Topic[] = [
-  { id: 'self-love', name: 'Self-love', image: 'assets/imgs/image33.png', color: '#ffe3ec' },
-  { id: 'meditation', name: 'Meditation', image: 'assets/imgs/image4.png', color: '#fff4cc' },
-  { id: 'meaning', name: 'Meaningful life', image: 'assets/imgs/image29.png', color: '#dff7e3' },
-  { id: 'sleep', name: 'Sleep', image: 'assets/imgs/image35.png', color: '#e3ebff' },
-  { id: 'anxiety', name: 'Anxiety', image: 'assets/imgs/image8.png', color: '#ffe8de' },
-  { id: 'relationships', name: 'Relationships', image: 'assets/imgs/image24.png', color: '#ece3ff' },
+  { id: 'self-love', name: 'Amour de soi', image: 'assets/imgs/image33.png', color: '#ffe3ec' },
+  { id: 'meditation', name: 'Méditation', image: 'assets/imgs/image4.png', color: '#fff4cc' },
+  { id: 'meaning', name: 'Donner du sens', image: 'assets/imgs/image29.png', color: '#dff7e3' },
+  { id: 'sleep', name: 'Sommeil', image: 'assets/imgs/image35.png', color: '#e3ebff' },
+  { id: 'anxiety', name: 'Anxiété', image: 'assets/imgs/image8.png', color: '#ffe8de' },
+  { id: 'relationships', name: 'Relations', image: 'assets/imgs/image24.png', color: '#ece3ff' },
 ];
 
 // Used when the Firestore `content` collection is empty or can't be read
 const FALLBACK_LIBRARY: Content[] = [
   {
     id: '1',
-    title: 'Living with purpose',
+    title: 'Vivre avec un but',
     description:
-      'A meaningful life involves aligning your actions with your values and passions, experiencing joy and fulfillment along the way.',
+      'Une vie qui a du sens, c’est accorder ses actions à ses valeurs et à ses passions, et y trouver de la joie en chemin.',
     topic: 'meaning',
     format: 'video',
     duration: '9 min',
@@ -61,9 +68,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '2',
-    title: 'Breathe anywhere',
+    title: 'Respirer partout',
     description:
-      'A simple yet powerful breathing practice you can use anywhere and anytime to calm your body and mind.',
+      'Un exercice de respiration simple et efficace, à faire n’importe où et à tout moment pour apaiser le corps et l’esprit.',
     topic: 'meditation',
     format: 'audio',
     duration: '5 min',
@@ -72,9 +79,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '3',
-    title: 'Know yourself',
+    title: 'Mieux se connaître',
     description:
-      'Through regular meditation you can develop self-awareness and notice your thoughts without judging them.',
+      'Avec une méditation régulière, on apprend à mieux se connaître et à observer ses pensées sans les juger.',
     topic: 'meditation',
     format: 'video',
     duration: '12 min',
@@ -83,9 +90,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '4',
-    title: 'Be kind to yourself',
+    title: 'Être bienveillant envers soi',
     description:
-      'Accepting yourself with all your strengths and flaws, and nurturing a positive relationship with yourself.',
+      'S’accepter avec ses forces et ses faiblesses, et cultiver une relation positive avec soi-même.',
     topic: 'self-love',
     format: 'podcast',
     duration: '22 min',
@@ -94,9 +101,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '5',
-    title: 'The emotional wheel',
+    title: 'La roue des émotions',
     description:
-      'Learn to name what you are feeling. Putting words to emotions makes them easier to understand and manage.',
+      'Apprenez à nommer ce que vous ressentez. Mettre des mots sur ses émotions aide à les comprendre et à les gérer.',
     topic: 'self-love',
     format: 'video',
     duration: '6 min',
@@ -105,9 +112,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '6',
-    title: 'Wind down for sleep',
+    title: 'Se détendre avant de dormir',
     description:
-      'A gentle guided session to slow your thoughts and help you drift into deeper, more restful sleep.',
+      'Une séance guidée tout en douceur pour ralentir vos pensées et trouver un sommeil plus profond et réparateur.',
     topic: 'sleep',
     format: 'audio',
     duration: '15 min',
@@ -116,9 +123,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '7',
-    title: 'When worry takes over',
+    title: 'Quand l’inquiétude prend le dessus',
     description:
-      'Practical ways to notice anxious thoughts, ground yourself in the present, and respond instead of react.',
+      'Des pistes concrètes pour repérer les pensées anxieuses, revenir au moment présent et répondre plutôt que réagir.',
     topic: 'anxiety',
     format: 'podcast',
     duration: '18 min',
@@ -127,9 +134,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '8',
-    title: 'Riding out a rainy day',
+    title: 'Traverser un jour de pluie',
     description:
-      'Some days are heavy. Small, achievable steps to look after yourself when your mood is low.',
+      'Certains jours sont lourds. De petits pas réalisables pour prendre soin de vous quand le moral est bas.',
     topic: 'anxiety',
     format: 'audio',
     duration: '8 min',
@@ -138,9 +145,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '9',
-    title: 'Better conversations',
+    title: 'Mieux communiquer',
     description:
-      'How to listen, share how you feel, and set healthy boundaries with the people who matter to you.',
+      'Écouter, exprimer ce que vous ressentez et poser des limites saines avec les personnes qui comptent pour vous.',
     topic: 'relationships',
     format: 'podcast',
     duration: '24 min',
@@ -149,9 +156,9 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '10',
-    title: 'Small steps, big change',
+    title: 'Petits pas, grands changements',
     description:
-      'Meaning is built one small step at a time. Set goals that fit your life and celebrate progress.',
+      'Le sens se construit pas à pas. Fixez-vous des objectifs adaptés à votre vie et célébrez vos progrès.',
     topic: 'meaning',
     format: 'video',
     duration: '10 min',

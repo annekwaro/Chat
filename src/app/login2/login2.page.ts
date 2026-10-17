@@ -53,20 +53,20 @@ export class Login2Page implements OnInit {
   // Asks for the email (filled in from the form) and sends Firebase's reset link
   async forgotPassword() {
     const alert = await this.alerts.create({
-      header: 'Reset your password',
-      message: 'We’ll email you a link to choose a new password.',
+      header: 'Réinitialiser le mot de passe',
+      message: 'Nous vous enverrons par e-mail un lien pour choisir un nouveau mot de passe.',
       inputs: [
         {
           name: 'email',
           type: 'email',
-          placeholder: 'Email',
+          placeholder: 'E-mail',
           value: this.loginForm.value.email || '',
           attributes: { autocomplete: 'email' },
         },
       ],
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Send link', handler: (data) => this.sendReset((data?.email || '').trim()) },
+        { text: 'Annuler', role: 'cancel' },
+        { text: 'Envoyer le lien', handler: (data) => this.sendReset((data?.email || '').trim()) },
       ],
     });
     await alert.present();
@@ -75,12 +75,12 @@ export class Login2Page implements OnInit {
   // Returns false to keep the alert open when the email isn't valid
   async sendReset(email: string): Promise<boolean> {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      this.showToast('Enter a valid email address.', 'danger');
+      this.showToast('Saisissez une adresse e-mail valide.', 'danger');
       return false;
     }
     try {
       await this.authService.sendPasswordReset(email);
-      this.showToast(`If ${email} has an account, a reset link is on its way. Check your inbox.`);
+      this.showToast(`Si ${email} correspond à un compte, un lien de réinitialisation arrive. Vérifiez votre boîte de réception.`);
       return true;
     } catch (error: any) {
       this.showToast(this.describeError(error?.code), 'danger');
@@ -103,15 +103,15 @@ export class Login2Page implements OnInit {
       case 'auth/invalid-login-credentials':
       case 'auth/wrong-password':
       case 'auth/user-not-found':
-        return "That email and password don't match an account.";
+        return 'Cet e-mail et ce mot de passe ne correspondent à aucun compte.';
       case 'auth/invalid-email':
-        return 'Enter a valid email address.';
+        return 'Saisissez une adresse e-mail valide.';
       case 'auth/too-many-requests':
-        return 'Too many attempts. Please wait a moment and try again.';
+        return 'Trop de tentatives. Patientez un instant puis réessayez.';
       case 'auth/network-request-failed':
-        return "Can't reach the server. Check your connection and try again.";
+        return 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
       default:
-        return 'Could not log you in. Please try again.';
+        return 'Connexion impossible. Réessayez.';
     }
   }
 }

@@ -2,21 +2,21 @@
   <ion-toolbar color="light" class="top-bar">
     <div class="greeting" slot="start">
       <ion-avatar class="avatar">
-        <img *ngIf="userPhoto; else initialsAvatar" [src]="userPhoto" alt="Profile picture" />
+        <img *ngIf="userPhoto; else initialsAvatar" [src]="userPhoto" alt="Photo de profil" />
         <ng-template #initialsAvatar>
           <span class="initials" aria-hidden="true">{{ initials || '🙂' }}</span>
         </ng-template>
       </ion-avatar>
       <div>
         <p class="greeting-sub">{{ greeting }},</p>
-        <h2 class="greeting-name">{{ userName || 'there' }} 👋</h2>
+        <h2 class="greeting-name">{{ userName || 'bienvenue' }} 👋</h2>
       </div>
     </div>
     <ion-buttons slot="end">
       <ion-button
         class="bell"
         shape="round"
-        [attr.aria-label]="needsCheckIn ? 'Notifications: mood check-in due' : 'Notifications'"
+        [attr.aria-label]="needsCheckIn ? 'Notifications\u00a0: humeur du jour à saisir' : 'Notifications'"
         (click)="showNotifications()"
       >
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
@@ -71,7 +71,7 @@
   </swiper-container>
 
   <!-- Shortcuts -->
-  <nav class="shortcuts" aria-label="Shortcuts">
+  <nav class="shortcuts" aria-label="Raccourcis">
     <a
       *ngFor="let s of shortcuts"
       class="shortcut"
@@ -90,8 +90,8 @@
     <a class="mood-head" [routerLink]="['/', 'tabs', 'tab4']" [queryParams]="{ segment: 'diary' }">
       <app-mood-face [mood]="selectedMood"></app-mood-face>
       <span class="mood-head-text">
-        <span class="mood-title">Daily mood</span>
-        <span class="mood-sub">{{ selectedMood ? 'You’re feeling ' + (selectedMood.label | lowercase) + ' today' : 'How are you feeling today?' }}</span>
+        <span class="mood-title">Humeur du jour</span>
+        <span class="mood-sub">{{ selectedMood ? 'Aujourd’hui\u00a0: ' + selectedMood.label : 'Comment vous sentez-vous aujourd’hui\u00a0?' }}</span>
       </span>
       <ion-icon name="chevron-forward" color="medium"></ion-icon>
     </a>
@@ -113,32 +113,32 @@
     <div *ngIf="selectedMood" class="mood-actions">
       <ion-button size="small" fill="clear" (click)="openCheckIn()">
         <ion-icon name="create-outline" slot="start"></ion-icon>
-        Add who you were with or a note
+        Ajouter avec qui vous étiez ou une note
       </ion-button>
     </div>
     <a *ngIf="selectedMood && selectedMood.score <= 2" class="mood-help" routerLink="/help">
-      <ion-icon name="heart-outline"></ion-icon> Need to talk to someone now?
+      <ion-icon name="heart-outline"></ion-icon> Besoin de parler à quelqu’un maintenant&nbsp;?
     </a>
   </section>
 
   <!-- Search -->
   <ion-searchbar
     class="search"
-    placeholder="Search insights..."
+    placeholder="Rechercher…"
     [debounce]="250"
     (ionInput)="onSearch($event)"
   ></ion-searchbar>
 
   <!-- Featured -->
   <ion-list-header class="section-header">
-    <ion-label>Explore</ion-label>
+    <ion-label>Explorer</ion-label>
     <ion-button
       class="show-all"
       fill="clear"
       color="medium"
       [routerLink]="['/', 'tabs', 'tab2']"
     >
-      Show all
+      Tout voir
     </ion-button>
   </ion-list-header>
 
@@ -177,7 +177,7 @@
 
   <!-- Insights -->
   <ion-list-header class="section-header">
-    <ion-label>Insights for you</ion-label>
+    <ion-label>Pour vous</ion-label>
     <ion-button
       class="show-all"
       fill="clear"
@@ -185,7 +185,7 @@
       [routerLink]="['/', 'tabs', 'tab2']"
       [queryParams]="selectedCategory === 'all' ? null : { format: selectedCategory }"
     >
-      Show all
+      Tout voir
     </ion-button>
   </ion-list-header>
 
@@ -217,7 +217,7 @@
         <p>{{ topicName(item.topic) }}</p>
         <p class="meta">
           <ion-icon [name]="iconFor(item.format)"></ion-icon>
-          <span class="format">{{ item.format }}</span>
+          <span class="format">{{ formatName(item.format) }}</span>
           <span class="dot"></span>
           {{ item.duration }}
         </p>
@@ -228,28 +228,28 @@
 
   <div *ngIf="filteredInsights.length === 0" class="empty">
     <ion-icon name="search-outline"></ion-icon>
-    <p>No insights match your search.</p>
+    <p>Aucun résultat pour cette recherche.</p>
   </div>
 
   <!-- Always within reach -->
   <ion-item class="help-card" lines="none" button [detail]="true" routerLink="/help">
     <ion-icon slot="start" name="heart" color="danger"></ion-icon>
     <ion-label>
-      <h3>Need help now?</h3>
-      <p>Helplines and emergency contacts</p>
+      <h3>Besoin d’aide maintenant&nbsp;?</h3>
+      <p>Lignes d’écoute et numéros d’urgence</p>
     </ion-label>
   </ion-item>
 
   <!-- Guests: optional nudge to create an account -->
   <section *ngIf="showGuestNote" class="guest-note">
     <div class="guest-text">
-      <p class="guest-title">You're using Soul as a guest</p>
-      <p>Create a free account to chat with others in the community and keep your diary on any device.</p>
+      <p class="guest-title">Vous utilisez Soul en invité</p>
+      <p>Créez un compte gratuit pour discuter avec la communauté et retrouver votre journal sur tous vos appareils.</p>
       <ion-button class="guest-cta" size="small" shape="round" [routerLink]="['/signup2']">
-        Create free account
+        Créer un compte gratuit
       </ion-button>
     </div>
-    <ion-button class="guest-close" fill="clear" color="medium" aria-label="Dismiss" (click)="dismissGuestNote()">
+    <ion-button class="guest-close" fill="clear" color="medium" aria-label="Masquer" (click)="dismissGuestNote()">
       <ion-icon slot="icon-only" name="close"></ion-icon>
     </ion-button>
   </section>

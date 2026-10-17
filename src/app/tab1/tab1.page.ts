@@ -9,6 +9,7 @@ import {
   ContentService,
   FORMATS,
   FORMAT_ICONS,
+  FORMAT_NAMES,
   Format,
 } from '../services/content/content.service';
 import { MOODS, Mood, MoodService } from '../services/mood/mood.service';
@@ -68,36 +69,36 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   heroSlides: HeroSlide[] = [
     {
-      tag: 'Your daily space',
+      tag: 'Votre espace',
       icon: 'sparkles',
-      title: 'Better mind,',
-      highlight: 'brighter you',
-      text: 'Check in, learn and talk things through. Your mental health matters.',
-      cta: 'Start a chat',
+      title: 'Esprit apaisé,',
+      highlight: 'vie éclairée',
+      text: 'Notez votre humeur, informez-vous et parlez-en. Votre santé mentale compte.',
+      cta: 'Discuter',
       image: 'assets/imgs/image33.png',
       background: 'linear-gradient(135deg, #e6efff 0%, #cfe0ff 100%)',
       accent: '#0558e7',
       route: ['/', 'tabs', 'home'],
     },
     {
-      tag: 'Daily check-in',
+      tag: 'Humeur du jour',
       icon: 'happy',
-      title: 'How are you,',
-      highlight: 'really?',
-      text: 'Log your mood in a few seconds and spot patterns over time.',
-      cta: 'Check in',
+      title: 'Comment allez-vous,',
+      highlight: 'vraiment\u00a0?',
+      text: 'Notez votre humeur en quelques secondes et repérez les tendances au fil du temps.',
+      cta: 'Noter mon humeur',
       image: 'assets/imgs/image27.png',
       background: 'linear-gradient(135deg, #e7f8ec 0%, #c8eed4 100%)',
       accent: '#1f9d55',
       checkIn: true,
     },
     {
-      tag: 'Learn',
+      tag: 'Comprendre',
       icon: 'book',
-      title: 'Find your way,',
-      highlight: 'one step at a time',
-      text: 'Understand anxiety, low mood and more, and what can help.',
-      cta: 'Learn',
+      title: 'Avancer',
+      highlight: 'pas à pas',
+      text: 'Comprendre l’anxiété, la déprime et plus encore, et ce qui peut aider.',
+      cta: 'En savoir plus',
       image: 'assets/imgs/image31.png',
       background: 'linear-gradient(135deg, #fff7dc 0%, #ffe7a6 100%)',
       accent: '#b45309',
@@ -105,12 +106,12 @@ export class Tab1Page implements OnInit, OnDestroy {
       queryParams: { segment: 'learn' },
     },
     {
-      tag: 'Calm',
+      tag: 'Calme',
       icon: 'leaf',
-      title: 'Make space',
-      highlight: 'for calm',
-      text: 'A few slow breaths and small routines can change your day.',
-      cta: 'Breathe',
+      title: 'Faire de la place',
+      highlight: 'au calme',
+      text: 'Quelques respirations lentes et de petites habitudes peuvent changer votre journée.',
+      cta: 'Respirer',
       image: 'assets/imgs/image34.png',
       background: 'linear-gradient(135deg, #f2edff 0%, #dcd2ff 100%)',
       accent: '#6d4ae6',
@@ -120,51 +121,51 @@ export class Tab1Page implements OnInit, OnDestroy {
   ];
 
   shortcuts = [
-    { label: 'Chat', icon: 'chatbubbles', color: '#1f9d55', tint: '#e3f8e9', route: ['/', 'tabs', 'home'] },
-    { label: 'Breathe', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', route: ['/', 'tabs', 'tab4'], query: { segment: 'calm' } },
-    { label: 'Diary', icon: 'book', color: '#e0567a', tint: '#ffe3ec', route: ['/', 'tabs', 'tab4'], query: { segment: 'diary' } },
-    { label: 'Get help', icon: 'heart', color: '#d97706', tint: '#fff4cc', route: ['/', 'help'] },
+    { label: 'Messages', icon: 'chatbubbles', color: '#1f9d55', tint: '#e3f8e9', route: ['/', 'tabs', 'home'] },
+    { label: 'Respirer', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', route: ['/', 'tabs', 'tab4'], query: { segment: 'calm' } },
+    { label: 'Journal', icon: 'book', color: '#e0567a', tint: '#ffe3ec', route: ['/', 'tabs', 'tab4'], query: { segment: 'diary' } },
+    { label: 'Aide', icon: 'heart', color: '#d97706', tint: '#fff4cc', route: ['/', 'help'] },
   ];
 
   featured: Featured[] = [
     {
-      title: 'Consult a therapist',
+      title: 'Parler à quelqu’un',
       image: 'assets/imgs/image4.png',
       color: 'primary',
       buttonColor: 'warning',
-      cta: 'Start chat',
+      cta: 'Discuter',
       route: ['/', 'tabs', 'home'],
     },
     {
-      title: 'Declutter the mind',
+      title: 'Alléger son esprit',
       image: 'assets/imgs/image5.png',
       color: 'warning',
       buttonColor: 'primary',
-      cta: 'Discover',
+      cta: 'Découvrir',
       route: ['/', 'tabs', 'tab4'],
     },
     {
-      title: 'Self-love for you',
+      title: 'Prendre soin de soi',
       image: 'assets/imgs/image6.png',
       color: 'success',
       buttonColor: 'warning',
-      cta: 'Explore',
+      cta: 'Explorer',
       route: ['/', 'tabs', 'tab2'],
     },
     {
-      title: 'Meditation tips',
+      title: 'Conseils pour méditer',
       image: 'assets/imgs/image7.png',
       color: 'tertiary',
       buttonColor: 'warning',
-      cta: 'Explore',
+      cta: 'Explorer',
       route: ['/', 'tabs', 'tab2'],
     },
     {
-      title: 'Manage emotions',
+      title: 'Gérer ses émotions',
       image: 'assets/imgs/image8.png',
       color: 'warning',
       buttonColor: 'primary',
-      cta: 'Explore',
+      cta: 'Explorer',
       route: ['/', 'tabs', 'tab2'],
     },
   ];
@@ -199,9 +200,9 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   private getGreeting(): string {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return 'Bonjour';
+    if (hour < 18) return 'Bon après-midi';
+    return 'Bonsoir';
   }
 
   private async loadUser() {
@@ -271,7 +272,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     this.selectedMood = previous === mood ? null : mood;
 
     if (!this.uid) {
-      this.showToast('Create a free account to save your mood check-ins.');
+      this.showToast('Créez un compte gratuit pour enregistrer votre humeur.');
       return;
     }
 
@@ -284,7 +285,7 @@ export class Tab1Page implements OnInit, OnDestroy {
     } catch (err) {
       console.error('Failed to save mood', err);
       this.selectedMood = previous;
-      this.showToast('Could not save your mood. Please try again.');
+      this.showToast('Impossible d’enregistrer votre humeur. Réessayez.');
     }
   }
 
@@ -324,6 +325,10 @@ export class Tab1Page implements OnInit, OnDestroy {
     return FORMAT_ICONS[format];
   }
 
+  formatName(format: Format): string {
+    return FORMAT_NAMES[format] || format;
+  }
+
   topicName(id: string): string {
     return this.contentService.topicName(id);
   }
@@ -354,10 +359,10 @@ export class Tab1Page implements OnInit, OnDestroy {
   async showNotifications() {
     if (this.needsCheckIn) {
       document.getElementById('mood-check-in')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      await this.showToast("You haven't checked in today. How are you feeling?");
+      await this.showToast('Vous n’avez pas encore noté votre humeur aujourd’hui. Comment allez-vous\u00a0?');
       return;
     }
-    await this.showToast("You're all caught up!");
+    await this.showToast('Rien de nouveau pour le moment.');
   }
 
   handleRefresh(event: any) {

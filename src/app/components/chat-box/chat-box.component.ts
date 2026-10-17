@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Message } from 'src/app/services/chat/chat.service';
+import { LOCALE } from 'src/app/locale';
 
 // One message bubble: mine on the right in blue, theirs on the left in white
 @Component({
@@ -14,7 +15,7 @@ export class ChatBoxComponent {
 
   get time(): string {
     return this.message?.timestamp
-      ? this.message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      ? this.message.timestamp.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' })
       : '';
   }
 }

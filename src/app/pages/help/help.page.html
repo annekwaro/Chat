@@ -3,26 +3,26 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/tab1" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Get help now</ion-title>
+    <ion-title>Obtenir de l’aide</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="light" class="ion-padding">
   <p class="intro">
-    You don’t have to go through this alone. Talking to someone can help, whatever you’re
-    feeling.
+    Vous n’avez pas à traverser ça seul. Parler à quelqu’un peut aider, quoi que vous
+    ressentiez.
   </p>
 
   <section class="card emergency">
-    <h2>In danger right now?</h2>
-    <p>If you or someone else might be hurt, call emergency services.</p>
+    <h2>En danger maintenant&nbsp;?</h2>
+    <p>Si vous ou quelqu’un d’autre risquez d’être blessé, appelez les secours.</p>
     <ion-button expand="block" color="danger" shape="round" [href]="'tel:' + emergency.tel">
       <ion-icon slot="start" name="call"></ion-icon>
-      Call {{ emergency.display }}
+      Appeler le {{ emergency.display }}
     </ion-button>
   </section>
 
-  <h3 class="section-title">Talk to someone</h3>
+  <h3 class="section-title">Parler à quelqu’un</h3>
   <ion-list class="lines" lines="none">
     <ion-item *ngFor="let line of helplines" class="line" [href]="'tel:' + line.tel" [detail]="false">
       <ion-icon slot="start" name="call-outline" color="primary"></ion-icon>
@@ -36,21 +36,21 @@
 
   <ion-button class="outside" fill="clear" expand="block" [href]="findAHelpline" target="_blank" rel="noopener">
     <ion-icon slot="start" name="globe-outline"></ion-icon>
-    Outside France? Find a helpline
+    Hors de France&nbsp;? Trouver de l’aide
   </ion-button>
 
-  <h3 class="section-title">While you wait</h3>
+  <h3 class="section-title">En attendant</h3>
   <section class="card steps">
     <ol>
-      <li>Breathe in for 4, hold for 4, out for 4, hold for 4. Repeat a few times.</li>
-      <li>Name 5 things you can see, 4 you can touch and 3 you can hear.</li>
-      <li>Move somewhere you feel safe, and reach out to someone you trust.</li>
+      <li>Inspirez sur 4 temps, retenez 4, expirez 4, retenez 4. Recommencez quelques fois.</li>
+      <li>Nommez 5 choses que vous voyez, 4 que vous pouvez toucher et 3 que vous entendez.</li>
+      <li>Allez dans un endroit où vous vous sentez en sécurité et contactez une personne de confiance.</li>
     </ol>
-    <ion-button fill="outline" shape="round" routerLink="/tabs/tab4">Breathing exercise</ion-button>
+    <ion-button fill="outline" shape="round" routerLink="/tabs/tab4" [queryParams]="{ segment: 'calm' }">Exercice de respiration</ion-button>
   </section>
 
   <p class="note">
-    Chat in Soul App is with other members. It’s support from peers, not a crisis or
-    emergency service.
+    Dans Soul App, vous discutez avec d’autres membres. C’est un soutien entre pairs, pas un
+    service d’urgence ni de crise.
   </p>
 </ion-content>

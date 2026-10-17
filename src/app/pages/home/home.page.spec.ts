@@ -34,7 +34,7 @@ describe('HomePage (Chat list)', () => {
     await setup();
     const el: HTMLElement = fixture.nativeElement;
     expect(component.loading).toBeFalse();
-    expect(el.querySelector('.first-chat h2')?.textContent).toContain('No conversations yet');
+    expect(el.querySelector('.first-chat h2')?.textContent).toContain('Pas encore de conversation');
   });
 
   it('lists conversations with the other person’s name, preview and unread state', async () => {
@@ -71,7 +71,7 @@ describe('HomePage (Chat list)', () => {
         lastUpdated: new Date(),
       });
     });
-    expect(component.chats[0].preview).toBe('You: See you');
+    expect(component.chats[0].preview).toBe('Vous\u00a0: See you');
     expect(component.chats[0].unread).toBeFalse();
   });
 
@@ -102,7 +102,7 @@ describe('HomePage (Chat list)', () => {
 
   it('formats times like a messaging app', () => {
     const now = new Date(2026, 9, 16, 15, 0);
-    expect(shortTime(new Date(2026, 9, 15, 9, 0), now)).toBe('Yesterday');
+    expect(shortTime(new Date(2026, 9, 15, 9, 0), now)).toBe('Hier');
     expect(shortTime(new Date(2026, 9, 16, 9, 30), now)).toContain('30');
     expect(shortTime(undefined, now)).toBe('');
   });
@@ -117,6 +117,6 @@ describe('HomePage (Chat list)', () => {
         blockedBy: ['alice'],
       });
     });
-    expect(component.chats[0].preview).toBe('Blocked');
+    expect(component.chats[0].preview).toBe('Bloqué');
   });
 });

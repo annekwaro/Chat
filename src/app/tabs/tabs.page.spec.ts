@@ -16,7 +16,7 @@ describe('TabsPage', () => {
     const labels = [...fixture.nativeElement.querySelectorAll('ion-tab-button')].map((b: HTMLElement) =>
       b.textContent?.trim()
     );
-    expect(labels).toEqual(['Home', 'Explore', 'Discover', 'Chat']);
+    expect(labels).toEqual(['Accueil', 'Explorer', 'Découvrir', 'Messages']);
   });
 
   it('opens the daily check-in from the + button', async () => {

@@ -1,8 +1,8 @@
 <ion-header class="ion-no-border">
   <ion-toolbar color="light" class="top-bar">
     <div class="heading">
-      <h1>Explore</h1>
-      <p>Find something that helps today</p>
+      <h1>Explorer</h1>
+      <p>Trouvez ce qui peut vous aider aujourd’hui</p>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -11,14 +11,14 @@
   <!-- Search -->
   <ion-searchbar
     class="search"
-    placeholder="Search topics, videos, podcasts..."
+    placeholder="Thèmes, vidéos, podcasts…"
     [debounce]="250"
     (ionInput)="onSearch($event)"
   ></ion-searchbar>
 
   <!-- Popular tools -->
   <ion-list-header class="section-header">
-    <ion-label>Popular tools</ion-label>
+    <ion-label>Outils populaires</ion-label>
   </ion-list-header>
   <div class="tools">
     <a
@@ -39,7 +39,7 @@
 
   <!-- Featured -->
   <ion-list-header class="section-header">
-    <ion-label>Featured</ion-label>
+    <ion-label>À la une</ion-label>
   </ion-list-header>
 
   <swiper-container
@@ -66,7 +66,7 @@
           <h2>{{ item.title }}</h2>
           <div class="featured-footer">
             <span class="meta">
-              <span class="format">{{ item.format }}</span>
+              <span class="format">{{ formatName(item.format) }}</span>
               <span class="dot"></span>
               {{ item.duration }}
             </span>
@@ -81,7 +81,7 @@
 
   <!-- Topics -->
   <ion-list-header class="section-header">
-    <ion-label>Topics</ion-label>
+    <ion-label>Thèmes</ion-label>
   </ion-list-header>
 
   <div class="topics">
@@ -95,13 +95,13 @@
     >
       <img [src]="topic.image" [alt]="topic.name" />
       <span class="topic-name">{{ topic.name }}</span>
-      <span class="topic-count">{{ topicCount(topic.id) }} {{ topicCount(topic.id) === 1 ? 'session' : 'sessions' }}</span>
+      <span class="topic-count">{{ topicCount(topic.id) }} {{ topicCount(topic.id) === 1 ? 'séance' : 'séances' }}</span>
     </button>
   </div>
 
   <!-- Library -->
   <ion-list-header id="library" class="section-header">
-    <ion-label>{{ selectedTopic ? topicName(selectedTopic) : 'All sessions' }}</ion-label>
+    <ion-label>{{ selectedTopic ? topicName(selectedTopic) : 'Toutes les séances' }}</ion-label>
     <ion-button
       *ngIf="selectedTopic"
       class="show-all clear-topic"
@@ -109,7 +109,7 @@
       color="medium"
       (click)="clearTopic()"
     >
-      Clear
+      Effacer
       <ion-icon name="close" slot="end"></ion-icon>
     </ion-button>
   </ion-list-header>
@@ -140,11 +140,11 @@
         <h3>{{ item.title }}</h3>
         <p class="topic-line">
           {{ topicName(item.topic) }}
-          <span *ngIf="item.forYou" class="recommended">Recommended</span>
+          <span *ngIf="item.forYou" class="recommended">Recommandé</span>
         </p>
         <p class="meta">
           <ion-icon [name]="iconFor(item.format)"></ion-icon>
-          <span class="format">{{ item.format }}</span>
+          <span class="format">{{ formatName(item.format) }}</span>
           <span class="dot"></span>
           {{ item.duration }}
         </p>
@@ -155,7 +155,7 @@
 
   <div *ngIf="filtered.length === 0" class="empty">
     <ion-icon name="search-outline"></ion-icon>
-    <p>Nothing matches yet. Try another topic or search.</p>
+    <p>Aucun résultat. Essayez un autre thème ou une autre recherche.</p>
   </div>
 
   <!-- Detail sheet -->
@@ -186,7 +186,7 @@
           <h2>{{ item.title }}</h2>
           <p class="meta">
             <ion-icon [name]="iconFor(item.format)"></ion-icon>
-            <span class="format">{{ item.format }}</span>
+            <span class="format">{{ formatName(item.format) }}</span>
             <span class="dot"></span>
             {{ item.duration }}
           </p>
@@ -200,11 +200,11 @@
           ></audio>
 
           <ion-button expand="block" shape="round" class="detail-cta" (click)="talkToTherapist()">
-            Talk to a therapist about this
+            En parler avec quelqu’un
             <ion-icon name="chatbubbles" slot="end"></ion-icon>
           </ion-button>
           <ion-button expand="block" fill="clear" color="medium" class="detail-close" (click)="close()">
-            Close
+            Fermer
           </ion-button>
         </div>
       </ion-content>

@@ -25,6 +25,6 @@ describe('HelpPage', () => {
   });
 
   it('says chat is peer support, not a crisis service', () => {
-    expect(fixture.nativeElement.querySelector('.note').textContent).toContain('not a crisis');
+    expect(fixture.nativeElement.querySelector('.note').textContent).toContain('pas un service d’urgence ni de crise');
   });
 });

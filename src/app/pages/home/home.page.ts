@@ -3,6 +3,7 @@ import { IonModal, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatRoom, ChatService, ChatUser } from 'src/app/services/chat/chat.service';
+import { LOCALE } from 'src/app/locale';
 
 export interface ChatPreview {
   room: ChatRoom;
@@ -18,10 +19,10 @@ export function shortTime(date: Date | undefined, now = new Date()): string {
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const day = 24 * 60 * 60 * 1000;
   const t = date.getTime();
-  if (t >= startOfToday) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  if (t >= startOfToday - day) return 'Yesterday';
-  if (t >= startOfToday - 6 * day) return date.toLocaleDateString([], { weekday: 'short' });
-  return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
+  if (t >= startOfToday) return date.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
+  if (t >= startOfToday - day) return 'Hier';
+  if (t >= startOfToday - 6 * day) return date.toLocaleDateString(LOCALE, { weekday: 'short' });
+  return date.toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' });
 }
 
 @Component({
@@ -83,7 +84,7 @@ export class HomePage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Could not load chats', err);
-        this.error = 'We couldn’t load your conversations. Check your connection and try again.';
+        this.error = 'Impossible de charger vos conversations. Vérifiez votre connexion et réessayez.';
         this.loading = false;
       },
     });
@@ -95,13 +96,13 @@ export class HomePage implements OnInit, OnDestroy {
     const mine = room.lastSenderId === this.currentUserId;
     return {
       room,
-      name: profile?.name || room.participantNames[otherId] || 'Someone',
+      name: profile?.name || room.participantNames[otherId] || 'Quelqu’un',
       photo: profile?.photo || room.participantPhotos[otherId] || '',
       preview: this.chatService.blockedByMe(room, this.currentUserId)
-        ? 'Blocked'
+        ? 'Bloqué'
         : room.lastMessage
-          ? (mine ? 'You: ' : '') + room.lastMessage
-          : 'Say hello 👋',
+          ? (mine ? 'Vous\u00a0: ' : '') + room.lastMessage
+          : 'Dites bonjour 👋',
       unread: this.chatService.isUnread(room, this.currentUserId),
     };
   }
@@ -142,7 +143,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   firstName(name: string): string {
-    return (name || '').trim().split(/\s+/)[0] || 'Someone';
+    return (name || '').trim().split(/\s+/)[0] || 'Quelqu’un';
   }
 
   trackChat(_: number, chat: ChatPreview) {
@@ -166,7 +167,7 @@ export class HomePage implements OnInit, OnDestroy {
       this.nav.navigateForward(['/home/chats', chatId]);
     } catch (err) {
       console.error('Could not start chat', err);
-      this.showToast('Couldn’t start the chat. Please try again.');
+      this.showToast('Impossible de démarrer la conversation. Réessayez.');
     } finally {
       this.starting = false;
     }

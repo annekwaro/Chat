@@ -22,20 +22,20 @@ export class LandingPage {
     {
       image: 'assets/imgs/image36.png',
       tint: '#e4edff',
-      title: 'Check in with yourself',
-      text: 'Log how you feel in a few taps and watch your mood over time.',
+      title: 'Prenez de vos nouvelles',
+      text: 'Notez ce que vous ressentez en quelques gestes et suivez votre humeur au fil du temps.',
     },
     {
       image: 'assets/imgs/image37.png',
       tint: '#ffe9ef',
-      title: 'Talk things through',
-      text: 'Chat one-to-one with people in the community, whenever you need.',
+      title: 'Parlez-en',
+      text: 'Discutez en tête-à-tête avec des membres de la communauté, quand vous en avez besoin.',
     },
     {
       image: 'assets/imgs/image38.png',
       tint: '#e3f6e8',
-      title: 'Find your calm',
-      text: 'Breathing, a daily routine and guides to understand your mind.',
+      title: 'Retrouvez votre calme',
+      text: 'Respiration, routine quotidienne et guides pour mieux comprendre votre esprit.',
     },
   ];
 

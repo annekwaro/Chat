@@ -37,7 +37,7 @@ describe('ContentService', () => {
 
   it('looks up topic names', () => {
     const { service } = setup();
-    expect(service.topicName('meaning')).toBe('Meaningful life');
+    expect(service.topicName('meaning')).toBe('Donner du sens');
     expect(service.topicName('nope')).toBe('');
   });
 });

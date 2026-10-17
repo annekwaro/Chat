@@ -9,24 +9,24 @@ export interface Helpline {
 }
 
 // 112 works across Europe; 15 is France's medical emergency number (SAMU)
-export const EMERGENCY = { display: '112 or 15', tel: '112' };
+export const EMERGENCY = { display: '112 ou le 15', tel: '112' };
 
 export const HELPLINES: Helpline[] = [
   {
-    name: '3114: suicide prevention line',
-    description: 'Free national line for anyone thinking about suicide, or worried about someone. 24/7.',
+    name: '3114\u00a0: prévention du suicide',
+    description: 'Numéro national gratuit pour toute personne qui pense au suicide ou s’inquiète pour un proche. 24\u00a0h/24, 7\u00a0j/7.',
     display: '3114',
     tel: '3114',
   },
   {
     name: 'SOS Amitié',
-    description: 'Someone to listen if you feel lonely, low or in distress. 24/7.',
+    description: 'Une écoute si vous vous sentez seul, déprimé ou en détresse. 24\u00a0h/24, 7\u00a0j/7.',
     display: '09 72 39 40 50',
     tel: '+33972394050',
   },
   {
     name: 'Fil Santé Jeunes',
-    description: 'Free and anonymous support for 12–25 year olds.',
+    description: 'Écoute gratuite et anonyme pour les 12–25 ans.',
     display: '0 800 235 236',
     tel: '0800235236',
   },

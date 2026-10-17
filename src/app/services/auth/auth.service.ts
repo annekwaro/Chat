@@ -19,6 +19,7 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
     const auth = getAuth();
     if (environment.useEmulators) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+    auth.languageCode = 'fr'; // password reset emails in French
     onAuthStateChanged(auth, (user) => {
       this.currentUserId = user?.uid || null;
       this.guest = !!user?.isAnonymous;

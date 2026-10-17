@@ -8,14 +8,14 @@
 
 <ion-content>
   <div class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></div>
-  <h1 class="title">Welcome back</h1>
-  <p class="subtitle">Log in to chat and keep your diary on every device.</p>
+  <h1 class="title">Bon retour</h1>
+  <p class="subtitle">Connectez-vous pour discuter et retrouver votre journal sur tous vos appareils.</p>
 
   <form [formGroup]="loginForm" (ngSubmit)="login()">
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
       <ion-input
-        label="Email"
+        label="E-mail"
         labelPlacement="floating"
         formControlName="email"
         type="email"
@@ -23,13 +23,13 @@
       ></ion-input>
     </ion-item>
     <p class="field-error" *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> Enter a valid email address
+      <ion-icon name="alert-circle-outline"></ion-icon> Saisissez une adresse e-mail valide
     </p>
 
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
       <ion-input
-        label="Password"
+        label="Mot de passe"
         labelPlacement="floating"
         formControlName="password"
         [type]="showPassword ? 'text' : 'password'"
@@ -39,17 +39,17 @@
         slot="end"
         fill="clear"
         class="reveal"
-        [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
         (click)="showPassword = !showPassword"
       >
         <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
       </ion-button>
     </ion-item>
     <p class="field-error" *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> Password must be at least 6 characters
+      <ion-icon name="alert-circle-outline"></ion-icon> Le mot de passe doit contenir au moins 6 caractères
     </p>
     <div class="forgot">
-      <ion-button fill="clear" size="small" (click)="forgotPassword()">Forgot password?</ion-button>
+      <ion-button fill="clear" size="small" (click)="forgotPassword()">Mot de passe oublié&nbsp;?</ion-button>
     </div>
 
     <p class="form-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
@@ -61,15 +61,15 @@
       expand="block"
       [disabled]="!loginForm.valid || isLoading"
     >
-      {{ isLoading ? 'Logging in…' : 'Log in' }}
+      {{ isLoading ? 'Connexion…' : 'Se connecter' }}
     </ion-button>
   </form>
 
   <p class="switch">
-    New here?
-    <a [routerLink]="['/signup2']" [queryParams]="{ returnUrl: returnUrl }">Create an account</a>
+    Nouveau sur Soul&nbsp;?
+    <a [routerLink]="['/signup2']" [queryParams]="{ returnUrl: returnUrl }">Créer un compte</a>
   </p>
   <ion-button class="skip" fill="clear" expand="block" color="medium" (click)="continueWithoutAccount()">
-    Continue without an account
+    Continuer sans compte
   </ion-button>
 </ion-content>

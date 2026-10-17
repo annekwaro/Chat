@@ -18,7 +18,7 @@ const MOUTHS: Record<number, string> = {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <svg viewBox="0 0 48 48" role="img" [attr.aria-label]="mood ? mood.label : 'No check-in'">
+    <svg viewBox="0 0 48 48" role="img" [attr.aria-label]="mood ? mood.label : 'Pas encore d’humeur'">
       <circle cx="24" cy="24" r="23" [attr.fill]="mood?.color || '#e6e9f2'" />
       <ng-container *ngIf="mood">
         <circle cx="17" cy="20" r="2.6" class="ink" />

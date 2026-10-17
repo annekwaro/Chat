@@ -1,15 +1,15 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Daily check-in</ion-title>
+    <ion-title>Mon humeur du jour</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()">Fermer</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h2 class="question">How are you feeling today?</h2>
-  <div class="faces" role="radiogroup" aria-label="Mood">
+  <h2 class="question">Comment vous sentez-vous aujourd’hui&nbsp;?</h2>
+  <div class="faces" role="radiogroup" aria-label="Humeur">
     <button
       *ngFor="let mood of moods"
       type="button"
@@ -28,27 +28,27 @@
   <ng-container *ngIf="selected">
     <p class="message" [style.background]="selected.tint">{{ selected.message }}</p>
     <button *ngIf="selected.score <= 2" type="button" class="help-link" (click)="getHelp()">
-      <ion-icon name="heart-outline"></ion-icon> Need to talk to someone now?
+      <ion-icon name="heart-outline"></ion-icon> Besoin de parler à quelqu’un maintenant&nbsp;?
     </button>
 
-    <h3 class="label">Who were you with? <span>(optional)</span></h3>
+    <h3 class="label">Avec qui étiez-vous&nbsp;? <span>(facultatif)</span></h3>
     <div class="company">
       <ion-chip
-        *ngFor="let name of company"
-        [outline]="!withWhom.has(name)"
-        [color]="withWhom.has(name) ? 'primary' : 'medium'"
-        (click)="toggleCompany(name)"
+        *ngFor="let c of company"
+        [outline]="!withWhom.has(c.key)"
+        [color]="withWhom.has(c.key) ? 'primary' : 'medium'"
+        (click)="toggleCompany(c.key)"
       >
-        <ion-icon *ngIf="withWhom.has(name)" name="checkmark"></ion-icon>
-        <ion-label>{{ name }}</ion-label>
+        <ion-icon *ngIf="withWhom.has(c.key)" name="checkmark"></ion-icon>
+        <ion-label>{{ c.label }}</ion-label>
       </ion-chip>
     </div>
 
-    <h3 class="label">Anything on your mind? <span>(optional)</span></h3>
+    <h3 class="label">Quelque chose en tête&nbsp;? <span>(facultatif)</span></h3>
     <ion-textarea
       class="note"
       aria-label="Note"
-      placeholder="What happened today? How did it make you feel?"
+      placeholder="Que s’est-il passé aujourd’hui&nbsp;? Qu’avez-vous ressenti&nbsp;?"
       [(ngModel)]="note"
       [autoGrow]="true"
       [rows]="3"
@@ -62,7 +62,7 @@
 <ion-footer class="ion-no-border">
   <ion-toolbar>
     <ion-button class="save" expand="block" shape="round" [disabled]="!selected || saving" (click)="save()">
-      {{ saving ? 'Saving…' : entry ? 'Update check-in' : 'Save check-in' }}
+      {{ saving ? 'Enregistrement…' : entry ? 'Mettre à jour' : 'Enregistrer' }}
     </ion-button>
   </ion-toolbar>
 </ion-footer>

@@ -12,8 +12,11 @@ import {
   Mood,
   MoodEntry,
   MoodService,
+  companyLabel,
+  moodLabel,
 } from '../services/mood/mood.service';
 import { CheckInService } from '../components/check-in/check-in.service';
+import { LOCALE } from 'src/app/locale';
 
 type Segment = 'diary' | 'learn' | 'calm';
 
@@ -38,7 +41,7 @@ interface DayCell {
 }
 
 // Calendar weeks start on Monday
-const CALENDAR_WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const CALENDAR_WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
 interface RoutineItem {
   name: string;
@@ -47,19 +50,32 @@ interface RoutineItem {
 }
 
 const DEFAULT_ROUTINE: RoutineItem[] = [
-  { name: 'Meditation', image: 'assets/imgs/image7.png', done: false },
-  { name: 'Breathing', image: 'assets/imgs/image8.png', done: false },
-  { name: 'Cycling', image: 'assets/imgs/image24.png', done: false },
-  { name: 'Reading', image: 'assets/imgs/image4.png', done: false },
-  { name: 'Listening to music', image: 'assets/imgs/image5.png', done: false },
+  { name: 'Méditation', image: 'assets/imgs/image7.png', done: false },
+  { name: 'Respiration', image: 'assets/imgs/image8.png', done: false },
+  { name: 'Vélo', image: 'assets/imgs/image24.png', done: false },
+  { name: 'Lecture', image: 'assets/imgs/image4.png', done: false },
+  { name: 'Écouter de la musique', image: 'assets/imgs/image5.png', done: false },
 ];
+
+// Routines saved before the app was in French still have the English default names
+const OLD_ROUTINE_NAMES: Record<string, string> = {
+  Meditation: 'Méditation',
+  Breathing: 'Respiration',
+  Cycling: 'Vélo',
+  Reading: 'Lecture',
+  'Listening to music': 'Écouter de la musique',
+};
+
+function translateItems(items: RoutineItem[]): RoutineItem[] {
+  return items.map((i) => ({ ...i, name: OLD_ROUTINE_NAMES[i.name] || i.name }));
+}
 
 // Box breathing: 4 seconds per phase
 const BREATH_PHASES = [
-  { label: 'Breathe in', scale: 1 },
-  { label: 'Hold', scale: 1 },
-  { label: 'Breathe out', scale: 0.6 },
-  { label: 'Hold', scale: 0.6 },
+  { label: 'Inspirez', scale: 1 },
+  { label: 'Retenez', scale: 1 },
+  { label: 'Expirez', scale: 0.6 },
+  { label: 'Retenez', scale: 0.6 },
 ];
 const PHASE_SECONDS = 4;
 
@@ -90,122 +106,122 @@ export class Tab4Page implements OnInit, OnDestroy {
   conditions: Condition[] = [
     {
       id: 'anxiety',
-      name: 'Anxiety',
+      name: 'Anxiété',
       image: 'assets/imgs/image30.png',
       color: '#ffe8de',
       summary:
-        'Feeling worried or afraid now and then is a normal part of life. Anxiety becomes a problem when the worry is frequent, hard to control, and gets in the way of everyday life.',
+        'Se sentir inquiet ou avoir peur de temps en temps fait partie de la vie. L’anxiété devient un problème quand l’inquiétude est fréquente, difficile à contrôler et gêne la vie de tous les jours.',
       signs: [
-        'Feeling restless, tense or on edge',
-        'Racing or worrying thoughts that are hard to stop',
-        'Trouble sleeping or concentrating',
-        'A fast heartbeat, sweating or shallow breathing',
-        'Avoiding places or situations that feel stressful',
+        'Se sentir agité, tendu ou à cran',
+        'Des pensées qui s’emballent et qu’on n’arrive pas à arrêter',
+        'Des difficultés à dormir ou à se concentrer',
+        'Le cœur qui bat vite, la transpiration ou une respiration courte',
+        'Éviter les lieux ou les situations qui semblent stressants',
       ],
       helps: [
-        'Slow breathing exercises (try the Calm tab)',
-        'Regular movement and enough sleep',
-        'Cutting back on caffeine and alcohol',
-        'Talking therapy such as CBT',
+        'Des exercices de respiration lente (essayez l’onglet Calme)',
+        'Bouger régulièrement et dormir suffisamment',
+        'Réduire la caféine et l’alcool',
+        'Une psychothérapie, par exemple une TCC',
       ],
     },
     {
       id: 'depression',
-      name: 'Depression',
+      name: 'Dépression',
       image: 'assets/imgs/image22.png',
       color: '#e3ebff',
       summary:
-        'Depression is more than feeling sad for a day or two. It is a low mood or loss of interest that lasts for two weeks or more and affects how you think, feel and manage daily activities.',
+        'La dépression, ce n’est pas seulement être triste un jour ou deux. C’est une humeur basse ou une perte d’intérêt qui dure au moins deux semaines et qui change la façon de penser, de ressentir et de gérer le quotidien.',
       signs: [
-        'Feeling sad, empty or hopeless most of the time',
-        'Losing interest in things you used to enjoy',
-        'Changes in sleep or appetite',
-        'Tiredness and low energy',
-        'Feeling worthless or guilty',
+        'Se sentir triste, vide ou sans espoir la plupart du temps',
+        'Perdre l’intérêt pour ce qu’on aimait faire',
+        'Des changements de sommeil ou d’appétit',
+        'De la fatigue et un manque d’énergie',
+        'Se sentir inutile ou coupable',
       ],
       helps: [
-        'Small daily routines and achievable goals',
-        'Staying connected with people you trust',
-        'Gentle exercise and time outdoors',
-        'Talking therapy, and medication if a doctor recommends it',
+        'De petites routines quotidiennes et des objectifs atteignables',
+        'Garder le lien avec des personnes de confiance',
+        'Une activité physique douce et du temps dehors',
+        'Une psychothérapie, et un traitement si un médecin le recommande',
       ],
     },
     {
       id: 'low-mood',
-      name: 'Low mood',
+      name: 'Coup de blues',
       image: 'assets/imgs/image8.png',
       color: '#fff4cc',
       summary:
-        'Everyone has days when they feel down. Low mood often has a cause, such as stress or a difficult event, and usually lifts within a few days or weeks.',
+        'Tout le monde a des jours sans. Un coup de blues a souvent une cause, comme le stress ou un événement difficile, et passe en général en quelques jours ou quelques semaines.',
       signs: [
-        'Sadness or tearfulness',
-        'Feeling tired or unmotivated',
-        'Feeling irritable or frustrated',
-        'Lower confidence than usual',
+        'De la tristesse ou des larmes',
+        'Se sentir fatigué ou démotivé',
+        'Se sentir irritable ou frustré',
+        'Moins de confiance en soi que d’habitude',
       ],
       helps: [
-        'A regular sleep routine',
-        'Getting outside and moving your body',
-        'Doing something you enjoy, even briefly',
-        'Talking to someone. If it lasts more than two weeks, see a professional',
+        'Des horaires de sommeil réguliers',
+        'Sortir et bouger',
+        'Faire quelque chose qu’on aime, même brièvement',
+        'En parler à quelqu’un. Si cela dure plus de deux semaines, consultez un professionnel',
       ],
     },
     {
       id: 'self-esteem',
-      name: 'Self-esteem',
+      name: 'Estime de soi',
       image: 'assets/imgs/image37.png',
       color: '#dff7e3',
       summary:
-        'Self-esteem is how you value and think about yourself. Low self-esteem can make it harder to try new things, set boundaries and recover from setbacks.',
+        'L’estime de soi, c’est la valeur qu’on s’accorde et le regard qu’on porte sur soi. Une faible estime de soi peut rendre plus difficile d’essayer de nouvelles choses, de poser des limites et de rebondir après un échec.',
       signs: [
-        'Harsh self-criticism',
-        'Constantly comparing yourself to others',
-        'Finding it hard to accept compliments',
-        'Avoiding challenges for fear of failing',
+        'Être très dur avec soi-même',
+        'Se comparer sans cesse aux autres',
+        'Avoir du mal à accepter les compliments',
+        'Éviter les défis par peur d’échouer',
       ],
       helps: [
-        'Writing down your strengths and small wins',
-        'Noticing and challenging negative self-talk',
-        'Setting small goals you can reach',
-        'Treating yourself as you would a good friend',
+        'Noter ses qualités et ses petites réussites',
+        'Repérer et remettre en question ses pensées négatives',
+        'Se fixer de petits objectifs atteignables',
+        'Se traiter comme on traiterait un bon ami',
       ],
     },
     {
       id: 'ocd',
-      name: 'OCD',
+      name: 'TOC',
       image: 'assets/imgs/image28.png',
       color: '#ece3ff',
       summary:
-        'Obsessive-compulsive disorder (OCD) involves unwanted, intrusive thoughts (obsessions) and repetitive actions or rituals (compulsions) that a person feels driven to do to ease the distress.',
+        'Le trouble obsessionnel compulsif (TOC) se traduit par des pensées intrusives et indésirables (obsessions) et des gestes ou rituels répétitifs (compulsions) que la personne se sent obligée de faire pour calmer son angoisse.',
       signs: [
-        'Repeated, upsetting thoughts that are hard to dismiss',
-        'Excessive checking, cleaning, counting or ordering',
-        'Feeling anxious until a ritual is done "right"',
-        'Rituals taking up a lot of time each day',
+        'Des pensées répétées et pénibles, difficiles à chasser',
+        'Vérifier, nettoyer, compter ou ranger de façon excessive',
+        'Rester anxieux tant qu’un rituel n’est pas fait « comme il faut »',
+        'Des rituels qui prennent beaucoup de temps chaque jour',
       ],
       helps: [
-        'CBT with exposure and response prevention (ERP)',
-        'Medication prescribed by a doctor',
-        'Support groups and understanding from loved ones',
+        'Une TCC avec exposition et prévention de la réponse (EPR)',
+        'Un traitement prescrit par un médecin',
+        'Des groupes de soutien et la compréhension des proches',
       ],
     },
     {
       id: 'schizophrenia',
-      name: 'Schizophrenia',
+      name: 'Schizophrénie',
       image: 'assets/imgs/image23.png',
       color: '#ffe3ec',
       summary:
-        'Schizophrenia is a serious, long-term condition that affects how a person thinks, feels and experiences reality. With early treatment and support, many people manage their symptoms and live full lives.',
+        'La schizophrénie est un trouble sérieux et durable qui modifie la façon de penser, de ressentir et de percevoir la réalité. Avec un traitement précoce et du soutien, beaucoup de personnes gèrent leurs symptômes et vivent pleinement.',
       signs: [
-        'Hearing or seeing things others do not (hallucinations)',
-        'Strongly held beliefs that are not based in reality (delusions)',
-        'Confused or disorganised thinking and speech',
-        'Withdrawing from others and losing motivation',
+        'Entendre ou voir des choses que les autres ne perçoivent pas (hallucinations)',
+        'Des convictions fortes qui ne reposent pas sur la réalité (idées délirantes)',
+        'Une pensée et un discours confus ou désorganisés',
+        'Se replier sur soi et perdre sa motivation',
       ],
       helps: [
-        'Early assessment and treatment by mental health professionals',
-        'Medication and talking therapy',
-        'Support from family, friends and community services',
+        'Une évaluation et un traitement précoces par des professionnels de santé mentale',
+        'Un traitement médicamenteux et une psychothérapie',
+        'Le soutien de la famille, des amis et des services de proximité',
       ],
     },
   ];
@@ -292,7 +308,7 @@ export class Tab4Page implements OnInit, OnDestroy {
       const key = this.moodService.dateKey(d);
       days.push({
         key,
-        weekday: d.toLocaleDateString(undefined, { weekday: 'short' }),
+        weekday: d.toLocaleDateString(LOCALE, { weekday: 'short' }),
         day: d.getDate(),
         isToday: i === 0,
         entry: byDate.get(key),
@@ -321,7 +337,7 @@ export class Tab4Page implements OnInit, OnDestroy {
   }
 
   get calendarTitle(): string {
-    return this.calendarMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    return this.calendarMonth.toLocaleDateString(LOCALE, { month: 'long', year: 'numeric' });
   }
 
   get canGoForward(): boolean {
@@ -353,6 +369,18 @@ export class Tab4Page implements OnInit, OnDestroy {
     return count;
   }
 
+  moodName(key: string | undefined): string {
+    return moodLabel(key);
+  }
+
+  companyNames(keys: string[] | undefined): string {
+    return (keys || []).map(companyLabel).join(', ');
+  }
+
+  companyName(key: string): string {
+    return companyLabel(key);
+  }
+
   moodFor(entry: MoodEntry | null | undefined): Mood | null {
     return this.moodService.findMood(entry?.mood);
   }
@@ -360,8 +388,8 @@ export class Tab4Page implements OnInit, OnDestroy {
   formatDate(key: string): string {
     const [y, m, d] = key.split('-').map(Number);
     const date = new Date(y, m - 1, d);
-    if (key === this.moodService.dateKey()) return 'Today';
-    return date.toLocaleDateString(undefined, {
+    if (key === this.moodService.dateKey()) return 'Aujourd’hui';
+    return date.toLocaleDateString(LOCALE, {
       weekday: 'short',
       day: 'numeric',
       month: 'short',
@@ -376,25 +404,25 @@ export class Tab4Page implements OnInit, OnDestroy {
   async editNote(entry: MoodEntry) {
     const alert = await this.alertCtrl.create({
       header: this.formatDate(entry.date),
-      subHeader: entry.mood,
+      subHeader: moodLabel(entry.mood),
       inputs: [
         {
           name: 'note',
           type: 'textarea',
-          placeholder: 'What happened today? How did it make you feel?',
+          placeholder: 'Que s’est-il passé\u00a0? Qu’avez-vous ressenti\u00a0?',
           value: entry.note || '',
         },
       ],
       buttons: [
-        { text: 'Cancel', role: 'cancel' },
+        { text: 'Annuler', role: 'cancel' },
         {
-          text: 'Save',
+          text: 'Enregistrer',
           handler: async (data) => {
             try {
               await this.moodService.saveNote(entry.date, (data.note || '').trim());
             } catch (err) {
               console.error('Failed to save note', err);
-              this.showToast('Could not save your note. Please try again.');
+              this.showToast('Impossible d’enregistrer votre note. Réessayez.');
             }
           },
         },
@@ -472,14 +500,14 @@ export class Tab4Page implements OnInit, OnDestroy {
     try {
       const today = await this.routineCol().doc(this.moodService.dateKey()).ref.get();
       if (today.exists) {
-        this.routine = (today.data() as any).items;
+        this.routine = translateItems((today.data() as any).items);
         return;
       }
       const last = await this.routineCol().ref.orderBy('date', 'desc').limit(1).get();
       const items: RoutineItem[] = last.empty
         ? DEFAULT_ROUTINE
         : (last.docs[0].data() as any).items;
-      this.routine = items.map((i) => ({ ...i, done: false }));
+      this.routine = translateItems(items).map((i) => ({ ...i, done: false }));
     } catch (err) {
       console.error('Failed to load routine', err);
       this.routine = DEFAULT_ROUTINE.map((i) => ({ ...i }));
@@ -493,7 +521,7 @@ export class Tab4Page implements OnInit, OnDestroy {
       await this.routineCol().doc(date).set({ date, items: this.routine });
     } catch (err) {
       console.error('Failed to save routine', err);
-      this.showToast('Could not save your routine. Please try again.');
+      this.showToast('Impossible d’enregistrer votre routine. Réessayez.');
     }
   }
 

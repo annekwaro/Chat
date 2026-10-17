@@ -15,7 +15,7 @@ describe('MoodFaceComponent', () => {
   it('draws the face in the mood’s colour, labelled for screen readers', () => {
     const el = render(MOODS[0]);
     expect(el.querySelector('circle')?.getAttribute('fill')).toBe(MOODS[0].color);
-    expect(el.querySelector('svg')?.getAttribute('aria-label')).toBe('Great');
+    expect(el.querySelector('svg')?.getAttribute('aria-label')).toBe('Super');
   });
 
   it('is a faint grey face when there is no check-in', () => {

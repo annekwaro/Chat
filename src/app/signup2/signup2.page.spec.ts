@@ -31,8 +31,8 @@ describe('Signup2Page', () => {
   it('explains why when sent from Chat, and tells guests their data comes along', async () => {
     await setup({ reason: 'chat', returnUrl: '/tabs/home' }, true);
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain('Sign up to chat');
-    expect(text).toContain('Your mood diary and routine come with you');
+    expect(text).toContain('Inscrivez-vous pour discuter');
+    expect(text).toContain('Votre journal d’humeur et votre routine vous suivent');
   });
 
   it('creates the account and returns to where the user was going', async () => {
@@ -51,7 +51,7 @@ describe('Signup2Page', () => {
     fill();
     await component.signUp();
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.form-error').textContent).toContain('Try logging in');
+    expect(fixture.nativeElement.querySelector('.form-error').textContent).toContain('Essayez plutôt de vous connecter');
   });
 
   it('"Not now" from Chat goes Home instead of back to Chat', async () => {

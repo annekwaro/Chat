@@ -2,6 +2,8 @@
 
 A mobile-first wellbeing app. People can check in on their mood, explore guided sessions, learn about common conditions, and chat one-to-one with others in real time.
 
+The app is in French, for users in France: all text, dates and times, the helplines, and Firebase's password reset emails.
+
 ## Features
 
 - **No sign-up wall.** The app opens straight to Home as a guest. An account is only needed for chat. If a guest signs up later, they keep their mood diary and routine.
@@ -40,9 +42,13 @@ https://docs.google.com/presentation/d/1eqkLxWmaBLTHLHckOPQ-4BlqrnywFh1fvsMaZ-Xi
 
 ## Screenshots
 
-![Home](chat_interface.png)
+| Home | Chat | Mood diary |
+| --- | --- | --- |
+| ![Home](docs/screenshots/home.png) | ![Chat](docs/screenshots/room.png) | ![Mood diary](docs/screenshots/diary.png) |
 
-![Chat list](chat.png)
+| Explore | Calm | Help |
+| --- | --- | --- |
+| ![Explore](docs/screenshots/explore.png) | ![Calm](docs/screenshots/calm.png) | ![Help](docs/screenshots/help.png) |
 
 ## Getting started
 
@@ -86,7 +92,8 @@ npx ng test --watch=false --browsers=ChromeHeadless
   - `SessionGuard` starts a guest session for the tabs.
   - `AuthGuard` asks guests to sign up before they can chat.
 - `src/app/pages/help`: the Get help now page and its list of helplines.
-- `src/app/components`: the avatar (initials when there's no photo) and the chat bubble.
+- `src/app/components`: the avatar (initials when there's no photo), the chat bubble, the mood face and the daily check-in sheet.
+- `src/app/locale.ts`: the locale used for dates and times (`fr-FR`).
 - `firestore.rules`: who can read and write what.
 
 ### Data model
@@ -95,7 +102,7 @@ npx ng test --watch=false --browsers=ChromeHeadless
 | --- | --- |
 | `users/{uid}` | Public profile: name and photo only |
 | `users/{uid}/private/account` | Email (only the owner can read it) |
-| `users/{uid}/moods/{YYYY-MM-DD}` | Mood check-in and diary note |
+| `users/{uid}/moods/{YYYY-MM-DD}` | Mood check-in and diary note. `mood` and `with` hold English keys (`Great`, `Family`); the French labels come from `MOODS` and `COMPANY` in `mood.service.ts` |
 | `users/{uid}/routine/{YYYY-MM-DD}` | Daily routine checklist |
 | `chats/{uidA_uidB}` | The two participants, last-message preview, read receipts, who has blocked |
 | `chats/{id}/messages/{id}` | `text`, `senderId`, `timestamp` |

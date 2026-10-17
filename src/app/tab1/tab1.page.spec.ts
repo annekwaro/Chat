@@ -46,8 +46,8 @@ describe('Tab1Page (Home)', () => {
 
   it('searches insights by title or topic', async () => {
     await setup();
-    component.onSearch({ detail: { value: 'Sleep' } });
-    expect(component.filteredInsights.map((i) => i.title)).toEqual(['Wind down for sleep']);
+    component.onSearch({ detail: { value: 'Sommeil' } });
+    expect(component.filteredInsights.map((i) => i.title)).toEqual(['Se détendre avant de dormir']);
   });
 
   it("saves the mood check-in to today's diary entry", async () => {
@@ -118,7 +118,7 @@ describe('Tab1Page (Home)', () => {
     await setup();
     await TestBed.inject(MoodService).setToday(MOODS[2]);
     await new Promise((resolve) => setTimeout(resolve)); // let Home reload today's mood
-    expect(component.selectedMood?.label).toBe('Okay');
+    expect(component.selectedMood?.key).toBe('Okay');
   });
 
   it('has shortcuts to chat, breathing, the diary and help', async () => {
@@ -134,7 +134,7 @@ describe('Tab1Page (Home)', () => {
     const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
     component.heroAction(component.heroSlides.find((s) => s.checkIn)!);
     expect(open).toHaveBeenCalled();
-    component.heroAction(component.heroSlides.find((s) => s.cta === 'Learn')!);
+    component.heroAction(component.heroSlides.find((s) => s.cta === 'En savoir plus')!);
     expect(navigate).toHaveBeenCalledWith(['/', 'tabs', 'tab4'], { queryParams: { segment: 'learn' } });
   });
 });

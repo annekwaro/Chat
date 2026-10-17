@@ -72,15 +72,15 @@ export class Signup2Page implements OnInit {
     switch (code) {
       case 'auth/email-already-in-use':
       case 'auth/credential-already-in-use':
-        return 'That email already has an account. Try logging in instead.';
+        return 'Un compte existe déjà avec cet e-mail. Essayez plutôt de vous connecter.';
       case 'auth/invalid-email':
-        return 'Enter a valid email address.';
+        return 'Saisissez une adresse e-mail valide.';
       case 'auth/weak-password':
-        return 'Choose a stronger password (at least 8 characters).';
+        return 'Choisissez un mot de passe plus sûr (au moins 8 caractères).';
       case 'auth/network-request-failed':
-        return "Can't reach the server. Check your connection and try again.";
+        return 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
       default:
-        return 'Could not create your account. Please try again.';
+        return 'Impossible de créer votre compte. Réessayez.';
     }
   }
 }

@@ -22,7 +22,7 @@ describe('LandingPage', () => {
 
     expect(navigate).not.toHaveBeenCalled();
     const buttons = [...fixture.nativeElement.querySelectorAll('ion-button')].map((b: HTMLElement) => b.textContent?.trim());
-    expect(buttons).toEqual(['Get started', 'I already have an account']);
+    expect(buttons).toEqual(['Commencer', 'J’ai déjà un compte']);
   });
 
   it('sends returning visitors straight into the app', async () => {

@@ -15,6 +15,7 @@ import {
   ContentService,
   FORMATS,
   FORMAT_ICONS,
+  FORMAT_NAMES,
   Format,
   Topic,
 } from '../services/content/content.service';
@@ -52,10 +53,10 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   // Shortcuts into Discover
   tools = [
-    { name: 'Breathing', sub: 'Box breathing', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', segment: 'calm' },
-    { name: 'Mood tracker', sub: 'Daily check-in', icon: 'happy', color: '#1f9d55', tint: '#e3f8e9', segment: 'diary' },
-    { name: 'Daily routine', sub: 'Small steps', icon: 'checkmark-done', color: '#0558e7', tint: '#e3ebff', segment: 'calm' },
-    { name: 'Learn', sub: 'Understand your mind', icon: 'book', color: '#d97706', tint: '#fff4cc', segment: 'learn' },
+    { name: 'Respiration', sub: 'Respiration carrée', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', segment: 'calm' },
+    { name: 'Suivi d’humeur', sub: 'Humeur du jour', icon: 'happy', color: '#1f9d55', tint: '#e3f8e9', segment: 'diary' },
+    { name: 'Routine', sub: 'Petits pas', icon: 'checkmark-done', color: '#0558e7', tint: '#e3ebff', segment: 'calm' },
+    { name: 'Comprendre', sub: 'Mieux comprendre son esprit', icon: 'book', color: '#d97706', tint: '#fff4cc', segment: 'learn' },
   ];
 
   constructor(
@@ -155,6 +156,10 @@ export class Tab2Page implements OnInit, OnDestroy {
 
   iconFor(format: Format): string {
     return FORMAT_ICONS[format];
+  }
+
+  formatName(format: Format): string {
+    return FORMAT_NAMES[format] || format;
   }
 
   open(item: Content) {
