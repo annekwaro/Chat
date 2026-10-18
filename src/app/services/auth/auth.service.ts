@@ -3,7 +3,6 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { connectAuthEmulator, getAuth, onAuthStateChanged } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
 @Injectable({ providedIn: 'root' })
@@ -109,13 +108,12 @@ export class AuthService {
   }
 
   async register(formValue: any) {
-    // A guest keeps the same user id (and their diary, routine, etc.) by upgrading in place
+    // A guest's diary and routine are copied to the new account. (Upgrading the guest in
+    // place with linkWithCredential is refused by Firebase when email enumeration
+    // protection is on, which is the default for new projects.)
     const current = await this.afAuth.currentUser;
-    const res = current?.isAnonymous
-      ? await current.linkWithCredential(
-          firebase.auth.EmailAuthProvider.credential(formValue.email, formValue.password)
-        )
-      : await this.afAuth.createUserWithEmailAndPassword(formValue.email, formValue.password);
+    const guestData = current?.isAnonymous ? await this.readGuestData(current.uid) : [];
+    const res = await this.afAuth.createUserWithEmailAndPassword(formValue.email, formValue.password);
     const user = res.user;
     if (user) {
       // Public profile: what other members see in chat. No email here.
@@ -128,8 +126,32 @@ export class AuthService {
       this.currentUserId = user.uid;
       this.guest = false;
       this.authChecked = true;
+      await this.restoreGuestData(user.uid, guestData);
     }
     return res;
+  }
+
+  // The guest's mood check-ins and daily routines, read while still signed in as the guest
+  private async readGuestData(uid: string): Promise<{ path: string; data: any }[]> {
+    const items: { path: string; data: any }[] = [];
+    try {
+      for (const name of ['moods', 'routine']) {
+        const snap = await this.afs.collection(`users/${uid}/${name}`).ref.get();
+        snap.docs.forEach((d) => items.push({ path: `${name}/${d.id}`, data: d.data() }));
+      }
+    } catch (err) {
+      console.warn('Could not read guest data to carry over', err);
+    }
+    return items;
+  }
+
+  // Best effort: the account is created even if copying fails
+  private async restoreGuestData(uid: string, items: { path: string; data: any }[]) {
+    try {
+      await Promise.all(items.map((i) => this.afs.doc(`users/${uid}/${i.path}`).set(i.data)));
+    } catch (err) {
+      console.warn('Could not carry over guest data', err);
+    }
   }
 
   async logout() {

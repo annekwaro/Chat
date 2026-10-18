@@ -80,7 +80,8 @@ export class Signup2Page implements OnInit {
       case 'auth/network-request-failed':
         return 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
       default:
-        return 'Impossible de créer votre compte. Réessayez.';
+        // The code helps tell what went wrong (e.g. permission-denied from Firestore)
+        return `Impossible de créer votre compte. Réessayez.${code ? ` (${code})` : ''}`;
     }
   }
 }

@@ -68,19 +68,22 @@ describe('AuthService', () => {
     expect(await service.hasAccount()).toBeFalse();
   });
 
-  it('upgrades a guest to an account, keeping the same user id', async () => {
+  it('turns a guest into an account and brings their diary and routine along', async () => {
     const { service, afAuth, firestore } = setup();
     await service.continueAsGuest();
-    const linkWithCredential = jasmine
-      .createSpy('linkWithCredential')
-      .and.resolveTo({ user: { uid: 'guest-user' } });
-    afAuth.currentUser = Promise.resolve({ isAnonymous: true, linkWithCredential });
+    const linkWithCredential = jasmine.createSpy('linkWithCredential');
+    afAuth.currentUser = Promise.resolve({ uid: 'guest-user', isAnonymous: true, linkWithCredential });
+    firestore.data.set('users/guest-user/moods/2026-10-17', { date: '2026-10-17', mood: 'Good', note: 'Walk' });
+    firestore.data.set('users/guest-user/routine/2026-10-17', { date: '2026-10-17', items: [] });
 
     await service.register({ email: 'me@example.com', password: 'secret123', username: 'Me' });
 
-    expect(linkWithCredential).toHaveBeenCalled();
-    expect(afAuth.createUserWithEmailAndPassword).not.toHaveBeenCalled();
-    expect(firestore.data.get('users/guest-user/private/account')?.['email']).toBe('me@example.com');
+    // linkWithCredential is refused when email enumeration protection is on
+    expect(linkWithCredential).not.toHaveBeenCalled();
+    expect(afAuth.createUserWithEmailAndPassword).toHaveBeenCalledWith('me@example.com', 'secret123');
+    expect(firestore.data.get('users/new-user/moods/2026-10-17')).toEqual({ date: '2026-10-17', mood: 'Good', note: 'Walk' });
+    expect(firestore.data.get('users/new-user/routine/2026-10-17')).toEqual({ date: '2026-10-17', items: [] });
+    expect(firestore.data.get('users/new-user/private/account')?.['email']).toBe('me@example.com');
     expect(service.isGuest()).toBeFalse();
     expect(await service.hasAccount()).toBeTrue();
   });
