@@ -47,7 +47,7 @@ describe('Tab1Page (Home)', () => {
   it('searches insights by title or topic', async () => {
     await setup();
     component.onSearch({ detail: { value: 'Sommeil' } });
-    expect(component.filteredInsights.map((i) => i.title)).toEqual(['Se détendre avant de dormir']);
+    expect(component.filteredInsights.map((i) => component.title(i))).toEqual(['Se détendre avant de dormir']);
   });
 
   it("saves the mood check-in to today's diary entry", async () => {
@@ -134,7 +134,7 @@ describe('Tab1Page (Home)', () => {
     const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
     component.heroAction(component.heroSlides.find((s) => s.checkIn)!);
     expect(open).toHaveBeenCalled();
-    component.heroAction(component.heroSlides.find((s) => s.cta === 'En savoir plus')!);
+    component.heroAction(component.heroSlides.find((s) => s.id === 'learn')!);
     expect(navigate).toHaveBeenCalledWith(['/', 'tabs', 'tab4'], { queryParams: { segment: 'learn' } });
   });
 });

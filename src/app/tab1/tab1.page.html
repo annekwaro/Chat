@@ -1,22 +1,24 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar color="light" class="top-bar">
     <div class="greeting" slot="start">
       <ion-avatar class="avatar">
-        <img *ngIf="userPhoto; else initialsAvatar" [src]="userPhoto" alt="Photo de profil" />
+        <img *ngIf="userPhoto; else initialsAvatar" [src]="userPhoto" [alt]="t('home.profilePhoto')" />
         <ng-template #initialsAvatar>
           <span class="initials" aria-hidden="true">{{ initials || '🙂' }}</span>
         </ng-template>
       </ion-avatar>
       <div>
-        <p class="greeting-sub">{{ greeting }},</p>
-        <h2 class="greeting-name">{{ userName || 'bienvenue' }} 👋</h2>
+        <p class="greeting-sub">{{ t('home.greeting.' + greeting) }},</p>
+        <h2 class="greeting-name">{{ userName || t('home.welcome') }} 👋</h2>
       </div>
     </div>
     <ion-buttons slot="end">
+      <app-language-toggle></app-language-toggle>
       <ion-button
         class="bell"
         shape="round"
-        [attr.aria-label]="needsCheckIn ? 'Notifications\u00a0: humeur du jour à saisir' : 'Notifications'"
+        [attr.aria-label]="t(needsCheckIn ? 'home.notificationsCheckIn' : 'home.notifications')"
         (click)="showNotifications()"
       >
         <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
@@ -51,17 +53,19 @@
       <section class="hero" [style.background]="slide.background">
         <div class="hero-text">
           <span class="hero-tag" [style.color]="slide.accent">
-            <ion-icon [name]="slide.icon"></ion-icon> {{ slide.tag }}
+            <ion-icon [name]="slide.icon"></ion-icon> {{ t('home.hero.' + slide.id + '.tag') }}
           </span>
-          <h1>{{ slide.title }}<br /><span [style.color]="slide.accent">{{ slide.highlight }}</span></h1>
-          <p>{{ slide.text }}</p>
+          <h1>
+            {{ t('home.hero.' + slide.id + '.title') }}<br /><span [style.color]="slide.accent">{{ t('home.hero.' + slide.id + '.highlight') }}</span>
+          </h1>
+          <p>{{ t('home.hero.' + slide.id + '.text') }}</p>
           <ion-button
             class="hero-cta"
             shape="round"
             [style.--background]="slide.accent"
             (click)="heroAction(slide)"
           >
-            {{ slide.cta }}
+            {{ t('home.hero.' + slide.id + '.cta') }}
             <ion-icon name="arrow-forward" slot="end"></ion-icon>
           </ion-button>
         </div>
@@ -71,7 +75,7 @@
   </swiper-container>
 
   <!-- Shortcuts -->
-  <nav class="shortcuts" aria-label="Raccourcis">
+  <nav class="shortcuts" [attr.aria-label]="t('home.shortcutsLabel')">
     <a
       *ngFor="let s of shortcuts"
       class="shortcut"
@@ -81,7 +85,7 @@
       <span class="shortcut-icon" [style.background]="s.tint" [style.color]="s.color">
         <ion-icon [name]="s.icon"></ion-icon>
       </span>
-      <span class="shortcut-label">{{ s.label }}</span>
+      <span class="shortcut-label">{{ t('home.shortcuts.' + s.id) }}</span>
     </a>
   </nav>
 
@@ -90,8 +94,10 @@
     <a class="mood-head" [routerLink]="['/', 'tabs', 'tab4']" [queryParams]="{ segment: 'diary' }">
       <app-mood-face [mood]="selectedMood"></app-mood-face>
       <span class="mood-head-text">
-        <span class="mood-title">Humeur du jour</span>
-        <span class="mood-sub">{{ selectedMood ? 'Aujourd’hui\u00a0: ' + selectedMood.label : 'Comment vous sentez-vous aujourd’hui\u00a0?' }}</span>
+        <span class="mood-title">{{ t('home.moodTitle') }}</span>
+        <span class="mood-sub">{{
+          selectedMood ? t('home.moodToday', { mood: t('moods.' + selectedMood.key + '.label') }) : t('home.moodQuestion')
+        }}</span>
       </span>
       <ion-icon name="chevron-forward" color="medium"></ion-icon>
     </a>
@@ -106,32 +112,32 @@
         (click)="selectMood(mood)"
       >
         <app-mood-face [mood]="mood"></app-mood-face>
-        <span class="mood-label">{{ mood.label }}</span>
+        <span class="mood-label">{{ t('moods.' + mood.key + '.label') }}</span>
       </button>
     </div>
-    <p *ngIf="selectedMood" class="mood-message">{{ selectedMood.message }}</p>
+    <p *ngIf="selectedMood" class="mood-message">{{ t('moods.' + selectedMood.key + '.message') }}</p>
     <div *ngIf="selectedMood" class="mood-actions">
       <ion-button size="small" fill="clear" (click)="openCheckIn()">
         <ion-icon name="create-outline" slot="start"></ion-icon>
-        Ajouter avec qui vous étiez ou une note
+        {{ t('home.addDetails') }}
       </ion-button>
     </div>
     <a *ngIf="selectedMood && selectedMood.score <= 2" class="mood-help" routerLink="/help">
-      <ion-icon name="heart-outline"></ion-icon> Besoin de parler à quelqu’un maintenant&nbsp;?
+      <ion-icon name="heart-outline"></ion-icon> {{ t('common.needToTalk') }}
     </a>
   </section>
 
   <!-- Search -->
   <ion-searchbar
     class="search"
-    placeholder="Rechercher…"
+    [placeholder]="t('home.search')"
     [debounce]="250"
     (ionInput)="onSearch($event)"
   ></ion-searchbar>
 
   <!-- Featured -->
   <ion-list-header class="section-header">
-    <ion-label>Explorer</ion-label>
+    <ion-label>{{ t('home.explore') }}</ion-label>
     <ion-button
       class="show-all"
       fill="clear"
@@ -158,16 +164,16 @@
   >
     <swiper-slide *ngFor="let card of featured">
       <ion-card [color]="card.color" class="featured-card">
-        <img [src]="card.image" [alt]="card.title" />
+        <img [src]="card.image" [alt]="t('home.featured.' + card.id + '.title')" />
         <ion-card-content>
-          <ion-card-title>{{ card.title }}</ion-card-title>
+          <ion-card-title>{{ t('home.featured.' + card.id + '.title') }}</ion-card-title>
           <ion-button
             class="cta"
             shape="round"
             [color]="card.buttonColor"
             [routerLink]="card.route"
           >
-            {{ card.cta }}
+            {{ t('home.featured.' + card.id + '.cta') }}
             <ion-icon name="arrow-forward" slot="end"></ion-icon>
           </ion-button>
         </ion-card-content>
@@ -177,7 +183,7 @@
 
   <!-- Insights -->
   <ion-list-header class="section-header">
-    <ion-label>Pour vous</ion-label>
+    <ion-label>{{ t('home.forYou') }}</ion-label>
     <ion-button
       class="show-all"
       fill="clear"
@@ -192,11 +198,11 @@
   <div class="chips">
     <ion-chip
       *ngFor="let cat of categories"
-      [outline]="selectedCategory !== cat.value"
-      [color]="selectedCategory === cat.value ? 'primary' : 'medium'"
-      (click)="selectCategory(cat.value)"
+      [outline]="selectedCategory !== cat"
+      [color]="selectedCategory === cat ? 'primary' : 'medium'"
+      (click)="selectCategory(cat)"
     >
-      {{ cat.label }}
+      {{ t('formats.' + cat) }}
     </ion-chip>
   </div>
 
@@ -210,10 +216,10 @@
       [queryParams]="{ item: item.id }"
     >
       <ion-thumbnail slot="start">
-        <img [src]="item.image" [alt]="item.title" />
+        <img [src]="item.image" [alt]="title(item)" />
       </ion-thumbnail>
       <ion-label>
-        <h3>{{ item.title }}</h3>
+        <h3>{{ title(item) }}</h3>
         <p>{{ topicName(item.topic) }}</p>
         <p class="meta">
           <ion-icon [name]="iconFor(item.format)"></ion-icon>
@@ -228,29 +234,30 @@
 
   <div *ngIf="filteredInsights.length === 0" class="empty">
     <ion-icon name="search-outline"></ion-icon>
-    <p>Aucun résultat pour cette recherche.</p>
+    <p>{{ t('home.noResults') }}</p>
   </div>
 
   <!-- Always within reach -->
   <ion-item class="help-card" lines="none" button [detail]="true" routerLink="/help">
     <ion-icon slot="start" name="heart" color="danger"></ion-icon>
     <ion-label>
-      <h3>Besoin d’aide maintenant&nbsp;?</h3>
-      <p>Lignes d’écoute et numéros d’urgence</p>
+      <h3>{{ t('common.needHelpNow') }}</h3>
+      <p>{{ t('home.helpSub') }}</p>
     </ion-label>
   </ion-item>
 
   <!-- Guests: optional nudge to create an account -->
   <section *ngIf="showGuestNote" class="guest-note">
     <div class="guest-text">
-      <p class="guest-title">Vous utilisez Soul en invité</p>
-      <p>Créez un compte gratuit pour discuter avec la communauté et retrouver votre journal sur tous vos appareils.</p>
+      <p class="guest-title">{{ t('home.guestTitle') }}</p>
+      <p>{{ t('home.guestText') }}</p>
       <ion-button class="guest-cta" size="small" shape="round" [routerLink]="['/signup2']">
-        Créer un compte gratuit
+        {{ t('home.guestCta') }}
       </ion-button>
     </div>
-    <ion-button class="guest-close" fill="clear" color="medium" aria-label="Masquer" (click)="dismissGuestNote()">
+    <ion-button class="guest-close" fill="clear" color="medium" [attr.aria-label]="t('common.hide')" (click)="dismissGuestNote()">
       <ion-icon slot="icon-only" name="close"></ion-icon>
     </ion-button>
   </section>
 </ion-content>
+</ng-container>

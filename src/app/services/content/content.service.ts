@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { LanguageService } from '../../i18n/language.service';
 
 export type Format = 'video' | 'podcast' | 'audio';
 
 export interface Topic {
-  id: string;
-  name: string;
+  id: string; // name: topics.<id> in the translations
   image: string;
   color: string;
 }
 
+// Built-in sessions take their title and description from the translations (library.<id>).
+// Sessions added in Firestore have `title` and `description`, plus optional English
+// versions in `title_en` and `description_en`.
 export interface Content {
   id: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
+  title_en?: string;
+  description_en?: string;
+  builtIn?: boolean;
   topic: string;
   format: Format;
   duration: string;
@@ -24,19 +30,8 @@ export interface Content {
   order?: number; // sort order when loaded from Firestore
 }
 
-export const FORMATS: { value: Format | 'all'; label: string }[] = [
-  { value: 'all', label: 'Tout' },
-  { value: 'video', label: 'Vidéos' },
-  { value: 'podcast', label: 'Podcasts' },
-  { value: 'audio', label: 'Audio' },
-];
-
-// "Vidéo • 6 min"
-export const FORMAT_NAMES: Record<Format, string> = {
-  video: 'Vidéo',
-  podcast: 'Podcast',
-  audio: 'Audio',
-};
+// Filter chips; labels are formats.<value>
+export const FORMATS: (Format | 'all')[] = ['all', 'video', 'podcast', 'audio'];
 
 export const FORMAT_ICONS: Record<Format, string> = {
   video: 'play',
@@ -45,21 +40,19 @@ export const FORMAT_ICONS: Record<Format, string> = {
 };
 
 const TOPICS: Topic[] = [
-  { id: 'self-love', name: 'Amour de soi', image: 'assets/imgs/image33.png', color: '#ffe3ec' },
-  { id: 'meditation', name: 'Méditation', image: 'assets/imgs/image4.png', color: '#fff4cc' },
-  { id: 'meaning', name: 'Donner du sens', image: 'assets/imgs/image29.png', color: '#dff7e3' },
-  { id: 'sleep', name: 'Sommeil', image: 'assets/imgs/image35.png', color: '#e3ebff' },
-  { id: 'anxiety', name: 'Anxiété', image: 'assets/imgs/image8.png', color: '#ffe8de' },
-  { id: 'relationships', name: 'Relations', image: 'assets/imgs/image24.png', color: '#ece3ff' },
+  { id: 'self-love', image: 'assets/imgs/image33.png', color: '#ffe3ec' },
+  { id: 'meditation', image: 'assets/imgs/image4.png', color: '#fff4cc' },
+  { id: 'meaning', image: 'assets/imgs/image29.png', color: '#dff7e3' },
+  { id: 'sleep', image: 'assets/imgs/image35.png', color: '#e3ebff' },
+  { id: 'anxiety', image: 'assets/imgs/image8.png', color: '#ffe8de' },
+  { id: 'relationships', image: 'assets/imgs/image24.png', color: '#ece3ff' },
 ];
 
 // Used when the Firestore `content` collection is empty or can't be read
 const FALLBACK_LIBRARY: Content[] = [
   {
     id: '1',
-    title: 'Vivre avec un but',
-    description:
-      'Une vie qui a du sens, c’est accorder ses actions à ses valeurs et à ses passions, et y trouver de la joie en chemin.',
+    builtIn: true,
     topic: 'meaning',
     format: 'video',
     duration: '9 min',
@@ -68,9 +61,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '2',
-    title: 'Respirer partout',
-    description:
-      'Un exercice de respiration simple et efficace, à faire n’importe où et à tout moment pour apaiser le corps et l’esprit.',
+    builtIn: true,
     topic: 'meditation',
     format: 'audio',
     duration: '5 min',
@@ -79,9 +70,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '3',
-    title: 'Mieux se connaître',
-    description:
-      'Avec une méditation régulière, on apprend à mieux se connaître et à observer ses pensées sans les juger.',
+    builtIn: true,
     topic: 'meditation',
     format: 'video',
     duration: '12 min',
@@ -90,9 +79,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '4',
-    title: 'Être bienveillant envers soi',
-    description:
-      'S’accepter avec ses forces et ses faiblesses, et cultiver une relation positive avec soi-même.',
+    builtIn: true,
     topic: 'self-love',
     format: 'podcast',
     duration: '22 min',
@@ -101,9 +88,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '5',
-    title: 'La roue des émotions',
-    description:
-      'Apprenez à nommer ce que vous ressentez. Mettre des mots sur ses émotions aide à les comprendre et à les gérer.',
+    builtIn: true,
     topic: 'self-love',
     format: 'video',
     duration: '6 min',
@@ -112,9 +97,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '6',
-    title: 'Se détendre avant de dormir',
-    description:
-      'Une séance guidée tout en douceur pour ralentir vos pensées et trouver un sommeil plus profond et réparateur.',
+    builtIn: true,
     topic: 'sleep',
     format: 'audio',
     duration: '15 min',
@@ -123,9 +106,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '7',
-    title: 'Quand l’inquiétude prend le dessus',
-    description:
-      'Des pistes concrètes pour repérer les pensées anxieuses, revenir au moment présent et répondre plutôt que réagir.',
+    builtIn: true,
     topic: 'anxiety',
     format: 'podcast',
     duration: '18 min',
@@ -134,9 +115,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '8',
-    title: 'Traverser un jour de pluie',
-    description:
-      'Certains jours sont lourds. De petits pas réalisables pour prendre soin de vous quand le moral est bas.',
+    builtIn: true,
     topic: 'anxiety',
     format: 'audio',
     duration: '8 min',
@@ -145,9 +124,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '9',
-    title: 'Mieux communiquer',
-    description:
-      'Écouter, exprimer ce que vous ressentez et poser des limites saines avec les personnes qui comptent pour vous.',
+    builtIn: true,
     topic: 'relationships',
     format: 'podcast',
     duration: '24 min',
@@ -156,9 +133,7 @@ const FALLBACK_LIBRARY: Content[] = [
   },
   {
     id: '10',
-    title: 'Petits pas, grands changements',
-    description:
-      'Le sens se construit pas à pas. Fixez-vous des objectifs adaptés à votre vie et célébrez vos progrès.',
+    builtIn: true,
     topic: 'meaning',
     format: 'video',
     duration: '10 min',
@@ -172,7 +147,7 @@ export class ContentService {
 
   private library: Promise<Content[]> | null = null;
 
-  constructor(private afs: AngularFirestore) {}
+  constructor(private afs: AngularFirestore, private language: LanguageService) {}
 
   // Loads once and shares the result between Home and Explore
   getLibrary(): Promise<Content[]> {
@@ -195,6 +170,25 @@ export class ContentService {
   }
 
   topicName(id: string | null): string {
-    return this.topics.find((t) => t.id === id)?.name || '';
+    return this.topics.some((t) => t.id === id) ? this.language.translate(`topics.${id}`) : '';
+  }
+
+  title(item: Content): string {
+    return this.text(item, 'title');
+  }
+
+  description(item: Content): string {
+    return this.text(item, 'description');
+  }
+
+  // "Vidéo" / "Video"
+  formatName(format: Format): string {
+    return this.language.translate(`format.${format}`);
+  }
+
+  private text(item: Content, field: 'title' | 'description'): string {
+    if (item.builtIn) return this.language.translate(`library.${item.id}.${field}`);
+    const english = this.language.lang === 'en' ? item[`${field}_en`] : '';
+    return english || item[field] || '';
   }
 }

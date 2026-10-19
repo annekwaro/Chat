@@ -79,7 +79,9 @@ describe('CheckInComponent', () => {
     spyOn(console, 'error');
     component.selected = MOODS[2];
     await component.save();
-    expect(component.error).toContain('Impossible d’enregistrer');
+    expect(component.error).toBe('checkIn.saveFailed');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.error').textContent).toContain('Impossible d’enregistrer');
     expect(modal.dismiss).not.toHaveBeenCalled();
   });
 });

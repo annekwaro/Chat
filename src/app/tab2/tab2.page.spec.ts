@@ -36,7 +36,7 @@ describe('Tab2Page (Explore)', () => {
   it('filters by topic and toggles the topic off again', () => {
     const sleep = component.topics.find((t) => t.id === 'sleep')!;
     component.selectTopic(sleep);
-    expect(component.filtered.map((c) => c.title)).toEqual(['Se détendre avant de dormir']);
+    expect(component.filtered.map((c) => component.title(c))).toEqual(['Se détendre avant de dormir']);
 
     component.selectTopic(sleep);
     expect(component.filtered.length).toBe(10);
@@ -45,7 +45,7 @@ describe('Tab2Page (Explore)', () => {
   it('combines format and search filters', () => {
     component.selectFormat('podcast');
     component.onSearch({ detail: { value: 'inquiétude' } });
-    expect(component.filtered.map((c) => c.title)).toEqual(['Quand l’inquiétude prend le dessus']);
+    expect(component.filtered.map((c) => component.title(c))).toEqual(['Quand l’inquiétude prend le dessus']);
   });
 
   it('opens the session sheet from a Home link (?item=id)', async () => {
@@ -53,7 +53,7 @@ describe('Tab2Page (Explore)', () => {
     queryParams.next(convertToParamMap({ item: '6' }));
     await fixture.whenStable();
 
-    expect(component.selected?.title).toBe('Se détendre avant de dormir');
+    expect(component.title(component.selected!)).toBe('Se détendre avant de dormir');
     expect(navigate).toHaveBeenCalled(); // clears the link params
   });
 

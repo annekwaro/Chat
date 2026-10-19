@@ -1,20 +1,21 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar color="light" class="top-bar">
     <div class="heading">
-      <h1>Découvrir</h1>
-      <p>Comprendre et prendre soin de votre esprit</p>
+      <h1>{{ t('discover.title') }}</h1>
+      <p>{{ t('discover.subtitle') }}</p>
     </div>
   </ion-toolbar>
   <ion-toolbar class="segment-bar">
     <ion-segment [(ngModel)]="segment" mode="ios">
       <ion-segment-button value="learn">
-        <ion-label>Comprendre</ion-label>
+        <ion-label>{{ t('discover.segment.learn') }}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="diary">
-        <ion-label>Journal</ion-label>
+        <ion-label>{{ t('discover.segment.diary') }}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="calm">
-        <ion-label>Calme</ion-label>
+        <ion-label>{{ t('discover.segment.calm') }}</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -26,8 +27,7 @@
     <div *ngIf="!loggedIn" class="card notice">
       <ion-icon name="lock-closed-outline"></ion-icon>
       <p>
-        <a [routerLink]="['/signup2']">Créez un compte gratuit</a> pour tenir un journal d’humeur privé.
-        Vos humeurs sont enregistrées sur votre compte.
+        <a [routerLink]="['/signup2']">{{ t('diary.signUpLink') }}</a> {{ t('diary.signUpText') }}
       </p>
     </div>
 
@@ -38,25 +38,25 @@
       [style.background]="moodFor(today)?.tint || null"
     >
       <app-mood-face [mood]="moodFor(today)"></app-mood-face>
-      <p class="eyebrow">Aujourd’hui</p>
-      <h2 *ngIf="today">Humeur&nbsp;: {{ moodName(today.mood) | lowercase }}</h2>
-      <h2 *ngIf="!today">Comment vous sentez-vous&nbsp;?</h2>
-      <p class="today-message" *ngIf="today">{{ moodFor(today)?.message }}</p>
+      <p class="eyebrow">{{ t('diary.today') }}</p>
+      <h2 *ngIf="today">{{ t('diary.moodIs', { mood: (moodName(today.mood) | lowercase) }) }}</h2>
+      <h2 *ngIf="!today">{{ t('diary.question') }}</h2>
+      <p class="today-message" *ngIf="today && moodFor(today) as m">{{ t('moods.' + m.key + '.message') }}</p>
       <div class="pills">
-        <span class="pill">🔥 {{ streak }} {{ streak > 1 ? 'jours' : 'jour' }} d’affilée</span>
-        <span class="pill">{{ monthCount }} ce mois-ci</span>
-        <span class="pill" *ngIf="today?.with?.length">Avec&nbsp;: {{ companyNames(today!.with) | lowercase }}</span>
+        <span class="pill">{{ 'diary.streak' | plural: streak }}</span>
+        <span class="pill">{{ t('diary.thisMonth', { count: monthCount }) }}</span>
+        <span class="pill" *ngIf="today?.with?.length">{{ t('diary.with', { names: (companyNames(today!.with) | lowercase) }) }}</span>
       </div>
       <p *ngIf="today?.note" class="note">“{{ today!.note }}”</p>
       <ion-button class="check-in-cta" shape="round" (click)="openCheckIn()">
         <ion-icon [name]="today ? 'create-outline' : 'add'" slot="start"></ion-icon>
-        {{ today ? 'Modifier' : 'Noter mon humeur' }}
+        {{ t(today ? 'diary.edit' : 'diary.logMood') }}
       </ion-button>
     </section>
 
     <!-- This week -->
-    <h3 class="section-title">Cette semaine</h3>
-    <div class="card chart" role="img" aria-label="Vos humeurs des 7 derniers jours">
+    <h3 class="section-title">{{ t('diary.thisWeek') }}</h3>
+    <div class="card chart" role="img" [attr.aria-label]="t('diary.chartLabel')">
       <div *ngFor="let day of week" class="bar-col" [class.today]="day.isToday">
         <div class="bar-track">
           <div
@@ -68,26 +68,26 @@
             <app-mood-face *ngIf="day.mood" [mood]="day.mood"></app-mood-face>
           </div>
         </div>
-        <span class="weekday">{{ day.weekday }}</span>
+        <span class="weekday">{{ weekday(day.date) }}</span>
       </div>
     </div>
 
     <!-- History -->
     <div class="history-head">
-      <h3 class="section-title">Historique</h3>
+      <h3 class="section-title">{{ t('diary.history') }}</h3>
       <ion-segment class="view-toggle" [(ngModel)]="historyView" mode="ios">
-        <ion-segment-button value="list"><ion-label>Liste</ion-label></ion-segment-button>
-        <ion-segment-button value="calendar"><ion-label>Calendrier</ion-label></ion-segment-button>
+        <ion-segment-button value="list"><ion-label>{{ t('diary.list') }}</ion-label></ion-segment-button>
+        <ion-segment-button value="calendar"><ion-label>{{ t('diary.calendar') }}</ion-label></ion-segment-button>
       </ion-segment>
     </div>
 
     <div *ngIf="historyView === 'calendar'" class="card calendar">
       <div class="calendar-head">
-        <ion-button fill="clear" shape="round" aria-label="Mois précédent" (click)="changeMonth(-1)">
+        <ion-button fill="clear" shape="round" [attr.aria-label]="t('diary.prevMonth')" (click)="changeMonth(-1)">
           <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
         </ion-button>
         <span class="calendar-title">{{ calendarTitle }}</span>
-        <ion-button fill="clear" shape="round" aria-label="Mois suivant" [disabled]="!canGoForward" (click)="changeMonth(1)">
+        <ion-button fill="clear" shape="round" [attr.aria-label]="t('diary.nextMonth')" [disabled]="!canGoForward" (click)="changeMonth(1)">
           <ion-icon slot="icon-only" name="chevron-forward"></ion-icon>
         </ion-button>
       </div>
@@ -100,7 +100,7 @@
           [class.blank]="!cell"
           [class.today]="cell?.isToday"
           [disabled]="!cell || (!cell.entry && !cell.isToday)"
-          [attr.aria-label]="cell ? cell.day + (cell.mood ? ': ' + cell.mood.label : '') : null"
+          [attr.aria-label]="cell ? cell.day + (cell.mood ? ': ' + moodName(cell.mood.key) : '') : null"
           (click)="openDay(cell)"
         >
           <ng-container *ngIf="cell">
@@ -128,7 +128,7 @@
               <span *ngFor="let w of entry.with" class="with-tag">{{ companyName(w) }}</span>
             </p>
             <p *ngIf="entry.note" class="entry-note">{{ entry.note }}</p>
-            <p *ngIf="!entry.note" class="entry-add">Touchez pour ajouter une note</p>
+            <p *ngIf="!entry.note" class="entry-add">{{ t('diary.tapToAddNote') }}</p>
           </ion-label>
         </ion-item>
       </ion-list>
@@ -136,17 +136,14 @@
     <ng-template #noHistory>
       <div class="empty" *ngIf="!loadingDiary">
         <ion-icon name="journal-outline"></ion-icon>
-        <p>Aucune entrée pour l’instant. Notez votre humeur ci-dessus pour commencer votre journal.</p>
+        <p>{{ t('diary.empty') }}</p>
       </div>
     </ng-template>
   </div>
 
   <!-- ================= Learn ================= -->
   <div *ngIf="segment === 'learn'" class="section">
-    <p class="intro">
-      Comprendre ce que vous traversez est un premier pas. Touchez un thème pour découvrir
-      les signes fréquents et ce qui peut aider.
-    </p>
+    <p class="intro">{{ t('learn.intro') }}</p>
 
     <div class="conditions">
       <button
@@ -156,10 +153,10 @@
         [style.background]="c.color"
         (click)="openCondition(c)"
       >
-        <img [src]="c.image" [alt]="c.name" />
-        <span class="condition-name">{{ c.name }}</span>
+        <img [src]="c.image" [alt]="t('conditions.' + c.id + '.name')" />
+        <span class="condition-name">{{ t('conditions.' + c.id + '.name') }}</span>
         <span class="condition-link">
-          En savoir plus <ion-icon name="arrow-forward"></ion-icon>
+          {{ t('learn.learnMore') }} <ion-icon name="arrow-forward"></ion-icon>
         </span>
       </button>
     </div>
@@ -167,10 +164,8 @@
     <div class="card disclaimer">
       <ion-icon name="information-circle-outline"></ion-icon>
       <p>
-        Ces informations sont générales et ne remplacent pas un diagnostic. Si c’est difficile,
-        parlez-en à un professionnel. Si vous ou quelqu’un d’autre êtes en danger, appelez le 112
-        ou le 15.
-        <a routerLink="/help">Voir les lignes d’écoute</a>
+        {{ t('learn.disclaimer') }}
+        <a routerLink="/help">{{ t('common.seeHelplines') }}</a>
       </p>
     </div>
   </div>
@@ -179,43 +174,41 @@
   <div *ngIf="segment === 'calm'" class="section">
     <!-- Breathing -->
     <div class="card breathing">
-      <p class="card-title">Respiration carrée</p>
-      <p class="card-sub">Inspirez, retenez, expirez, retenez. 4&nbsp;secondes à chaque étape.</p>
+      <p class="card-title">{{ t('calm.boxTitle') }}</p>
+      <p class="card-sub">{{ t('calm.boxSub') }}</p>
 
       <div class="breath-stage">
         <div class="breath-circle" [style.transform]="'scale(' + circleScale + ')'"></div>
         <div class="breath-text">
           <ng-container *ngIf="breathing; else idle">
-            <span class="phase">{{ phase.label }}</span>
+            <span class="phase">{{ phaseLabel }}</span>
             <span class="count">{{ countdown }}</span>
           </ng-container>
           <ng-template #idle>
-            <span class="phase">On y va&nbsp;?</span>
+            <span class="phase">{{ t('calm.ready') }}</span>
           </ng-template>
         </div>
       </div>
 
       <p class="cycles" *ngIf="breathing || cycles">
-        {{ cycles }} {{ cycles > 1 ? 'cycles terminés' : 'cycle terminé' }}
+        {{ 'calm.cycles' | plural: cycles }}
       </p>
       <ion-button class="action breath-btn" shape="round" (click)="toggleBreathing()">
         <ion-icon [name]="breathing ? 'stop' : 'play'" slot="start"></ion-icon>
-        {{ breathing ? 'Arrêter' : 'Commencer' }}
+        {{ t(breathing ? 'calm.stop' : 'calm.start') }}
       </ion-button>
     </div>
 
     <!-- Routine -->
     <div class="routine-header">
-      <h3 class="section-title">Routine du jour</h3>
-      <span *ngIf="routine.length" class="routine-count">{{ doneCount }} sur {{ routine.length }}</span>
+      <h3 class="section-title">{{ t('routine.title') }}</h3>
+      <span *ngIf="routine.length" class="routine-count">{{ t('routine.count', { done: doneCount, total: routine.length }) }}</span>
     </div>
     <ng-container *ngIf="routine.length">
       <ion-progress-bar class="routine-progress" [value]="doneCount / routine.length"></ion-progress-bar>
-      <p class="hint">Cochez, glissez ☰ pour réordonner, balayez vers la gauche pour supprimer.</p>
+      <p class="hint">{{ t('routine.hint') }}</p>
     </ng-container>
-    <p *ngIf="!routine.length" class="hint">
-      Ajoutez quelques petites choses à faire aujourd’hui, comme une marche, un verre d’eau ou appeler un ami.
-    </p>
+    <p *ngIf="!routine.length" class="hint">{{ t('routine.empty') }}</p>
 
     <ion-list lines="none" class="routine">
       <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($any($event))">
@@ -225,12 +218,12 @@
               slot="start"
               [checked]="item.done"
               (ionChange)="toggleItem(item)"
-              [attr.aria-label]="'Marquer « ' + item.name + ' » comme fait'"
+              [attr.aria-label]="t('routine.markDone', { name: itemName(item) })"
             ></ion-checkbox>
             <ion-avatar slot="start">
-              <img [src]="item.image" [alt]="item.name" />
+              <img [src]="item.image" [alt]="itemName(item)" />
             </ion-avatar>
-            <ion-label>{{ item.name }}</ion-label>
+            <ion-label>{{ itemName(item) }}</ion-label>
             <ion-reorder slot="end"></ion-reorder>
           </ion-item>
           <ion-item-options side="end">
@@ -246,17 +239,17 @@
       <div class="add-field">
         <ion-input
           class="add-input"
-          placeholder="Ajouter une activité…"
-          aria-label="Nouvelle activité"
+          [placeholder]="t('routine.addPlaceholder')"
+          [attr.aria-label]="t('routine.newItem')"
           [(ngModel)]="newRoutineItem"
           (keyup.enter)="addItem()"
         ></ion-input>
       </div>
-      <ion-button class="add-btn" (click)="addItem()" aria-label="Ajouter l’activité">
+      <ion-button class="add-btn" (click)="addItem()" [attr.aria-label]="t('routine.add')">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </div>
-    <p *ngIf="!loggedIn" class="hint">Créez un compte gratuit pour garder votre routine d’une visite à l’autre.</p>
+    <p *ngIf="!loggedIn" class="hint">{{ t('routine.guest') }}</p>
   </div>
 
   <!-- Condition detail sheet -->
@@ -270,34 +263,33 @@
     <ng-template>
       <ion-content class="detail" *ngIf="selectedCondition as c">
         <div class="detail-hero" [style.background]="c.color">
-          <img [src]="c.image" [alt]="c.name" />
+          <img [src]="c.image" [alt]="t('conditions.' + c.id + '.name')" />
         </div>
         <div class="detail-body">
-          <h2>{{ c.name }}</h2>
-          <p class="summary">{{ c.summary }}</p>
+          <h2>{{ t('conditions.' + c.id + '.name') }}</h2>
+          <p class="summary">{{ t('conditions.' + c.id + '.summary') }}</p>
 
-          <h4>Signes fréquents</h4>
+          <h4>{{ t('learn.signs') }}</h4>
           <ul>
-            <li *ngFor="let s of c.signs">{{ s }}</li>
+            <li *ngFor="let s of t('conditions.' + c.id + '.signs')">{{ s }}</li>
           </ul>
 
-          <h4>Ce qui peut aider</h4>
+          <h4>{{ t('learn.helps') }}</h4>
           <ul class="helps">
-            <li *ngFor="let h of c.helps">{{ h }}</li>
+            <li *ngFor="let h of t('conditions.' + c.id + '.helps')">{{ h }}</li>
           </ul>
 
           <ion-button expand="block" shape="round" class="detail-cta" (click)="talkToTherapist()">
-            En parler avec quelqu’un
+            {{ t('common.talkToSomeone') }}
             <ion-icon name="chatbubbles" slot="end"></ion-icon>
           </ion-button>
           <ion-button expand="block" fill="clear" color="medium" class="detail-close" (click)="closeCondition()">
-            Fermer
+            {{ t('common.close') }}
           </ion-button>
-          <p class="fine-print">
-            Informations générales, pas un diagnostic. En cas d’urgence, appelez le 112 ou le 15.
-          </p>
+          <p class="fine-print">{{ t('learn.finePrint') }}</p>
         </div>
       </ion-content>
     </ng-template>
   </ion-modal>
 </ion-content>
+</ng-container>

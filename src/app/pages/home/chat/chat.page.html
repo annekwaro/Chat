@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar class="chat-bar">
     <ion-buttons slot="start">
@@ -7,11 +8,11 @@
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
       <div class="who">
         <h1 class="name">{{ otherName }}</h1>
-        <p class="status">{{ blockedByMe ? 'Bloqué' : 'Membre de la communauté' }}</p>
+        <p class="status">{{ t(blockedByMe ? 'chat.blocked' : 'chat.member') }}</p>
       </div>
     </div>
     <ion-buttons slot="end" *ngIf="state === 'ready'">
-      <ion-button id="chat-room-menu" aria-label="Options de la discussion" (click)="openMenu()">
+      <ion-button id="chat-room-menu" [attr.aria-label]="t('chat.options')" (click)="openMenu()">
         <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -25,24 +26,24 @@
 
   <div *ngIf="state === 'missing' || state === 'error'" class="center notice">
     <ion-icon [name]="state === 'missing' ? 'chatbubbles-outline' : 'cloud-offline-outline'"></ion-icon>
-    <p *ngIf="state === 'missing'">Cette conversation n’est pas disponible.</p>
-    <p *ngIf="state === 'error'">Impossible de charger cette conversation. Vérifiez votre connexion et réessayez.</p>
-    <ion-button fill="outline" routerLink="/tabs/home" routerDirection="back">Retour aux messages</ion-button>
+    <p *ngIf="state === 'missing'">{{ t('chat.missing') }}</p>
+    <p *ngIf="state === 'error'">{{ t('chat.error') }}</p>
+    <ion-button fill="outline" routerLink="/tabs/home" routerDirection="back">{{ t('chat.backToMessages') }}</ion-button>
   </div>
 
   <ng-container *ngIf="state === 'ready'">
     <div *ngIf="!messageCount" class="center notice hello">
       <app-avatar [name]="otherName" [photo]="otherPhoto"></app-avatar>
-      <h2>Dites bonjour à {{ otherName }} 👋</h2>
-      <p>Soyez bienveillant et prenez votre temps. Seuls vous deux voyez ces messages.</p>
+      <h2>{{ t('chat.hello', { name: otherName }) }}</h2>
+      <p>{{ t('chat.helloText') }}</p>
       <p class="peer-note">
-        Les messages sont un soutien entre membres, pas un service de crise.
-        <a routerLink="/help">Besoin d’aide maintenant&nbsp;?</a>
+        {{ t('chat.peerNote') }}
+        <a routerLink="/help">{{ t('common.needHelpNow') }}</a>
       </p>
     </div>
 
     <section *ngFor="let day of days" class="day">
-      <div class="day-label"><span>{{ day.label }}</span></div>
+      <div class="day-label"><span>{{ dayTitle(day) }}</span></div>
       <ng-container *ngFor="let message of day.messages; let i = index; trackBy: trackMessage">
         <div
           class="row"
@@ -60,7 +61,7 @@
         </div>
         <p *ngIf="message.id === lastMineId" class="receipt" [class.seen]="seen(message)">
           <ion-icon [name]="seen(message) ? 'checkmark-done' : 'checkmark'"></ion-icon>
-          {{ seen(message) ? 'Vu' : 'Envoyé' }}
+          {{ t(seen(message) ? 'chat.seen' : 'chat.sent') }}
         </p>
       </ng-container>
     </section>
@@ -70,11 +71,11 @@
 <ion-footer *ngIf="state === 'ready' && blocked" class="ion-no-border composer">
   <ion-toolbar>
     <div class="blocked-note" *ngIf="blockedByMe">
-      <span>Vous avez bloqué {{ otherName }}.</span>
-      <ion-button fill="clear" size="small" (click)="unblock()">Débloquer</ion-button>
+      <span>{{ t('chat.youBlocked', { name: otherName }) }}</span>
+      <ion-button fill="clear" size="small" (click)="unblock()">{{ t('chat.unblock') }}</ion-button>
     </div>
     <div class="blocked-note" *ngIf="!blockedByMe">
-      <span>Vous ne pouvez pas répondre à cette conversation.</span>
+      <span>{{ t('chat.cantReply') }}</span>
     </div>
   </ion-toolbar>
 </ion-footer>
@@ -83,8 +84,8 @@
   <ion-toolbar>
     <div class="compose">
       <ion-textarea
-        aria-label="Message"
-        placeholder="Message"
+        [attr.aria-label]="t('chat.message')"
+        [placeholder]="t('chat.message')"
         [(ngModel)]="text"
         [autoGrow]="true"
         [rows]="1"
@@ -95,7 +96,7 @@
       <ion-button
         class="send"
         shape="round"
-        aria-label="Envoyer le message"
+        [attr.aria-label]="t('chat.send')"
         [disabled]="!canSend"
         (click)="send()"
       >
@@ -104,3 +105,4 @@
     </div>
   </ion-toolbar>
 </ion-footer>
+</ng-container>

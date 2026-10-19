@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { firebaseFakes } from '../../../testing/firebase-fakes';
 import { ContentService } from './content.service';
+import { LanguageService } from '../../i18n/language.service';
 
 describe('ContentService', () => {
   function setup() {
@@ -39,5 +40,19 @@ describe('ContentService', () => {
     const { service } = setup();
     expect(service.topicName('meaning')).toBe('Donner du sens');
     expect(service.topicName('nope')).toBe('');
+  });
+
+  it('shows titles in the current language', async () => {
+    const { service } = setup();
+    const [first] = await service.getLibrary();
+    const added = { id: 'x', title: 'Respirer', title_en: 'Breathe', topic: 'sleep', format: 'audio' as const, duration: '', image: '' };
+    expect(service.title(first)).toBe('Vivre avec un but');
+    expect(service.title(added)).toBe('Respirer');
+
+    TestBed.inject(LanguageService).use('en', false);
+    expect(service.title(first)).toBe('Living with purpose');
+    expect(service.title(added)).toBe('Breathe');
+    expect(service.title({ ...added, title_en: undefined })).toBe('Respirer'); // no English version yet
+    expect(service.formatName('video')).toBe('Video');
   });
 });

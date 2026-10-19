@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { EMERGENCY, FIND_A_HELPLINE, HELPLINES } from './helplines';
 
 // "Need help now?": emergency number, helplines and a few grounding steps.
@@ -9,7 +10,7 @@ import { EMERGENCY, FIND_A_HELPLINE, HELPLINES } from './helplines';
 @Component({
   selector: 'app-help',
   standalone: true,
-  imports: [CommonModule, RouterModule, IonicModule],
+  imports: [CommonModule, RouterModule, IonicModule, TranslocoDirective],
   templateUrl: './help.page.html',
   styleUrls: ['./help.page.scss'],
 })

@@ -1,34 +1,32 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar color="light">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/tab1" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Obtenir de l’aide</ion-title>
+    <ion-title>{{ t('help.title') }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="light" class="ion-padding">
-  <p class="intro">
-    Vous n’avez pas à traverser ça seul. Parler à quelqu’un peut aider, quoi que vous
-    ressentiez.
-  </p>
+  <p class="intro">{{ t('help.intro') }}</p>
 
   <section class="card emergency">
-    <h2>En danger maintenant&nbsp;?</h2>
-    <p>Si vous ou quelqu’un d’autre risquez d’être blessé, appelez les secours.</p>
+    <h2>{{ t('help.dangerTitle') }}</h2>
+    <p>{{ t('help.dangerText') }}</p>
     <ion-button expand="block" color="danger" shape="round" [href]="'tel:' + emergency.tel">
       <ion-icon slot="start" name="call"></ion-icon>
-      Appeler le {{ emergency.display }}
+      {{ t('help.call', { number: t('help.emergency') }) }}
     </ion-button>
   </section>
 
-  <h3 class="section-title">Parler à quelqu’un</h3>
+  <h3 class="section-title">{{ t('help.talk') }}</h3>
   <ion-list class="lines" lines="none">
     <ion-item *ngFor="let line of helplines" class="line" [href]="'tel:' + line.tel" [detail]="false">
       <ion-icon slot="start" name="call-outline" color="primary"></ion-icon>
       <ion-label class="ion-text-wrap">
-        <h2>{{ line.name }}</h2>
-        <p>{{ line.description }}</p>
+        <h2>{{ t('helplines.' + line.id + '.name') }}</h2>
+        <p>{{ t('helplines.' + line.id + '.description') }}</p>
       </ion-label>
       <span slot="end" class="number">{{ line.display }}</span>
     </ion-item>
@@ -36,21 +34,17 @@
 
   <ion-button class="outside" fill="clear" expand="block" [href]="findAHelpline" target="_blank" rel="noopener">
     <ion-icon slot="start" name="globe-outline"></ion-icon>
-    Hors de France&nbsp;? Trouver de l’aide
+    {{ t('help.outside') }}
   </ion-button>
 
-  <h3 class="section-title">En attendant</h3>
+  <h3 class="section-title">{{ t('help.meanwhile') }}</h3>
   <section class="card steps">
     <ol>
-      <li>Inspirez sur 4 temps, retenez 4, expirez 4, retenez 4. Recommencez quelques fois.</li>
-      <li>Nommez 5 choses que vous voyez, 4 que vous pouvez toucher et 3 que vous entendez.</li>
-      <li>Allez dans un endroit où vous vous sentez en sécurité et contactez une personne de confiance.</li>
+      <li *ngFor="let step of t('help.steps')">{{ step }}</li>
     </ol>
-    <ion-button fill="outline" shape="round" routerLink="/tabs/tab4" [queryParams]="{ segment: 'calm' }">Exercice de respiration</ion-button>
+    <ion-button fill="outline" shape="round" routerLink="/tabs/tab4" [queryParams]="{ segment: 'calm' }">{{ t('help.breathing') }}</ion-button>
   </section>
 
-  <p class="note">
-    Dans Soul App, vous discutez avec d’autres membres. C’est un soutien entre pairs, pas un
-    service d’urgence ni de crise.
-  </p>
+  <p class="note">{{ t('help.note') }}</p>
 </ion-content>
+</ng-container>

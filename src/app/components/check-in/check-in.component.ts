@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController, NavController } from '@ionic/angular';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { COMPANY, MOODS, Mood, MoodEntry, MoodService } from 'src/app/services/mood/mood.service';
 import { MoodFaceComponent } from '../mood-face/mood-face.component';
 
@@ -10,7 +11,7 @@ import { MoodFaceComponent } from '../mood-face/mood-face.component';
 @Component({
   selector: 'app-check-in',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, MoodFaceComponent],
+  imports: [CommonModule, FormsModule, IonicModule, TranslocoDirective, MoodFaceComponent],
   templateUrl: './check-in.component.html',
   styleUrls: ['./check-in.component.scss'],
 })
@@ -24,7 +25,7 @@ export class CheckInComponent implements OnInit {
   withWhom = new Set<string>();
   note = '';
   saving = false;
-  error = '';
+  error = ''; // a translation key
 
   constructor(
     private modalCtrl: ModalController,
@@ -56,13 +57,13 @@ export class CheckInComponent implements OnInit {
     this.error = '';
     try {
       await this.moodService.setToday(this.selected, {
-        with: this.company.filter((c) => this.withWhom.has(c.key)).map((c) => c.key),
+        with: this.company.filter((c) => this.withWhom.has(c)),
         note: this.note.trim(),
       });
       await this.modalCtrl.dismiss({ saved: true, mood: this.selected }, 'saved');
     } catch (err) {
       console.error('Could not save check-in', err);
-      this.error = 'Impossible d’enregistrer votre humeur. Vérifiez votre connexion et réessayez.';
+      this.error = 'checkIn.saveFailed';
     } finally {
       this.saving = false;
     }

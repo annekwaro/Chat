@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { PluralPipe } from '../../i18n/i18n';
 import { IonicModule, NavController } from '@ionic/angular';
 import { firebaseFakes } from '../../../testing/firebase-fakes';
 import { AvatarComponent } from '../../components/avatar/avatar.component';
@@ -19,7 +21,7 @@ describe('HomePage (Chat list)', () => {
     nav = jasmine.createSpyObj('NavController', ['navigateForward', 'navigateRoot']);
     await TestBed.configureTestingModule({
       declarations: [HomePage],
-      imports: [IonicModule.forRoot(), FormsModule, AvatarComponent],
+      imports: [IonicModule.forRoot(), FormsModule, AvatarComponent, TranslocoDirective, PluralPipe],
       providers: [...fakes.providers, provideRouter([]), { provide: NavController, useValue: nav }],
     }).compileComponents();
     fixture = TestBed.createComponent(HomePage);
@@ -52,7 +54,7 @@ describe('HomePage (Chat list)', () => {
     expect(component.chats.length).toBe(1);
     const chat = component.chats[0];
     expect(chat.name).toBe('Bob Smith'); // fresh profile name beats the stored copy
-    expect(chat.preview).toBe('How are you?');
+    expect(component.preview(chat)).toBe('How are you?');
     expect(chat.unread).toBeTrue();
     expect(component.unreadCount).toBe(1);
 
@@ -71,7 +73,9 @@ describe('HomePage (Chat list)', () => {
         lastUpdated: new Date(),
       });
     });
-    expect(component.chats[0].preview).toBe('Vous\u00a0: See you');
+    expect(component.preview(component.chats[0])).toBe('Vous\u00a0: See you');
+    component.language.use('en', false);
+    expect(component.preview(component.chats[0])).toBe('You: See you');
     expect(component.chats[0].unread).toBeFalse();
   });
 
@@ -117,6 +121,6 @@ describe('HomePage (Chat list)', () => {
         blockedBy: ['alice'],
       });
     });
-    expect(component.chats[0].preview).toBe('Bloqué');
+    expect(component.preview(component.chats[0])).toBe('Bloqué');
   });
 });

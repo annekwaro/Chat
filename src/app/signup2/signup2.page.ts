@@ -12,7 +12,8 @@ export class Signup2Page implements OnInit {
   signupForm: FormGroup;
   showPassword = false;
   isLoading: boolean = false;
-  errorMessage = '';
+  errorKey = ''; // a translation key, so the message follows the language
+  errorCode = '';
   returnUrl = '/tabs/tab1';
   reason: string | null = null; // 'chat' when sent here from the Chat tab
   isGuest = false;
@@ -48,7 +49,8 @@ export class Signup2Page implements OnInit {
   async signUp() {
     if (!this.signupForm.valid) return;
     this.isLoading = true;
-    this.errorMessage = '';
+    this.errorKey = '';
+    this.errorCode = '';
     try {
       // A guest's diary and routine carry over to the new account
       await this.authService.register(this.signupForm.value);
@@ -56,7 +58,7 @@ export class Signup2Page implements OnInit {
       this.router.navigateByUrl(this.returnUrl, { replaceUrl: true });
     } catch (error: any) {
       console.error('Registration error', error);
-      this.errorMessage = this.describeError(error?.code);
+      this.errorKey = this.describeError(error?.code);
     } finally {
       this.isLoading = false;
     }
@@ -72,16 +74,17 @@ export class Signup2Page implements OnInit {
     switch (code) {
       case 'auth/email-already-in-use':
       case 'auth/credential-already-in-use':
-        return 'Un compte existe déjà avec cet e-mail. Essayez plutôt de vous connecter.';
+        return 'auth.errors.emailInUse';
       case 'auth/invalid-email':
-        return 'Saisissez une adresse e-mail valide.';
+        return 'auth.errors.invalidEmail';
       case 'auth/weak-password':
-        return 'Choisissez un mot de passe plus sûr (au moins 8 caractères).';
+        return 'auth.errors.weakPassword';
       case 'auth/network-request-failed':
-        return 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
+        return 'auth.errors.network';
       default:
         // The code helps tell what went wrong (e.g. permission-denied from Firestore)
-        return `Impossible de créer votre compte. Réessayez.${code ? ` (${code})` : ''}`;
+        this.errorCode = code || '';
+        return 'auth.errors.signupFailed';
     }
   }
 }

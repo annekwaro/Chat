@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Mood } from 'src/app/services/mood/mood.service';
 
 // Mouth shapes from awful (1) to great (5)
@@ -16,9 +17,9 @@ const MOUTHS: Record<number, string> = {
 @Component({
   selector: 'app-mood-face',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslocoPipe],
   template: `
-    <svg viewBox="0 0 48 48" role="img" [attr.aria-label]="mood ? mood.label : 'Pas encore d’humeur'">
+    <svg viewBox="0 0 48 48" role="img" [attr.aria-label]="(mood ? 'moods.' + mood.key + '.label' : 'moods.none') | transloco">
       <circle cx="24" cy="24" r="23" [attr.fill]="mood?.color || '#e6e9f2'" />
       <ng-container *ngIf="mood">
         <circle cx="17" cy="20" r="2.6" class="ink" />

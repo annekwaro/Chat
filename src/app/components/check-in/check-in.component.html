@@ -1,15 +1,16 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Mon humeur du jour</ion-title>
+    <ion-title>{{ t('checkIn.title') }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Fermer</ion-button>
+      <ion-button (click)="close()">{{ t('common.close') }}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h2 class="question">Comment vous sentez-vous aujourd’hui&nbsp;?</h2>
-  <div class="faces" role="radiogroup" aria-label="Humeur">
+  <h2 class="question">{{ t('checkIn.question') }}</h2>
+  <div class="faces" role="radiogroup" [attr.aria-label]="t('checkIn.moodGroup')">
     <button
       *ngFor="let mood of moods"
       type="button"
@@ -21,34 +22,34 @@
       (click)="selected = mood"
     >
       <app-mood-face [mood]="mood"></app-mood-face>
-      <span>{{ mood.label }}</span>
+      <span>{{ t('moods.' + mood.key + '.label') }}</span>
     </button>
   </div>
 
   <ng-container *ngIf="selected">
-    <p class="message" [style.background]="selected.tint">{{ selected.message }}</p>
+    <p class="message" [style.background]="selected.tint">{{ t('moods.' + selected.key + '.message') }}</p>
     <button *ngIf="selected.score <= 2" type="button" class="help-link" (click)="getHelp()">
-      <ion-icon name="heart-outline"></ion-icon> Besoin de parler à quelqu’un maintenant&nbsp;?
+      <ion-icon name="heart-outline"></ion-icon> {{ t('common.needToTalk') }}
     </button>
 
-    <h3 class="label">Avec qui étiez-vous&nbsp;? <span>(facultatif)</span></h3>
+    <h3 class="label">{{ t('checkIn.withWhom') }} <span>{{ t('checkIn.optional') }}</span></h3>
     <div class="company">
       <ion-chip
         *ngFor="let c of company"
-        [outline]="!withWhom.has(c.key)"
-        [color]="withWhom.has(c.key) ? 'primary' : 'medium'"
-        (click)="toggleCompany(c.key)"
+        [outline]="!withWhom.has(c)"
+        [color]="withWhom.has(c) ? 'primary' : 'medium'"
+        (click)="toggleCompany(c)"
       >
-        <ion-icon *ngIf="withWhom.has(c.key)" name="checkmark"></ion-icon>
-        <ion-label>{{ c.label }}</ion-label>
+        <ion-icon *ngIf="withWhom.has(c)" name="checkmark"></ion-icon>
+        <ion-label>{{ t('company.' + c) }}</ion-label>
       </ion-chip>
     </div>
 
-    <h3 class="label">Quelque chose en tête&nbsp;? <span>(facultatif)</span></h3>
+    <h3 class="label">{{ t('checkIn.onYourMind') }} <span>{{ t('checkIn.optional') }}</span></h3>
     <ion-textarea
       class="note"
-      aria-label="Note"
-      placeholder="Que s’est-il passé aujourd’hui&nbsp;? Qu’avez-vous ressenti&nbsp;?"
+      [attr.aria-label]="t('checkIn.note')"
+      [placeholder]="t('checkIn.notePlaceholder')"
       [(ngModel)]="note"
       [autoGrow]="true"
       [rows]="3"
@@ -56,13 +57,14 @@
     ></ion-textarea>
   </ng-container>
 
-  <p *ngIf="error" class="error" role="alert">{{ error }}</p>
+  <p *ngIf="error" class="error" role="alert">{{ t(error) }}</p>
 </ion-content>
 
 <ion-footer class="ion-no-border">
   <ion-toolbar>
     <ion-button class="save" expand="block" shape="round" [disabled]="!selected || saving" (click)="save()">
-      {{ saving ? 'Enregistrement…' : entry ? 'Mettre à jour' : 'Enregistrer' }}
+      {{ t(saving ? 'checkIn.saving' : entry ? 'checkIn.update' : 'checkIn.save') }}
     </ion-button>
   </ion-toolbar>
 </ion-footer>
+</ng-container>

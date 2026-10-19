@@ -21,7 +21,7 @@ describe('LandingPage', () => {
     await fixture.componentInstance.ionViewWillEnter();
 
     expect(navigate).not.toHaveBeenCalled();
-    const buttons = [...fixture.nativeElement.querySelectorAll('ion-button')].map((b: HTMLElement) => b.textContent?.trim());
+    const buttons = [...fixture.nativeElement.querySelectorAll('.actions ion-button')].map((b: HTMLElement) => b.textContent?.trim());
     expect(buttons).toEqual(['Commencer', 'J’ai déjà un compte']);
   });
 

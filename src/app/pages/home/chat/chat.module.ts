@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 import { ChatPageRoutingModule } from './chat-routing.module';
 
@@ -11,7 +12,7 @@ import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component
 import { AvatarComponent } from 'src/app/components/avatar/avatar.component';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ChatPageRoutingModule, AvatarComponent],
+  imports: [CommonModule, FormsModule, IonicModule, ChatPageRoutingModule, AvatarComponent, TranslocoDirective],
   declarations: [ChatPage, ChatBoxComponent],
 })
 export class ChatPageModule {}

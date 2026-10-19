@@ -1,13 +1,14 @@
+<ng-container *transloco="let t">
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="tab1" href="/tabs/tab1">
       <ion-icon aria-hidden="true" name="home"></ion-icon>
-      <ion-label>Accueil</ion-label>
+      <ion-label>{{ t('tabs.home') }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="tab2" href="/tabs/tab2">
       <ion-icon aria-hidden="true" name="compass"></ion-icon>
-      <ion-label>Explorer</ion-label>
+      <ion-label>{{ t('tabs.explore') }}</ion-label>
     </ion-tab-button>
 
     <!-- room for the check-in button below -->
@@ -15,17 +16,18 @@
 
     <ion-tab-button tab="tab4" href="/tabs/tab4">
       <ion-icon aria-hidden="true" name="leaf"></ion-icon>
-      <ion-label>Découvrir</ion-label>
+      <ion-label>{{ t('tabs.discover') }}</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="home" href="/tabs/home">
       <ion-icon aria-hidden="true" name="chatbubbles"></ion-icon>
-      <ion-label>Messages</ion-label>
+      <ion-label>{{ t('tabs.messages') }}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>
 
 <!-- One tap to log today's mood from any tab -->
-<button type="button" class="check-in-button" aria-label="Humeur du jour" (click)="openCheckIn()">
+<button type="button" class="check-in-button" [attr.aria-label]="t('tabs.checkIn')" (click)="openCheckIn()">
   <ion-icon name="add" aria-hidden="true"></ion-icon>
 </button>
+</ng-container>

@@ -1,8 +1,9 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar color="light" class="top-bar">
     <div class="heading">
-      <h1>Explorer</h1>
-      <p>Trouvez ce qui peut vous aider aujourd’hui</p>
+      <h1>{{ t('explore.title') }}</h1>
+      <p>{{ t('explore.subtitle') }}</p>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -11,14 +12,14 @@
   <!-- Search -->
   <ion-searchbar
     class="search"
-    placeholder="Thèmes, vidéos, podcasts…"
+    [placeholder]="t('explore.search')"
     [debounce]="250"
     (ionInput)="onSearch($event)"
   ></ion-searchbar>
 
   <!-- Popular tools -->
   <ion-list-header class="section-header">
-    <ion-label>Outils populaires</ion-label>
+    <ion-label>{{ t('explore.tools') }}</ion-label>
   </ion-list-header>
   <div class="tools">
     <a
@@ -30,8 +31,8 @@
     >
       <span class="tool-icon" [style.color]="tool.color"><ion-icon [name]="tool.icon"></ion-icon></span>
       <span class="tool-text">
-        <span class="tool-name">{{ tool.name }}</span>
-        <span class="tool-sub">{{ tool.sub }}</span>
+        <span class="tool-name">{{ t('explore.tool.' + tool.id + '.name') }}</span>
+        <span class="tool-sub">{{ t('explore.tool.' + tool.id + '.sub') }}</span>
       </span>
       <ion-icon class="tool-arrow" name="chevron-forward"></ion-icon>
     </a>
@@ -39,7 +40,7 @@
 
   <!-- Featured -->
   <ion-list-header class="section-header">
-    <ion-label>À la une</ion-label>
+    <ion-label>{{ t('explore.featured') }}</ion-label>
   </ion-list-header>
 
   <swiper-container
@@ -60,10 +61,10 @@
   >
     <swiper-slide *ngFor="let item of featured; trackBy: trackById">
       <div class="featured-card" (click)="open(item)">
-        <img [src]="item.image" [alt]="item.title" />
+        <img [src]="item.image" [alt]="title(item)" />
         <div class="featured-info">
           <span class="topic-tag">{{ topicName(item.topic) }}</span>
-          <h2>{{ item.title }}</h2>
+          <h2>{{ title(item) }}</h2>
           <div class="featured-footer">
             <span class="meta">
               <span class="format">{{ formatName(item.format) }}</span>
@@ -81,7 +82,7 @@
 
   <!-- Topics -->
   <ion-list-header class="section-header">
-    <ion-label>Thèmes</ion-label>
+    <ion-label>{{ t('explore.topics') }}</ion-label>
   </ion-list-header>
 
   <div class="topics">
@@ -93,15 +94,15 @@
       [style.background]="topic.color"
       (click)="selectTopic(topic)"
     >
-      <img [src]="topic.image" [alt]="topic.name" />
-      <span class="topic-name">{{ topic.name }}</span>
-      <span class="topic-count">{{ topicCount(topic.id) }} {{ topicCount(topic.id) === 1 ? 'séance' : 'séances' }}</span>
+      <img [src]="topic.image" [alt]="topicName(topic.id)" />
+      <span class="topic-name">{{ topicName(topic.id) }}</span>
+      <span class="topic-count">{{ 'explore.sessions' | plural: topicCount(topic.id) }}</span>
     </button>
   </div>
 
   <!-- Library -->
   <ion-list-header id="library" class="section-header">
-    <ion-label>{{ selectedTopic ? topicName(selectedTopic) : 'Toutes les séances' }}</ion-label>
+    <ion-label>{{ selectedTopic ? topicName(selectedTopic) : t('explore.allSessions') }}</ion-label>
     <ion-button
       *ngIf="selectedTopic"
       class="show-all clear-topic"
@@ -109,7 +110,7 @@
       color="medium"
       (click)="clearTopic()"
     >
-      Effacer
+      {{ t('explore.clear') }}
       <ion-icon name="close" slot="end"></ion-icon>
     </ion-button>
   </ion-list-header>
@@ -117,11 +118,11 @@
   <div class="chips">
     <ion-chip
       *ngFor="let f of formats"
-      [outline]="selectedFormat !== f.value"
-      [color]="selectedFormat === f.value ? 'primary' : 'medium'"
-      (click)="selectFormat(f.value)"
+      [outline]="selectedFormat !== f"
+      [color]="selectedFormat === f ? 'primary' : 'medium'"
+      (click)="selectFormat(f)"
     >
-      {{ f.label }}
+      {{ t('formats.' + f) }}
     </ion-chip>
   </div>
 
@@ -134,13 +135,13 @@
       (click)="open(item)"
     >
       <ion-thumbnail slot="start">
-        <img [src]="item.image" [alt]="item.title" />
+        <img [src]="item.image" [alt]="title(item)" />
       </ion-thumbnail>
       <ion-label>
-        <h3>{{ item.title }}</h3>
+        <h3>{{ title(item) }}</h3>
         <p class="topic-line">
           {{ topicName(item.topic) }}
-          <span *ngIf="item.forYou" class="recommended">Recommandé</span>
+          <span *ngIf="item.forYou" class="recommended">{{ t('explore.recommended') }}</span>
         </p>
         <p class="meta">
           <ion-icon [name]="iconFor(item.format)"></ion-icon>
@@ -155,7 +156,7 @@
 
   <div *ngIf="filtered.length === 0" class="empty">
     <ion-icon name="search-outline"></ion-icon>
-    <p>Aucun résultat. Essayez un autre thème ou une autre recherche.</p>
+    <p>{{ t('explore.noResults') }}</p>
   </div>
 
   <!-- Detail sheet -->
@@ -178,19 +179,19 @@
             playsinline
           ></video>
           <ng-template #heroImage>
-            <img [src]="item.image" [alt]="item.title" />
+            <img [src]="item.image" [alt]="title(item)" />
           </ng-template>
         </div>
         <div class="detail-body">
           <span class="topic-tag">{{ topicName(item.topic) }}</span>
-          <h2>{{ item.title }}</h2>
+          <h2>{{ title(item) }}</h2>
           <p class="meta">
             <ion-icon [name]="iconFor(item.format)"></ion-icon>
             <span class="format">{{ formatName(item.format) }}</span>
             <span class="dot"></span>
             {{ item.duration }}
           </p>
-          <p class="description">{{ item.description }}</p>
+          <p class="description">{{ description(item) }}</p>
 
           <audio
             *ngIf="item.mediaUrl && item.format !== 'video'"
@@ -200,14 +201,15 @@
           ></audio>
 
           <ion-button expand="block" shape="round" class="detail-cta" (click)="talkToTherapist()">
-            En parler avec quelqu’un
+            {{ t('common.talkToSomeone') }}
             <ion-icon name="chatbubbles" slot="end"></ion-icon>
           </ion-button>
           <ion-button expand="block" fill="clear" color="medium" class="detail-close" (click)="close()">
-            Fermer
+            {{ t('common.close') }}
           </ion-button>
         </div>
       </ion-content>
     </ng-template>
   </ion-modal>
 </ion-content>
+</ng-container>

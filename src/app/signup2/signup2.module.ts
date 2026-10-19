@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 import { Signup2PageRoutingModule } from './signup2-routing.module';
 
@@ -16,6 +17,7 @@ import { Signup2Page } from './signup2.page';
     IonicModule,
     Signup2PageRoutingModule,
     ReactiveFormsModule,
+    TranslocoDirective,
   ],
   declarations: [Signup2Page],
 })

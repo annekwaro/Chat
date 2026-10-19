@@ -4,10 +4,8 @@ import { Subject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
 export interface Mood {
-  key: string; // saved in Firestore (English, so older entries still match)
+  key: string; // saved in Firestore; the label and message are in the translations (moods.<key>)
   emoji: string;
-  label: string; // shown in the app
-  message: string;
   score: number; // 5 = great ... 1 = awful
   color: string; // the mood's colour in faces, charts and the calendar
   tint: string; // a soft background in the same colour
@@ -21,32 +19,16 @@ export interface MoodEntry {
   with?: string[]; // who they were with, as COMPANY keys, e.g. ['Family', 'Friends']
 }
 
-// "Who were you with?" choices in the check-in. Keys are saved, labels are shown.
-export const COMPANY: { key: string; label: string }[] = [
-  { key: 'Alone', label: 'Seul·e' },
-  { key: 'Partner', label: 'Partenaire' },
-  { key: 'Family', label: 'Famille' },
-  { key: 'Friends', label: 'Amis' },
-  { key: 'Coworkers', label: 'Collègues' },
-  { key: 'Classmates', label: 'Camarades' },
-];
-
-export function companyLabel(key: string): string {
-  return COMPANY.find((c) => c.key === key)?.label || key;
-}
+// "Who were you with?" choices in the check-in. The keys are saved; labels are company.<key>.
+export const COMPANY = ['Alone', 'Partner', 'Family', 'Friends', 'Coworkers', 'Classmates'];
 
 export const MOODS: Mood[] = [
-  { key: 'Great', emoji: '😄', label: 'Super', score: 5, color: '#34c759', tint: '#e3f8e9', message: 'Génial\u00a0! Gardez cet élan.' },
-  { key: 'Good', emoji: '🙂', label: 'Bien', score: 4, color: '#7ccf95', tint: '#eaf7ee', message: 'Très bien. Une courte méditation peut vous aider à garder ce cap.' },
-  { key: 'Okay', emoji: '😐', label: 'Moyen', score: 3, color: '#f7c948', tint: '#fff6d9', message: 'C’est normal aussi. Essayez la roue des émotions dans Explorer.' },
-  { key: 'Low', emoji: '😔', label: 'Pas top', score: 2, color: '#f59e5b', tint: '#ffecde', message: 'Prenez soin de vous aujourd’hui. En parler peut aider.' },
-  { key: 'Awful', emoji: '😢', label: 'Très mal', score: 1, color: '#a78bfa', tint: '#f0ebff', message: 'Vous n’avez pas à vivre ça sans aide. Parler à quelqu’un peut aider.' },
+  { key: 'Great', emoji: '😄', score: 5, color: '#34c759', tint: '#e3f8e9' },
+  { key: 'Good', emoji: '🙂', score: 4, color: '#7ccf95', tint: '#eaf7ee' },
+  { key: 'Okay', emoji: '😐', score: 3, color: '#f7c948', tint: '#fff6d9' },
+  { key: 'Low', emoji: '😔', score: 2, color: '#f59e5b', tint: '#ffecde' },
+  { key: 'Awful', emoji: '😢', score: 1, color: '#a78bfa', tint: '#f0ebff' },
 ];
-
-// The French label for a saved mood key
-export function moodLabel(key: string | undefined): string {
-  return MOODS.find((m) => m.key === key)?.label || key || '';
-}
 
 // One check-in per day, stored at users/{uid}/moods/{YYYY-MM-DD}
 @Injectable({ providedIn: 'root' })

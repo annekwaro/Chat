@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TabsPage } from './tabs.page';
 import { CheckInService } from '../components/check-in/check-in.service';
+import { LanguageService } from '../i18n/language.service';
 
 describe('TabsPage', () => {
   it('shows the four tabs', async () => {
@@ -17,6 +18,14 @@ describe('TabsPage', () => {
       b.textContent?.trim()
     );
     expect(labels).toEqual(['Accueil', 'Explorer', 'Découvrir', 'Messages']);
+
+    // Switching language updates the page in place
+    TestBed.inject(LanguageService).use('en', false);
+    fixture.detectChanges();
+    const english = [...fixture.nativeElement.querySelectorAll('ion-tab-button')].map((b: HTMLElement) =>
+      b.textContent?.trim()
+    );
+    expect(english).toEqual(['Home', 'Explore', 'Discover', 'Messages']);
   });
 
   it('opens the daily check-in from the + button', async () => {

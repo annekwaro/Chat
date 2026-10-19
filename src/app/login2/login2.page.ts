@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 import { AuthService } from '../services/auth/auth.service';
+import { LanguageService } from '../i18n/language.service';
 
 @Component({
   selector: 'app-login2',
@@ -12,7 +13,7 @@ import { AuthService } from '../services/auth/auth.service';
 export class Login2Page implements OnInit {
   loginForm: FormGroup;
   returnUrl = '/tabs/tab1';
-  errorMessage = '';
+  errorKey = ''; // a translation key, so the message follows the language
   isLoading = false;
   showPassword = false;
 
@@ -22,7 +23,8 @@ export class Login2Page implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alerts: AlertController,
-    private toasts: ToastController
+    private toasts: ToastController,
+    private language: LanguageService
   ) {}
 
   ngOnInit() {
@@ -37,14 +39,14 @@ export class Login2Page implements OnInit {
   async login() {
     if (!this.loginForm.valid) return;
     const { email, password } = this.loginForm.value;
-    this.errorMessage = '';
+    this.errorKey = '';
     this.isLoading = true;
     try {
       await this.authService.login(email, password);
       this.router.navigateByUrl(this.returnUrl, { replaceUrl: true });
     } catch (error: any) {
       console.error('Login error', error);
-      this.errorMessage = this.describeError(error?.code);
+      this.errorKey = this.describeError(error?.code);
     } finally {
       this.isLoading = false;
     }
@@ -53,20 +55,20 @@ export class Login2Page implements OnInit {
   // Asks for the email (filled in from the form) and sends Firebase's reset link
   async forgotPassword() {
     const alert = await this.alerts.create({
-      header: 'Réinitialiser le mot de passe',
-      message: 'Nous vous enverrons par e-mail un lien pour choisir un nouveau mot de passe.',
+      header: this.t('login.resetTitle'),
+      message: this.t('login.resetMessage'),
       inputs: [
         {
           name: 'email',
           type: 'email',
-          placeholder: 'E-mail',
+          placeholder: this.t('auth.email'),
           value: this.loginForm.value.email || '',
           attributes: { autocomplete: 'email' },
         },
       ],
       buttons: [
-        { text: 'Annuler', role: 'cancel' },
-        { text: 'Envoyer le lien', handler: (data) => this.sendReset((data?.email || '').trim()) },
+        { text: this.t('common.cancel'), role: 'cancel' },
+        { text: this.t('login.sendLink'), handler: (data) => this.sendReset((data?.email || '').trim()) },
       ],
     });
     await alert.present();
@@ -75,15 +77,15 @@ export class Login2Page implements OnInit {
   // Returns false to keep the alert open when the email isn't valid
   async sendReset(email: string): Promise<boolean> {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      this.showToast('Saisissez une adresse e-mail valide.', 'danger');
+      this.showToast(this.t('auth.errors.invalidEmail'), 'danger');
       return false;
     }
     try {
       await this.authService.sendPasswordReset(email);
-      this.showToast(`Si ${email} correspond à un compte, un lien de réinitialisation arrive. Vérifiez votre boîte de réception.`);
+      this.showToast(this.t('login.resetSent', { email }));
       return true;
     } catch (error: any) {
-      this.showToast(this.describeError(error?.code), 'danger');
+      this.showToast(this.t(this.describeError(error?.code)), 'danger');
       return false;
     }
   }
@@ -103,15 +105,19 @@ export class Login2Page implements OnInit {
       case 'auth/invalid-login-credentials':
       case 'auth/wrong-password':
       case 'auth/user-not-found':
-        return 'Cet e-mail et ce mot de passe ne correspondent à aucun compte.';
+        return 'auth.errors.wrongCredentials';
       case 'auth/invalid-email':
-        return 'Saisissez une adresse e-mail valide.';
+        return 'auth.errors.invalidEmail';
       case 'auth/too-many-requests':
-        return 'Trop de tentatives. Patientez un instant puis réessayez.';
+        return 'auth.errors.tooManyRequests';
       case 'auth/network-request-failed':
-        return 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
+        return 'auth.errors.network';
       default:
-        return 'Connexion impossible. Réessayez.';
+        return 'auth.errors.loginFailed';
     }
+  }
+
+  private t(key: string, params?: Record<string, any>): string {
+    return this.language.translate(key, params);
   }
 }

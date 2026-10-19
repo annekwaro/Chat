@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule, convertToParamMap, provideRouter } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { PluralPipe } from '../i18n/i18n';
 import { IonicModule } from '@ionic/angular';
 import { firebaseFakes, FakeFirestore } from '../../testing/firebase-fakes';
 import { MOODS, MoodService } from '../services/mood/mood.service';
-import { Tab4Page } from './tab4.page';
+import { Tab4Page, withKeys } from './tab4.page';
 
 describe('Tab4Page (Discover)', () => {
   let fixture: ComponentFixture<Tab4Page>;
@@ -24,7 +26,7 @@ describe('Tab4Page (Discover)', () => {
     firestore = fakes.firestore;
     await TestBed.configureTestingModule({
       declarations: [Tab4Page],
-      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot()],
+      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot(), TranslocoDirective, PluralPipe],
       providers: [...fakes.providers, provideRouter([])],
     }).compileComponents();
     moods = TestBed.inject(MoodService);
@@ -116,7 +118,7 @@ describe('Tab4Page (Discover)', () => {
     firestore = fakes.firestore;
     await TestBed.configureTestingModule({
       declarations: [Tab4Page],
-      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot()],
+      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot(), TranslocoDirective, PluralPipe],
       providers: [
         ...fakes.providers,
         provideRouter([]),
@@ -132,18 +134,18 @@ describe('Tab4Page (Discover)', () => {
   it('runs box breathing in 4-second phases and stops cleanly', fakeAsync(() => {
     TestBed.configureTestingModule({
       declarations: [Tab4Page],
-      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot()],
+      imports: [CommonModule, FormsModule, RouterModule, IonicModule.forRoot(), TranslocoDirective, PluralPipe],
       providers: [...firebaseFakes().providers, provideRouter([])],
     });
     const page = TestBed.createComponent(Tab4Page).componentInstance;
 
     page.toggleBreathing();
-    expect(page.phase.label).toBe('Inspirez');
+    expect(page.phaseLabel).toBe('Inspirez');
     tick(4000);
-    expect(page.phase.label).toBe('Retenez');
+    expect(page.phaseLabel).toBe('Retenez');
     tick(12000);
     expect(page.cycles).toBe(1);
-    expect(page.phase.label).toBe('Inspirez');
+    expect(page.phaseLabel).toBe('Inspirez');
 
     page.toggleBreathing();
     expect(page.breathing).toBeFalse();
@@ -172,5 +174,19 @@ describe('Tab4Page (Discover)', () => {
       });
     });
     expect(component.routine).toEqual([{ name: 'Yoga', image: 'x.png', done: false }]);
+  });
+});
+
+describe('withKeys', () => {
+  it('turns suggested activities saved by name (French or English) into keys, and keeps the others', () => {
+    const items = withKeys([
+      { name: 'Méditation', image: 'a.png', done: true },
+      { name: 'Reading', image: 'b.png', done: false },
+      { key: 'music', name: '', image: 'c.png', done: false },
+      { name: 'Walk the dog', image: 'd.png', done: false },
+    ]);
+    expect(items.map((i) => i.key || i.name)).toEqual(['meditation', 'reading', 'music', 'Walk the dog']);
+    expect(items[0].done).toBeTrue();
+    expect('key' in items[3]).toBeFalse(); // Firestore can't save undefined fields
   });
 });

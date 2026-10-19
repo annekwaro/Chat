@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { connectAuthEmulator, getAuth, onAuthStateChanged } from '@angular/fire/auth';
+import { TranslocoService } from '@jsverse/transloco';
 import { environment } from 'src/environments/environment';
 import 'firebase/compat/auth';
 
@@ -15,10 +16,15 @@ export class AuthService {
     this.authResolve = resolve;
   });
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
+  constructor(
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private transloco: TranslocoService
+  ) {
     const auth = getAuth();
     if (environment.useEmulators) connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-    auth.languageCode = 'fr'; // password reset emails in French
+    // Password reset emails in the app's language
+    this.transloco.langChanges$.subscribe((lang) => (auth.languageCode = lang));
     onAuthStateChanged(auth, (user) => {
       this.currentUserId = user?.uid || null;
       this.guest = !!user?.isAnonymous;

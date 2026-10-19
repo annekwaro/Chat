@@ -3,26 +3,27 @@ import { IonModal, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatRoom, ChatService, ChatUser } from 'src/app/services/chat/chat.service';
-import { LOCALE } from 'src/app/locale';
+import { currentLocale } from 'src/app/locale';
+import { LanguageService } from 'src/app/i18n/language.service';
 
 export interface ChatPreview {
   room: ChatRoom;
   name: string;
   photo: string;
-  preview: string;
   unread: boolean;
 }
 
 // "Today 10:04" shows as 10:04, this week as the weekday, older as a date
-export function shortTime(date: Date | undefined, now = new Date()): string {
+export function shortTime(date: Date | undefined, now = new Date(), yesterday = 'Hier'): string {
   if (!date) return '';
+  const locale = currentLocale();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const day = 24 * 60 * 60 * 1000;
   const t = date.getTime();
-  if (t >= startOfToday) return date.toLocaleTimeString(LOCALE, { hour: '2-digit', minute: '2-digit' });
-  if (t >= startOfToday - day) return 'Hier';
-  if (t >= startOfToday - 6 * day) return date.toLocaleDateString(LOCALE, { weekday: 'short' });
-  return date.toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' });
+  if (t >= startOfToday) return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  if (t >= startOfToday - day) return yesterday;
+  if (t >= startOfToday - 6 * day) return date.toLocaleDateString(locale, { weekday: 'short' });
+  return date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
 }
 
 @Component({
@@ -36,7 +37,7 @@ export class HomePage implements OnInit, OnDestroy {
   currentUserId: string | null = null;
   chats: ChatPreview[] = [];
   loading = true;
-  error = '';
+  error = false;
   query = '';
 
   // New chat sheet
@@ -53,7 +54,8 @@ export class HomePage implements OnInit, OnDestroy {
     private nav: NavController,
     private toast: ToastController,
     private auth: AuthService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    public language: LanguageService
   ) {}
 
   ngOnInit() {
@@ -72,7 +74,7 @@ export class HomePage implements OnInit, OnDestroy {
   async start() {
     this.sub?.unsubscribe();
     this.loading = true;
-    this.error = '';
+    this.error = false;
     this.currentUserId = await this.auth.getCurrentUserId();
     if (!this.currentUserId) return;
     // Up-to-date names and photos; the chat document's copy is the fallback
@@ -84,7 +86,7 @@ export class HomePage implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Could not load chats', err);
-        this.error = 'Impossible de charger vos conversations. Vérifiez votre connexion et réessayez.';
+        this.error = true;
         this.loading = false;
       },
     });
@@ -93,18 +95,21 @@ export class HomePage implements OnInit, OnDestroy {
   private toPreview(room: ChatRoom): ChatPreview {
     const otherId = this.chatService.otherParticipant(room, this.currentUserId);
     const profile = this.profiles.get(otherId);
-    const mine = room.lastSenderId === this.currentUserId;
     return {
       room,
-      name: profile?.name || room.participantNames[otherId] || 'Quelqu’un',
+      name: profile?.name || room.participantNames[otherId] || this.language.translate('common.someone'),
       photo: profile?.photo || room.participantPhotos[otherId] || '',
-      preview: this.chatService.blockedByMe(room, this.currentUserId)
-        ? 'Bloqué'
-        : room.lastMessage
-          ? (mine ? 'Vous\u00a0: ' : '') + room.lastMessage
-          : 'Dites bonjour 👋',
       unread: this.chatService.isUnread(room, this.currentUserId),
     };
+  }
+
+  // Worked out when shown, so it follows the language
+  preview(chat: ChatPreview): string {
+    const room = chat.room;
+    if (this.chatService.blockedByMe(room, this.currentUserId)) return this.language.translate('chats.blocked');
+    if (!room.lastMessage) return this.language.translate('chats.sayHello');
+    if (room.lastSenderId === this.currentUserId) return this.language.translate('chats.you', { text: room.lastMessage });
+    return room.lastMessage;
   }
 
   async loadUsers() {
@@ -139,11 +144,11 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   time(room: ChatRoom): string {
-    return shortTime(room.lastUpdated);
+    return shortTime(room.lastUpdated, new Date(), this.language.translate('chats.yesterday'));
   }
 
   firstName(name: string): string {
-    return (name || '').trim().split(/\s+/)[0] || 'Quelqu’un';
+    return (name || '').trim().split(/\s+/)[0] || this.language.translate('common.someone');
   }
 
   trackChat(_: number, chat: ChatPreview) {
@@ -167,7 +172,7 @@ export class HomePage implements OnInit, OnDestroy {
       this.nav.navigateForward(['/home/chats', chatId]);
     } catch (err) {
       console.error('Could not start chat', err);
-      this.showToast('Impossible de démarrer la conversation. Réessayez.');
+      this.showToast(this.language.translate('chats.startFailed'));
     } finally {
       this.starting = false;
     }

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, convertToParamMap, provideRouter } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { of } from 'rxjs';
 import { firebaseFakes } from '../../../../testing/firebase-fakes';
 import { AvatarComponent } from '../../../components/avatar/avatar.component';
@@ -31,7 +32,7 @@ describe('ChatPage', () => {
     const params = convertToParamMap({ id: chatId });
     await TestBed.configureTestingModule({
       declarations: [ChatPage, ChatBoxComponent],
-      imports: [IonicModule.forRoot(), FormsModule, RouterModule, AvatarComponent],
+      imports: [IonicModule.forRoot(), FormsModule, RouterModule, AvatarComponent, TranslocoDirective],
       providers: [
         ...fakes.providers,
         provideRouter([]),
@@ -108,15 +109,17 @@ describe('ChatPage', () => {
   it('groups messages by day', () => {
     const now = new Date(2026, 9, 16, 12);
     const msg = (d: Date) => ({ text: 'x', senderId: 'a', timestamp: d });
-    const groups = groupByDay(
-      [msg(new Date(2026, 9, 15, 9)), msg(new Date(2026, 9, 16, 9)), msg(new Date(2026, 9, 16, 10))],
-      now
-    );
-    expect(groups.map((g) => [g.label, g.messages.length])).toEqual([
+    const groups = groupByDay([
+      msg(new Date(2026, 9, 15, 9)),
+      msg(new Date(2026, 9, 16, 9)),
+      msg(new Date(2026, 9, 16, 10)),
+    ]);
+    expect(groups.map((g) => [dayLabel(g.date, now), g.messages.length])).toEqual([
       ['Hier', 1],
       ['Aujourd’hui', 2],
     ]);
     expect(dayLabel(new Date(2026, 9, 12), now)).toContain('12');
+    expect(dayLabel(new Date(2026, 9, 16), now, { today: 'Today', yesterday: 'Yesterday' })).toBe('Today');
   });
 
   it('shows an unblock option instead of the message box when I blocked them', async () => {

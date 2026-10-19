@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { firebaseFakes } from '../../testing/firebase-fakes';
@@ -13,7 +14,7 @@ describe('Login2Page', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [Login2Page],
-      imports: [IonicModule.forRoot(), FormsModule, ReactiveFormsModule],
+      imports: [IonicModule.forRoot(), FormsModule, ReactiveFormsModule, TranslocoDirective],
       providers: [...firebaseFakes().providers, provideRouter([])],
     }).compileComponents();
     fixture = TestBed.createComponent(Login2Page);

@@ -1,8 +1,9 @@
-<ion-content>
+<ion-content *transloco="let t">
   <div class="landing">
     <div class="brand-row">
       <span class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></span>
       <span class="brand-name">Soul App</span>
+      <app-language-toggle class="lang"></app-language-toggle>
     </div>
 
     <swiper-container
@@ -19,8 +20,8 @@
         <div class="art" [style.background]="slide.tint">
           <img [src]="slide.image" alt="" />
         </div>
-        <h1>{{ slide.title }}</h1>
-        <p>{{ slide.text }}</p>
+        <h1>{{ t('landing.slides.' + slide.id + '.title') }}</h1>
+        <p>{{ t('landing.slides.' + slide.id + '.text') }}</p>
       </swiper-slide>
     </swiper-container>
 
@@ -32,10 +33,10 @@
         expand="block"
         [routerLink]="['/tabs/tab1']"
         [replaceUrl]="true"
-        >Commencer</ion-button
+        >{{ t('landing.start') }}</ion-button
       >
       <ion-button class="have-account" fill="clear" expand="block" [routerLink]="['/login2']"
-        >J’ai déjà un compte</ion-button
+        >{{ t('landing.haveAccount') }}</ion-button
       >
     </div>
   </div>

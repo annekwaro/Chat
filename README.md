@@ -20,7 +20,7 @@ Présentation du projet · Project presentation: https://docs.google.com/present
 
 Soul App est une application de bien-être mental pensée d’abord pour le mobile (Ionic, Angular et Firebase). On peut y noter son humeur, suivre des séances guidées, s’informer sur les troubles courants et discuter en privé, en temps réel, avec d’autres membres.
 
-L’application est entièrement en français, pour un public en France : textes, dates et heures, lignes d’écoute, et e-mails de réinitialisation du mot de passe envoyés par Firebase.
+L’application est disponible en **français** et en **anglais**. Elle s’ouvre dans la langue du téléphone (français par défaut), et le bouton **EN / FR** en haut de l’Accueil, de la page d’accueil et du menu ⋮ des Messages change de langue instantanément. Le choix est mémorisé sur l’appareil. Textes, dates et heures, et e-mails de réinitialisation du mot de passe suivent la langue choisie. Les lignes d’écoute restent françaises.
 
 ### Fonctionnalités
 
@@ -97,7 +97,8 @@ npx ng test --watch=false --browsers=ChromeHeadless
   - `AuthGuard` demande aux invités de créer un compte avant d’accéder à la messagerie.
 - `src/app/pages/help` : la page Obtenir de l’aide et sa liste de lignes d’écoute.
 - `src/app/components` : l’avatar (initiales s’il n’y a pas de photo), la bulle de message, le visage d’humeur et la fiche du bilan du jour.
-- `src/app/locale.ts` : la langue utilisée pour les dates et heures (`fr-FR`).
+- `src/app/i18n` : tous les textes, dans `fr.ts` et `en.ts` (mêmes clés ; TypeScript signale une clé manquante en anglais), et `LanguageService` qui choisit et mémorise la langue.
+- `src/app/locale.ts` : le format des dates et heures (`fr-FR` ou `en-GB`).
 - `firestore.rules` : qui peut lire et écrire quoi.
 
 #### Modèle de données
@@ -106,12 +107,12 @@ npx ng test --watch=false --browsers=ChromeHeadless
 | --- | --- |
 | `users/{uid}` | Profil public : nom et photo uniquement |
 | `users/{uid}/private/account` | E-mail (lisible uniquement par son propriétaire) |
-| `users/{uid}/moods/{AAAA-MM-JJ}` | Bilan d’humeur et note du journal. `mood` et `with` contiennent des clés en anglais (`Great`, `Family`) ; les libellés français viennent de `MOODS` et `COMPANY` dans `mood.service.ts` |
-| `users/{uid}/routine/{AAAA-MM-JJ}` | Liste de routine du jour |
+| `users/{uid}/moods/{AAAA-MM-JJ}` | Bilan d’humeur et note du journal. `mood` et `with` contiennent des clés en anglais (`Great`, `Family`) ; les libellés viennent des fichiers de traduction (`moods`, `company`) |
+| `users/{uid}/routine/{AAAA-MM-JJ}` | Liste de routine du jour. Les activités suggérées sont enregistrées avec une clé (`meditation`…), affichée dans la langue choisie |
 | `chats/{uidA_uidB}` | Les deux participants, aperçu du dernier message, accusés de lecture, qui a bloqué |
 | `chats/{id}/messages/{id}` | `text`, `senderId`, `timestamp` |
 | `reports/{id}` | Signalements d’une conversation (motif et messages récents) ; en écriture seule depuis l’application |
-| `content/{id}` | Bibliothèque de séances facultative ; l’application a sa propre liste si elle est vide |
+| `content/{id}` | Bibliothèque de séances facultative ; l’application a sa propre liste si elle est vide. `title` et `description`, plus `title_en` et `description_en` pour l’anglais |
 
 ---
 
@@ -121,7 +122,7 @@ npx ng test --watch=false --browsers=ChromeHeadless
 
 Soul App is a mobile-first mental wellbeing app (Ionic, Angular and Firebase). People can check in on their mood, follow guided sessions, learn about common conditions, and chat one-to-one with other members in real time.
 
-The app's interface is in French, for users in France: all text, dates and times, the helplines, and Firebase's password reset emails.
+The app is available in **French** and **English**. It opens in the phone's language (French by default), and the **EN / FR** button at the top of Home, on the landing page and in the Messages ⋮ menu switches language instantly. The choice is remembered on the device. Text, dates and times, and Firebase's password reset emails follow the chosen language. The helplines stay French.
 
 ### Features
 
@@ -198,7 +199,8 @@ npx ng test --watch=false --browsers=ChromeHeadless
   - `AuthGuard` asks guests to sign up before they can chat.
 - `src/app/pages/help`: the Get help now page and its list of helplines.
 - `src/app/components`: the avatar (initials when there's no photo), the chat bubble, the mood face and the daily check-in sheet.
-- `src/app/locale.ts`: the locale used for dates and times (`fr-FR`).
+- `src/app/i18n`: all the text, in `fr.ts` and `en.ts` (same keys; TypeScript flags a key missing in English), and `LanguageService`, which picks and remembers the language.
+- `src/app/locale.ts`: the date and time format (`fr-FR` or `en-GB`).
 - `firestore.rules`: who can read and write what.
 
 #### Data model
@@ -207,9 +209,9 @@ npx ng test --watch=false --browsers=ChromeHeadless
 | --- | --- |
 | `users/{uid}` | Public profile: name and photo only |
 | `users/{uid}/private/account` | Email (only the owner can read it) |
-| `users/{uid}/moods/{YYYY-MM-DD}` | Mood check-in and diary note. `mood` and `with` hold English keys (`Great`, `Family`); the French labels come from `MOODS` and `COMPANY` in `mood.service.ts` |
-| `users/{uid}/routine/{YYYY-MM-DD}` | Daily routine checklist |
+| `users/{uid}/moods/{YYYY-MM-DD}` | Mood check-in and diary note. `mood` and `with` hold English keys (`Great`, `Family`); the labels come from the translation files (`moods`, `company`) |
+| `users/{uid}/routine/{YYYY-MM-DD}` | Daily routine checklist. Suggested activities are saved with a key (`meditation`…) and shown in the chosen language |
 | `chats/{uidA_uidB}` | The two participants, last-message preview, read receipts, who has blocked |
 | `chats/{id}/messages/{id}` | `text`, `senderId`, `timestamp` |
 | `reports/{id}` | Reports about a conversation (reason + recent messages); write-only from the app |
-| `content/{id}` | Optional session library; the app has a built-in list if this is empty |
+| `content/{id}` | Optional session library; the app has a built-in list if this is empty. `title` and `description`, plus `title_en` and `description_en` for English |

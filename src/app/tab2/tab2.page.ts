@@ -15,10 +15,11 @@ import {
   ContentService,
   FORMATS,
   FORMAT_ICONS,
-  FORMAT_NAMES,
   Format,
   Topic,
 } from '../services/content/content.service';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { PluralPipe } from '../i18n/i18n';
 
 register();
 
@@ -28,7 +29,7 @@ register();
   styleUrls: ['./tab2.page.scss'],
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonicModule, CommonModule, RouterModule],
+  imports: [IonicModule, CommonModule, RouterModule, TranslocoDirective, PluralPipe],
 })
 export class Tab2Page implements OnInit, OnDestroy {
   @ViewChild(IonContent) content!: IonContent;
@@ -51,12 +52,12 @@ export class Tab2Page implements OnInit, OnDestroy {
   private ready!: Promise<void>;
   private paramsSub?: Subscription;
 
-  // Shortcuts into Discover
+  // Shortcuts into Discover (text: explore.tool.<id>)
   tools = [
-    { name: 'Respiration', sub: 'Respiration carrée', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', segment: 'calm' },
-    { name: 'Suivi d’humeur', sub: 'Humeur du jour', icon: 'happy', color: '#1f9d55', tint: '#e3f8e9', segment: 'diary' },
-    { name: 'Routine', sub: 'Petits pas', icon: 'checkmark-done', color: '#0558e7', tint: '#e3ebff', segment: 'calm' },
-    { name: 'Comprendre', sub: 'Mieux comprendre son esprit', icon: 'book', color: '#d97706', tint: '#fff4cc', segment: 'learn' },
+    { id: 'breathing', icon: 'leaf', color: '#7c5cf0', tint: '#f0ebff', segment: 'calm' },
+    { id: 'mood', icon: 'happy', color: '#1f9d55', tint: '#e3f8e9', segment: 'diary' },
+    { id: 'routine', icon: 'checkmark-done', color: '#0558e7', tint: '#e3ebff', segment: 'calm' },
+    { id: 'learn', icon: 'book', color: '#d97706', tint: '#fff4cc', segment: 'learn' },
   ];
 
   constructor(
@@ -134,8 +135,8 @@ export class Tab2Page implements OnInit, OnDestroy {
         this.selectedFormat === 'all' || c.format === this.selectedFormat;
       const matchesSearch =
         !this.searchTerm ||
-        c.title.toLowerCase().includes(this.searchTerm) ||
-        c.description.toLowerCase().includes(this.searchTerm) ||
+        this.title(c).toLowerCase().includes(this.searchTerm) ||
+        this.description(c).toLowerCase().includes(this.searchTerm) ||
         this.topicName(c.topic).toLowerCase().includes(this.searchTerm);
       return matchesTopic && matchesFormat && matchesSearch;
     });
@@ -159,7 +160,15 @@ export class Tab2Page implements OnInit, OnDestroy {
   }
 
   formatName(format: Format): string {
-    return FORMAT_NAMES[format] || format;
+    return this.contentService.formatName(format);
+  }
+
+  title(item: Content): string {
+    return this.contentService.title(item);
+  }
+
+  description(item: Content): string {
+    return this.contentService.description(item);
   }
 
   open(item: Content) {

@@ -1,21 +1,22 @@
+<ng-container *transloco="let t">
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/landing"></ion-back-button>
+      <ion-back-button defaultHref="/landing" [text]="t('common.back')"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="brand" aria-hidden="true"><ion-icon name="leaf"></ion-icon></div>
-  <h1 class="title">Bon retour</h1>
-  <p class="subtitle">Connectez-vous pour discuter et retrouver votre journal sur tous vos appareils.</p>
+  <h1 class="title">{{ t('login.title') }}</h1>
+  <p class="subtitle">{{ t('login.subtitle') }}</p>
 
   <form [formGroup]="loginForm" (ngSubmit)="login()">
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="mail-outline" aria-hidden="true"></ion-icon>
       <ion-input
-        label="E-mail"
+        [label]="t('auth.email')"
         labelPlacement="floating"
         formControlName="email"
         type="email"
@@ -23,13 +24,13 @@
       ></ion-input>
     </ion-item>
     <p class="field-error" *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> Saisissez une adresse e-mail valide
+      <ion-icon name="alert-circle-outline"></ion-icon> {{ t('auth.emailInvalid') }}
     </p>
 
     <ion-item class="field" lines="none">
       <ion-icon slot="start" name="lock-closed-outline" aria-hidden="true"></ion-icon>
       <ion-input
-        label="Mot de passe"
+        [label]="t('auth.password')"
         labelPlacement="floating"
         formControlName="password"
         [type]="showPassword ? 'text' : 'password'"
@@ -39,20 +40,20 @@
         slot="end"
         fill="clear"
         class="reveal"
-        [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+        [attr.aria-label]="t(showPassword ? 'auth.hidePassword' : 'auth.showPassword')"
         (click)="showPassword = !showPassword"
       >
         <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
       </ion-button>
     </ion-item>
     <p class="field-error" *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched">
-      <ion-icon name="alert-circle-outline"></ion-icon> Le mot de passe doit contenir au moins 6 caractères
+      <ion-icon name="alert-circle-outline"></ion-icon> {{ t('login.passwordTooShort') }}
     </p>
     <div class="forgot">
-      <ion-button fill="clear" size="small" (click)="forgotPassword()">Mot de passe oublié&nbsp;?</ion-button>
+      <ion-button fill="clear" size="small" (click)="forgotPassword()">{{ t('login.forgot') }}</ion-button>
     </div>
 
-    <p class="form-error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+    <p class="form-error" *ngIf="errorKey" role="alert">{{ t(errorKey) }}</p>
 
     <ion-button
       class="submit"
@@ -61,15 +62,16 @@
       expand="block"
       [disabled]="!loginForm.valid || isLoading"
     >
-      {{ isLoading ? 'Connexion…' : 'Se connecter' }}
+      {{ t(isLoading ? 'login.submitting' : 'login.submit') }}
     </ion-button>
   </form>
 
   <p class="switch">
-    Nouveau sur Soul&nbsp;?
-    <a [routerLink]="['/signup2']" [queryParams]="{ returnUrl: returnUrl }">Créer un compte</a>
+    {{ t('login.newHere') }}
+    <a [routerLink]="['/signup2']" [queryParams]="{ returnUrl: returnUrl }">{{ t('login.createAccount') }}</a>
   </p>
   <ion-button class="skip" fill="clear" expand="block" color="medium" (click)="continueWithoutAccount()">
-    Continuer sans compte
+    {{ t('login.skip') }}
   </ion-button>
 </ion-content>
+</ng-container>

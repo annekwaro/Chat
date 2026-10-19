@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable, map } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { LanguageService } from '../../i18n/language.service';
 
 export const MAX_MESSAGE_LENGTH = 2000;
 
@@ -26,13 +27,8 @@ export interface ChatRoom {
 
 export type ReportReason = 'harassment' | 'spam' | 'hate' | 'risk' | 'other';
 
-export const REPORT_REASONS: { value: ReportReason; label: string }[] = [
-  { value: 'harassment', label: 'Harcèlement ou intimidation' },
-  { value: 'hate', label: 'Haine ou discrimination' },
-  { value: 'spam', label: 'Spam ou arnaque' },
-  { value: 'risk', label: 'Je m’inquiète pour sa sécurité' },
-  { value: 'other', label: 'Autre chose' },
-];
+// Labels are chat.reasons.<value>
+export const REPORT_REASONS: ReportReason[] = ['harassment', 'hate', 'spam', 'risk', 'other'];
 
 export interface ChatUser {
   uid: string;
@@ -83,6 +79,7 @@ export class ChatService {
   constructor(
     private afs: AngularFirestore,
     private auth: AuthService,
+    private language: LanguageService,
   ) {}
 
   private async requireUid(): Promise<string> {
@@ -200,7 +197,7 @@ export class ChatService {
       .filter((u) => u.uid !== uid)
       .map((u) => ({
         uid: u.uid,
-        name: u.name || 'Quelqu’un',
+        name: u.name || this.language.translate('common.someone'),
         photo: u.photo || '',
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -217,7 +214,7 @@ export class ChatService {
       await doc.set({
         participants: [uid, other.uid].sort(),
         participantNames: {
-          [uid]: me.name || 'Quelqu’un',
+          [uid]: me.name || '', // shown as "Someone" in the reader's language
           [other.uid]: other.name,
         },
         participantPhotos: {

@@ -7,32 +7,25 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import {
-  MOODS,
-  Mood,
-  MoodEntry,
-  MoodService,
-  companyLabel,
-  moodLabel,
-} from '../services/mood/mood.service';
+import { COMPANY, MOODS, Mood, MoodEntry, MoodService } from '../services/mood/mood.service';
 import { CheckInService } from '../components/check-in/check-in.service';
-import { LOCALE } from 'src/app/locale';
+import { currentLocale } from 'src/app/locale';
+import { LanguageService } from '../i18n/language.service';
+import { en } from '../i18n/en';
+import { fr } from '../i18n/fr';
 
 type Segment = 'diary' | 'learn' | 'calm';
 
+// Text: conditions.<id> (name, summary, signs, helps)
 interface Condition {
   id: string;
-  name: string;
   image: string;
   color: string;
-  summary: string;
-  signs: string[];
-  helps: string[];
 }
 
 interface DayCell {
   key: string;
-  weekday: string;
+  date: Date;
   day: number;
   isToday: boolean;
   entry?: MoodEntry;
@@ -40,42 +33,42 @@ interface DayCell {
   height?: number; // bar height in the weekly chart, as a percentage
 }
 
-// Calendar weeks start on Monday
-const CALENDAR_WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-
+// The suggested activities are saved with a key and shown in the current language
+// (routine.items.<key>); activities people add are saved with their name.
 interface RoutineItem {
+  key?: string;
   name: string;
   image: string;
   done: boolean;
 }
 
 const DEFAULT_ROUTINE: RoutineItem[] = [
-  { name: 'Méditation', image: 'assets/imgs/image7.png', done: false },
-  { name: 'Respiration', image: 'assets/imgs/image8.png', done: false },
-  { name: 'Vélo', image: 'assets/imgs/image24.png', done: false },
-  { name: 'Lecture', image: 'assets/imgs/image4.png', done: false },
-  { name: 'Écouter de la musique', image: 'assets/imgs/image5.png', done: false },
+  { key: 'meditation', name: '', image: 'assets/imgs/image7.png', done: false },
+  { key: 'breathing', name: '', image: 'assets/imgs/image8.png', done: false },
+  { key: 'cycling', name: '', image: 'assets/imgs/image24.png', done: false },
+  { key: 'reading', name: '', image: 'assets/imgs/image4.png', done: false },
+  { key: 'music', name: '', image: 'assets/imgs/image5.png', done: false },
 ];
 
-// Routines saved before the app was in French still have the English default names
-const OLD_ROUTINE_NAMES: Record<string, string> = {
-  Meditation: 'Méditation',
-  Breathing: 'Respiration',
-  Cycling: 'Vélo',
-  Reading: 'Lecture',
-  'Listening to music': 'Écouter de la musique',
-};
-
-function translateItems(items: RoutineItem[]): RoutineItem[] {
-  return items.map((i) => ({ ...i, name: OLD_ROUTINE_NAMES[i.name] || i.name }));
+// Routines saved by older versions have the suggested activities by name, in French or English
+const SUGGESTED_BY_NAME = new Map<string, string>();
+for (const lang of [fr, en]) {
+  for (const [key, name] of Object.entries(lang.routine.items)) SUGGESTED_BY_NAME.set(name, key);
 }
 
-// Box breathing: 4 seconds per phase
+export function withKeys(items: RoutineItem[]): RoutineItem[] {
+  return items.map((i) => {
+    const key = i.key || SUGGESTED_BY_NAME.get(i.name);
+    return key ? { key, name: '', image: i.image, done: !!i.done } : i;
+  });
+}
+
+// Box breathing: 4 seconds per phase (labels: calm.phase.<key>)
 const BREATH_PHASES = [
-  { label: 'Inspirez', scale: 1 },
-  { label: 'Retenez', scale: 1 },
-  { label: 'Expirez', scale: 0.6 },
-  { label: 'Retenez', scale: 0.6 },
+  { key: 'in', scale: 1 },
+  { key: 'hold', scale: 1 },
+  { key: 'out', scale: 0.6 },
+  { key: 'hold', scale: 0.6 },
 ];
 const PHASE_SECONDS = 4;
 
@@ -97,133 +90,18 @@ export class Tab4Page implements OnInit, OnDestroy {
   streak = 0;
   monthCount = 0;
   historyView: 'list' | 'calendar' = 'list';
-  readonly calendarWeekdays = CALENDAR_WEEKDAYS;
   calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   calendar: (DayCell | null)[] = [];
   private moodSub?: Subscription;
 
   // Learn
   conditions: Condition[] = [
-    {
-      id: 'anxiety',
-      name: 'Anxiété',
-      image: 'assets/imgs/image30.png',
-      color: '#ffe8de',
-      summary:
-        'Se sentir inquiet ou avoir peur de temps en temps fait partie de la vie. L’anxiété devient un problème quand l’inquiétude est fréquente, difficile à contrôler et gêne la vie de tous les jours.',
-      signs: [
-        'Se sentir agité, tendu ou à cran',
-        'Des pensées qui s’emballent et qu’on n’arrive pas à arrêter',
-        'Des difficultés à dormir ou à se concentrer',
-        'Le cœur qui bat vite, la transpiration ou une respiration courte',
-        'Éviter les lieux ou les situations qui semblent stressants',
-      ],
-      helps: [
-        'Des exercices de respiration lente (essayez l’onglet Calme)',
-        'Bouger régulièrement et dormir suffisamment',
-        'Réduire la caféine et l’alcool',
-        'Une psychothérapie, par exemple une TCC',
-      ],
-    },
-    {
-      id: 'depression',
-      name: 'Dépression',
-      image: 'assets/imgs/image22.png',
-      color: '#e3ebff',
-      summary:
-        'La dépression, ce n’est pas seulement être triste un jour ou deux. C’est une humeur basse ou une perte d’intérêt qui dure au moins deux semaines et qui change la façon de penser, de ressentir et de gérer le quotidien.',
-      signs: [
-        'Se sentir triste, vide ou sans espoir la plupart du temps',
-        'Perdre l’intérêt pour ce qu’on aimait faire',
-        'Des changements de sommeil ou d’appétit',
-        'De la fatigue et un manque d’énergie',
-        'Se sentir inutile ou coupable',
-      ],
-      helps: [
-        'De petites routines quotidiennes et des objectifs atteignables',
-        'Garder le lien avec des personnes de confiance',
-        'Une activité physique douce et du temps dehors',
-        'Une psychothérapie, et un traitement si un médecin le recommande',
-      ],
-    },
-    {
-      id: 'low-mood',
-      name: 'Coup de blues',
-      image: 'assets/imgs/image8.png',
-      color: '#fff4cc',
-      summary:
-        'Tout le monde a des jours sans. Un coup de blues a souvent une cause, comme le stress ou un événement difficile, et passe en général en quelques jours ou quelques semaines.',
-      signs: [
-        'De la tristesse ou des larmes',
-        'Se sentir fatigué ou démotivé',
-        'Se sentir irritable ou frustré',
-        'Moins de confiance en soi que d’habitude',
-      ],
-      helps: [
-        'Des horaires de sommeil réguliers',
-        'Sortir et bouger',
-        'Faire quelque chose qu’on aime, même brièvement',
-        'En parler à quelqu’un. Si cela dure plus de deux semaines, consultez un professionnel',
-      ],
-    },
-    {
-      id: 'self-esteem',
-      name: 'Estime de soi',
-      image: 'assets/imgs/image37.png',
-      color: '#dff7e3',
-      summary:
-        'L’estime de soi, c’est la valeur qu’on s’accorde et le regard qu’on porte sur soi. Une faible estime de soi peut rendre plus difficile d’essayer de nouvelles choses, de poser des limites et de rebondir après un échec.',
-      signs: [
-        'Être très dur avec soi-même',
-        'Se comparer sans cesse aux autres',
-        'Avoir du mal à accepter les compliments',
-        'Éviter les défis par peur d’échouer',
-      ],
-      helps: [
-        'Noter ses qualités et ses petites réussites',
-        'Repérer et remettre en question ses pensées négatives',
-        'Se fixer de petits objectifs atteignables',
-        'Se traiter comme on traiterait un bon ami',
-      ],
-    },
-    {
-      id: 'ocd',
-      name: 'TOC',
-      image: 'assets/imgs/image28.png',
-      color: '#ece3ff',
-      summary:
-        'Le trouble obsessionnel compulsif (TOC) se traduit par des pensées intrusives et indésirables (obsessions) et des gestes ou rituels répétitifs (compulsions) que la personne se sent obligée de faire pour calmer son angoisse.',
-      signs: [
-        'Des pensées répétées et pénibles, difficiles à chasser',
-        'Vérifier, nettoyer, compter ou ranger de façon excessive',
-        'Rester anxieux tant qu’un rituel n’est pas fait « comme il faut »',
-        'Des rituels qui prennent beaucoup de temps chaque jour',
-      ],
-      helps: [
-        'Une TCC avec exposition et prévention de la réponse (EPR)',
-        'Un traitement prescrit par un médecin',
-        'Des groupes de soutien et la compréhension des proches',
-      ],
-    },
-    {
-      id: 'schizophrenia',
-      name: 'Schizophrénie',
-      image: 'assets/imgs/image23.png',
-      color: '#ffe3ec',
-      summary:
-        'La schizophrénie est un trouble sérieux et durable qui modifie la façon de penser, de ressentir et de percevoir la réalité. Avec un traitement précoce et du soutien, beaucoup de personnes gèrent leurs symptômes et vivent pleinement.',
-      signs: [
-        'Entendre ou voir des choses que les autres ne perçoivent pas (hallucinations)',
-        'Des convictions fortes qui ne reposent pas sur la réalité (idées délirantes)',
-        'Une pensée et un discours confus ou désorganisés',
-        'Se replier sur soi et perdre sa motivation',
-      ],
-      helps: [
-        'Une évaluation et un traitement précoces par des professionnels de santé mentale',
-        'Un traitement médicamenteux et une psychothérapie',
-        'Le soutien de la famille, des amis et des services de proximité',
-      ],
-    },
+    { id: 'anxiety', image: 'assets/imgs/image30.png', color: '#ffe8de' },
+    { id: 'depression', image: 'assets/imgs/image22.png', color: '#e3ebff' },
+    { id: 'low-mood', image: 'assets/imgs/image8.png', color: '#fff4cc' },
+    { id: 'self-esteem', image: 'assets/imgs/image37.png', color: '#dff7e3' },
+    { id: 'ocd', image: 'assets/imgs/image28.png', color: '#ece3ff' },
+    { id: 'schizophrenia', image: 'assets/imgs/image23.png', color: '#ffe3ec' },
   ];
   selectedCondition: Condition | null = null;
 
@@ -246,7 +124,8 @@ export class Tab4Page implements OnInit, OnDestroy {
     private toastCtrl: ToastController,
     private router: Router,
     private route: ActivatedRoute,
-    private checkIn: CheckInService
+    private checkIn: CheckInService,
+    private language: LanguageService
   ) {}
 
   ngOnInit() {
@@ -308,7 +187,7 @@ export class Tab4Page implements OnInit, OnDestroy {
       const key = this.moodService.dateKey(d);
       days.push({
         key,
-        weekday: d.toLocaleDateString(LOCALE, { weekday: 'short' }),
+        date: d,
         day: d.getDate(),
         isToday: i === 0,
         entry: byDate.get(key),
@@ -331,13 +210,22 @@ export class Tab4Page implements OnInit, OnDestroy {
     for (let day = 1; day <= daysInMonth; day++) {
       const key = this.moodService.dateKey(new Date(year, month, day));
       const entry = byDate.get(key);
-      cells.push({ key, weekday: '', day, isToday: key === todayKey, entry, mood: this.moodFor(entry) });
+      cells.push({ key, date: new Date(year, month, day), day, isToday: key === todayKey, entry, mood: this.moodFor(entry) });
     }
     this.calendar = cells;
   }
 
   get calendarTitle(): string {
-    return this.calendarMonth.toLocaleDateString(LOCALE, { month: 'long', year: 'numeric' });
+    return this.calendarMonth.toLocaleDateString(currentLocale(), { month: 'long', year: 'numeric' });
+  }
+
+  // Calendar weeks start on Monday: L M M J V S D / M T W T F S S (1 January 2024 was a Monday)
+  get calendarWeekdays(): string[] {
+    return [0, 1, 2, 3, 4, 5, 6].map((i) => new Date(2024, 0, 1 + i).toLocaleDateString(currentLocale(), { weekday: 'narrow' }));
+  }
+
+  weekday(date: Date): string {
+    return date.toLocaleDateString(currentLocale(), { weekday: 'short' });
   }
 
   get canGoForward(): boolean {
@@ -370,15 +258,15 @@ export class Tab4Page implements OnInit, OnDestroy {
   }
 
   moodName(key: string | undefined): string {
-    return moodLabel(key);
+    return this.moodService.findMood(key) ? this.t(`moods.${key}.label`) : key || '';
   }
 
   companyNames(keys: string[] | undefined): string {
-    return (keys || []).map(companyLabel).join(', ');
+    return (keys || []).map((k) => this.companyName(k)).join(', ');
   }
 
   companyName(key: string): string {
-    return companyLabel(key);
+    return COMPANY.includes(key) ? this.t(`company.${key}`) : key;
   }
 
   moodFor(entry: MoodEntry | null | undefined): Mood | null {
@@ -388,8 +276,8 @@ export class Tab4Page implements OnInit, OnDestroy {
   formatDate(key: string): string {
     const [y, m, d] = key.split('-').map(Number);
     const date = new Date(y, m - 1, d);
-    if (key === this.moodService.dateKey()) return 'Aujourd’hui';
-    return date.toLocaleDateString(LOCALE, {
+    if (key === this.moodService.dateKey()) return this.t('diary.today');
+    return date.toLocaleDateString(currentLocale(), {
       weekday: 'short',
       day: 'numeric',
       month: 'short',
@@ -404,25 +292,25 @@ export class Tab4Page implements OnInit, OnDestroy {
   async editNote(entry: MoodEntry) {
     const alert = await this.alertCtrl.create({
       header: this.formatDate(entry.date),
-      subHeader: moodLabel(entry.mood),
+      subHeader: this.moodName(entry.mood),
       inputs: [
         {
           name: 'note',
           type: 'textarea',
-          placeholder: 'Que s’est-il passé\u00a0? Qu’avez-vous ressenti\u00a0?',
+          placeholder: this.t('diary.notePlaceholder'),
           value: entry.note || '',
         },
       ],
       buttons: [
-        { text: 'Annuler', role: 'cancel' },
+        { text: this.t('common.cancel'), role: 'cancel' },
         {
-          text: 'Enregistrer',
+          text: this.t('common.save'),
           handler: async (data) => {
             try {
               await this.moodService.saveNote(entry.date, (data.note || '').trim());
             } catch (err) {
               console.error('Failed to save note', err);
-              this.showToast('Impossible d’enregistrer votre note. Réessayez.');
+              this.showToast(this.t('diary.noteFailed'));
             }
           },
         },
@@ -450,6 +338,10 @@ export class Tab4Page implements OnInit, OnDestroy {
 
   get phase() {
     return BREATH_PHASES[this.phaseIndex];
+  }
+
+  get phaseLabel(): string {
+    return this.t(`calm.phase.${this.phase.key}`);
   }
 
   get circleScale(): number {
@@ -500,14 +392,14 @@ export class Tab4Page implements OnInit, OnDestroy {
     try {
       const today = await this.routineCol().doc(this.moodService.dateKey()).ref.get();
       if (today.exists) {
-        this.routine = translateItems((today.data() as any).items);
+        this.routine = withKeys((today.data() as any).items);
         return;
       }
       const last = await this.routineCol().ref.orderBy('date', 'desc').limit(1).get();
       const items: RoutineItem[] = last.empty
         ? DEFAULT_ROUTINE
         : (last.docs[0].data() as any).items;
-      this.routine = translateItems(items).map((i) => ({ ...i, done: false }));
+      this.routine = withKeys(items).map((i) => ({ ...i, done: false }));
     } catch (err) {
       console.error('Failed to load routine', err);
       this.routine = DEFAULT_ROUTINE.map((i) => ({ ...i }));
@@ -521,7 +413,7 @@ export class Tab4Page implements OnInit, OnDestroy {
       await this.routineCol().doc(date).set({ date, items: this.routine });
     } catch (err) {
       console.error('Failed to save routine', err);
-      this.showToast('Impossible d’enregistrer votre routine. Réessayez.');
+      this.showToast(this.t('routine.saveFailed'));
     }
   }
 
@@ -546,9 +438,17 @@ export class Tab4Page implements OnInit, OnDestroy {
     this.saveRoutine();
   }
 
+  itemName(item: RoutineItem): string {
+    return item.key ? this.t(`routine.items.${item.key}`) : item.name;
+  }
+
   removeItem(item: RoutineItem) {
     this.routine = this.routine.filter((i) => i !== item);
     this.saveRoutine();
+  }
+
+  private t(key: string, params?: Record<string, any>): string {
+    return this.language.translate(key, params);
   }
 
   private async showToast(message: string) {

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { IonicModule } from '@ionic/angular';
 import { firebaseFakes } from '../../testing/firebase-fakes';
 import { AuthService } from '../services/auth/auth.service';
@@ -13,7 +14,7 @@ describe('Signup2Page', () => {
   async function setup(params: Record<string, string> = {}, guest = false) {
     await TestBed.configureTestingModule({
       declarations: [Signup2Page],
-      imports: [IonicModule.forRoot(), FormsModule, ReactiveFormsModule],
+      imports: [IonicModule.forRoot(), FormsModule, ReactiveFormsModule, TranslocoDirective],
       providers: [
         ...firebaseFakes({ uid: guest ? 'guest-user' : null, guest }).providers,
         provideRouter([]),
