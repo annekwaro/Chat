@@ -69,6 +69,6 @@
   },
   "description": "An Ionic project",
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   }
 }
