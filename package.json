@@ -70,5 +70,13 @@
   "description": "An Ionic project",
   "engines": {
     "node": "24.x"
+  },
+  "overrides": {
+    "@angular/fire": {
+      "@angular/common": "$@angular/common",
+      "@angular/core": "$@angular/core",
+      "@angular/platform-browser": "$@angular/platform-browser",
+      "@angular/platform-browser-dynamic": "$@angular/platform-browser-dynamic"
+    }
   }
 }
