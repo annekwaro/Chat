@@ -11,6 +11,8 @@ varcel (chat-dusky-xi.vercel.app)
 | --- | --- | --- |
 | ![Explorer](docs/screenshots/explore.png) | ![Calme](docs/screenshots/calm.png) | ![Aide](docs/screenshots/help.png) |
 
+Application en ligne · Live app: https://chat-dusky-xi.vercel.app
+
 Présentation du projet · Project presentation: https://docs.google.com/presentation/d/1eqkLxWmaBLTHLHckOPQ-4BlqrnywFh1fvsMaZ-XiPZU
 
 ---
