@@ -1,5 +1,4 @@
 # Soul App
-varcel (chat-dusky-xi.vercel.app)
 
 **[Français](#fr) · [English](#en)**
 
@@ -124,6 +123,8 @@ npx ng test --watch=false --browsers=ChromeHeadless
 ## 🇬🇧 English
 
 Soul App is a mobile-first mental wellbeing app (Ionic, Angular and Firebase). People can check in on their mood, follow guided sessions, learn about common conditions, and chat one-to-one with other members in real time.
+
+**Try it live:** https://chat-dusky-xi.vercel.app
 
 The app is available in **French** and **English**. It opens in the phone's language (French by default), and the **EN / FR** button at the top of Home, on the landing page and in the Messages ⋮ menu switches language instantly. The choice is remembered on the device. Text, dates and times, and Firebase's password reset emails follow the chosen language. The helplines stay French.
 
