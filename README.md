@@ -22,6 +22,8 @@ Présentation du projet · Project presentation: https://docs.google.com/present
 
 Soul App est une application de bien-être mental pensée d’abord pour le mobile (Ionic, Angular et Firebase). On peut y noter son humeur, suivre des séances guidées, s’informer sur les troubles courants et discuter en privé, en temps réel, avec d’autres membres.
 
+**Essayer en ligne :** https://chat-dusky-xi.vercel.app
+
 L’application est disponible en **français** et en **anglais**. Elle s’ouvre dans la langue du téléphone (français par défaut), et le bouton **EN / FR** en haut de l’Accueil, de la page d’accueil et du menu ⋮ des Messages change de langue instantanément. Le choix est mémorisé sur l’appareil. Textes, dates et heures, et e-mails de réinitialisation du mot de passe suivent la langue choisie. Les lignes d’écoute restent françaises.
 
 ### Fonctionnalités
